@@ -16,15 +16,14 @@ import android.os.Build
 import android.preference.PreferenceManager
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat.PRIORITY_MIN
+import com.example.eddy.basetrackerpsyegb.DB.*
 import com.example.eddy.basetrackerpsyegb.MainActivity
 import com.example.eddy.basetrackerpsyegb.R
-import com.mdp.eddy.g53recipebook.DB.GPS
-import com.mdp.eddy.g53recipebook.DB.addGPS
 import org.jetbrains.anko.doAsync
 import org.greenrobot.eventbus.ThreadMode
 import org.greenrobot.eventbus.Subscribe
 import com.example.eddy.basetrackerpsyegb.Service.ServiceEvent.Control.*
-
+import org.greenrobot.eventbus.EventBus
 
 
 
@@ -48,32 +47,42 @@ class MyLocationService : Service() {
 
     private var mLocationManager: LocationManager? = null
 
-//    var timer: Boolean = false
+    //    var timer: Boolean = false
     private var mLocationListeners = arrayOf(LocationListener(LocationManager.PASSIVE_PROVIDER))
 
     private inner class LocationListener(provider: String) : android.location.LocationListener {
+        var initialized = false
+        internal var currentID: Int = 0
         internal var mLastLocation: Location
 
         init {
             Log.e(TAG, "LocationListener $provider")
             mLastLocation = Location(provider)
+            Log.v(
+                TAG,
+                "Location?? ${mLastLocation.time} ${mLastLocation.altitude} ${mLastLocation.latitude} ${mLastLocation.longitude}"
+            )
         }
 
         override fun onLocationChanged(location: Location) {
             Log.e(TAG, "onLocationChanged: $location.")
+
+            var time = location.time - mLastLocation.time
+
+
             mLastLocation.set(location)
 
-            val gps = GPS()
-            gps.lat = location.latitude
-            gps.long = location.longitude
-            gps.ele = location.altitude
-            gps.time = location.time
+            var parentId = currentID
+            var latitude = location.latitude
+            var longitude = location.longitude
+//            gps.ele = location.altitude
+            var timestamp = location.time
+
+            val gps = GPS(pKey = 0, parentId = parentId, longitude = longitude,latitude = latitude,timestamp = timestamp)
 
 
-            Log.v("LOCATIONSERVICE", gps.toString())
-            doAsync {
-                contentResolver.addGPS(gps)
-            }
+            putDB(gps, time)
+
 
 //            if(!timer){
 //                Timer(KEY_LOCATION_TIMER, false).scheduleAtFixedRate(500, 2000){
@@ -84,9 +93,13 @@ class MyLocationService : Service() {
 
         }
 
+
+
         override fun onProviderDisabled(provider: String) {
             Log.e(TAG, "onProviderDisabled: $provider")
+            stopMetrics()
         }
+
 
         override fun onProviderEnabled(provider: String) {
             Log.e(TAG, "onProviderEnabled: $provider")
@@ -95,8 +108,58 @@ class MyLocationService : Service() {
         override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
             Log.e(TAG, "onStatusChanged: $provider")
         }
-    }
 
+
+        private fun putDB(gps: GPS, time: Long) {
+            doAsync {
+                if (initialized) {
+                    addGPS(gps)
+                    updateTime(gps.parentId, time)
+                } else {
+                    startMetrics(gps)
+                    initialized = true
+                    updateTime(gps.parentId, time)
+
+                }
+
+            }
+        }
+
+        private fun updateTime(parentId: Int, time: Long) {
+            contentResolver.updateRunDistance(time, parentId)
+        }
+
+
+        private fun addGPS(gps: GPS) {
+            Log.e("ADDGPS", "gps = " + gps.toString())
+
+            contentResolver.addGPS(gps)
+
+        }
+
+        private fun startMetrics(gps: GPS) {
+
+            Log.e("startMetrics", "gps = ${gps.toString()}")
+
+            val rm = RunMetrics()
+            rm.startTime = gps.timestamp
+            currentID = contentResolver.startMetrics(rm)
+            Log.e("STARMETRICS", "returned id is $currentID which will be assigned")
+            gps.parentId = currentID
+            contentResolver.addGPS(gps)
+
+        }
+
+        public fun stopMetrics() {
+            Log.e("STOPMETRICS", "STOPPING METRICS")
+            var rm = RunMetrics()
+
+
+            rm = contentResolver.endMetrics(mLastLocation.time, currentID)
+            Log.e("stopmetrics", rm.toString())
+
+        }
+    }
 
 
     override fun onBind(arg0: Intent): IBinder? {
@@ -107,10 +170,8 @@ class MyLocationService : Service() {
         Log.e(TAG, "onStartCommand")
 
 
-        if(intent.action != null && intent.action == ACTION.STOP_SERVICE){
+        if (intent.action != null && intent.action == ACTION.STOP_SERVICE) {
             stopSelf()
-        }else{
-            startForeground()
         }
         return Service.START_STICKY
     }
@@ -133,18 +194,15 @@ class MyLocationService : Service() {
     }
 
 
-
-
     override fun onCreate() {
         Log.e(TAG, "onCreate")
-
-
-
+        EventBus.getDefault().register(this)
     }
 
     override fun onDestroy() {
         Log.e(TAG, "onDestroy")
         super.onDestroy()
+        EventBus.getDefault().unregister(this)
         stopTracking()
     }
 
@@ -169,21 +227,8 @@ class MyLocationService : Service() {
         }
 
     }
-    private fun sto(){
 
-
-
-
-
-
-
-
-
-    }
-
-
-
-    private fun stopTracking(){
+    private fun stopTracking() {
         if (mLocationManager != null) {
             var caught = false
             for (i in mLocationListeners.indices) {
@@ -198,6 +243,11 @@ class MyLocationService : Service() {
                     ) {
                         return
                     }
+                    doAsync{
+                        mLocationListeners[i].stopMetrics()
+                    }
+
+
                     mLocationManager!!.removeUpdates(mLocationListeners[i])
                 } catch (ex: Exception) {
                     Log.i(TAG, "fail to remove location listener, ignore", ex)
@@ -205,13 +255,17 @@ class MyLocationService : Service() {
                 }
 
             }
-            if(!caught){
+            if (!caught) {
                 mLocationManager = null
 
             }
         }
     }
 
+    override fun stopService(name: Intent?): Boolean {
+        stopTracking()
+        return super.stopService(name)
+    }
 
     //https://stackoverflow.com/questions/47531742/startforeground-fail-after-upgrade-to-android-8-1
     private fun startForeground() {
@@ -275,16 +329,18 @@ class MyLocationService : Service() {
     }
 
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: ServiceEvent) {
+        Log.e("hi", "hi")
 
         when (event.control) {
             START -> {
+                startForeground()
                 initializeLocationManager()
                 startTracking()
             }
             STOP -> {
-
+                stopTracking()
             }
             PAUSE -> {
 
@@ -294,8 +350,6 @@ class MyLocationService : Service() {
         }
 
     }
-
-
 
 
 }

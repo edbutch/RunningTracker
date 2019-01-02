@@ -33,7 +33,7 @@ activities,	keeping	track	of	best	time	or	longest	distances etc.
 Application
 The	goal	of	this	coursework	is	to	design	and	implement	a	mobile	application	that	functions	as	
 a	basic	 _Running	Tracker_ ,	in	that	it	should	allow	the	user	to	track	their	movement	when	they	
-decide	to	walk,	run	or	jog, principally	by	logging	the	change	in	physical	location using	GPS.	
+decide	to	walk,	run	or	jog, principally	by	logging	the	change	in	physical	location using	GPS.
 The	application	should	allow the	user	to	inspect	this	data	in	a	useful	manner.	The	user	might	
 expect	to	be	able to	ask	simple	questions of	the	data	such	as	“how	far	have	I	run	so	far	
 today?”,	“how	far	have	I	run	this	month?”	or	“have	I	run faster	than	my	best	time	today?”.
@@ -60,7 +60,7 @@ lifecycles	should	interact.	There	is	no	requirement	that	your	components	will	be
 components	outside	of	the	application,	however	it	is	good	practice	to	consider	how	your	
 components	might	be	made	available	to	other	processes	for	subsequent	reuse.
 
-Some	hints	and	tips	regarding	getting	started	with	location	services	/	GPS	monitoring	are	
+Some	hints	and	tips	regarding	getting	started	with	location	services	/	GPS	monitoring	are
 provided	below.
 
 Your	application	must	be	written	in	Java	and	make	use	of	the	Android	SDK.	There	are	no	
@@ -154,7 +154,7 @@ The	following	areas	will	be	taken	into	account	for	each	part	of	the	assessment:
 ## Hints	and	tips
 
 Using	Location	/	GPS	tracking
-There	are	different	mechanisms	for	obtaining	the	location	of	the	device,	including	GPS,	Wi-Fi	
+There	are	different	mechanisms	for	obtaining	the	location	of	the	device,	including	GPS,	Wi-Fi
 or	cell-tower	signal	triangulation,	and	different	mechanisms	for	how	this	data	can	be	accessed	
 by	the	device.
 
@@ -167,7 +167,7 @@ Google	APIs	installed	– generally	this	will	be	a	different	emulator	system	ima
 https://developer.android.com/training/building-location.html
 
 There	is,	however,	a	simpler	approach	that	is	perfectly	adequate	for	this	coursework,	and	that	
-is	to	use	the	LocationManager system	service	to	provide	GPS	(global	positioning	system)	
+is	to	use	the	LocationManager system	service	to	provide	GPS	(global	positioning	system)
 updates	that	reveal	the	user’s	location.
 
 https://developer.android.com/reference/android/location/package-summary.html
@@ -183,10 +183,10 @@ Accessing	location	requires	permission	from	the	user:
 
 The	LocationManager	is	a	system	service,	and	so	needs	to	be	retrieved	from	the	service	
 manager	via	 _getSystemService_ .	Then	it	can	be	passed	an	instance	of	a	 _LocationListener_ that	
-will	receive	updates	from	the	GPS	provider.	The	two	other	parameters	specify	the	minimum	
+will	receive	updates	from	the	GPS	provider.	The	two	other	parameters	specify	the	minimum
 frequency	of	updates	(i.e.	we	can	say	that	we	want	at	most	1	update	every	5	seconds),	and	
 distance	between	updates	(i.e.	we	can	say	that	we	only	want	to	be	told	when	the	device	has	
-moved	at	least	5	metres).	The	fastest	update	frequency	for	GPS	is	around	1	second,	and	
+moved	at	least	5	metres).	The	fastest	update	frequency	for	GPS	is	around	1	second,	and
 accuracy	varies	from	a	few	metres	upwards	depending	on	environmental	conditions.
 
 LocationManager locationManager =
@@ -257,16 +257,16 @@ two	points	given	as	latitude	and	longitude:
 Emulating	GPS
 It	is	possible	to	complete	this	coursework	entirely	using	the	emulator	– there	is	no	advantage	
 to or	necessity	of having	a	physical	Android	phone.	There	is	also	no	expectation	that	you	
-handle	the	everyday	practical	details	of	GPS	– losing	signal,	inaccurate	signals	etc.	You	can	
+handle	the	everyday	practical	details	of	GPS	– losing	signal,	inaccurate	signals	etc.	You	can
 assume	that	it	will	be	tested	on	an	emulated	device	with	“perfect”	GPS.
 
-The	emulator	provides	a	mock	GPS	device	that	feeds	NMEA	(latitude	and	longitude	position	
+The	emulator	provides	a	mock	GPS	device	that	feeds	NMEA	(latitude	and	longitude	position
 updates)	to	the	phone	where	they	will	be	handled	by	the	LocationManager	as	if	they	were	
 real	 updates,	 via	 the	 _extended	 controls	_ menu.	 This can	 be	 found	 by	 clicking	“...” on	 the	
 emulator	side	bar.
 
-Furthermore,	the	emulator	can	replay	a	series	of	GPS	events	from	a	GPX	file	(a	standard	log	
-format	for	many	GPS	devices	and	applications). It	is	also	possible	to	export	from	Google	Maps	
+Furthermore,	the	emulator	can	replay	a	series	of	GPS	events	from	a	GPX	file	(a	standard	log
+format	for	many	GPS	devices	and	applications). It	is	also	possible	to	export	from	Google	Maps
 to	GPX.
 
 Three	 example	 GPX	 files	 have	 been uploaded	 to	 Moodle	 for	 use	 as	 “real”	 latitude	 and	

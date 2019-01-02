@@ -1,23 +1,33 @@
-package com.mdp.eddy.g53recipebook.DB
+package com.example.eddy.basetrackerpsyegb.DB
+
 
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.net.Uri
 import android.util.Log
+import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.PKEY
+import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.LONGITUDE
+import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.LATITUDE
+import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.PARENTID
+import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.TIME
 
-const val AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.DB.contentprovider/gpsDB"
-fun ContentResolver.addGPS(gps: GPS): Int{
+const val GPS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.DB.contentprovider/gpsdb"
+fun ContentResolver.addGPS(gps: GPS): Int {
     val cv = ContentValues()
-    cv.put(GPS.PARENTID, gps.parentId)
-    cv.put(GPS.LAT, gps.lat)
-    cv.put(GPS.LONG, gps.long)
-    cv.put(GPS.ELE, gps.ele)
-    cv.put(GPS.TIME, gps.time)
 
-    val uriRet = insert(Uri.parse(AUTHORITY), cv)
+    cv.put(PKEY, gps.pKey)
+    cv.put(PARENTID, gps.parentId)
+    cv.put(TIME, gps.timestamp)
+    cv.put(LONGITUDE, gps.longitude)
+    cv.put(LATITUDE, gps.latitude)
+
+//    cv.put(GPS.ELE, gps.ele)
+
+
+    val uriRet = insert(Uri.parse(GPS_AUTHORITY), cv)
     val gpsID = ContentUris.parseId(uriRet)
-    gps.parentId = gpsID.toInt()
+    gps.pKey = gpsID.toInt()
     Log.v("Resolver: AddGPS", gps.toString())
     return gps.parentId
 }
@@ -25,17 +35,25 @@ fun ContentResolver.addGPS(gps: GPS): Int{
 
 
 
-fun ContentResolver.getGPSList(): ArrayList<GPS> {
-    val cursor = query(Uri.parse(AUTHORITY), null, null, null, null)!!
+fun ContentResolver.getGPSList(id: Int): ArrayList<GPS> {
+    val cursor = query(
+        ContentUris.withAppendedId(Uri.parse(GPS_AUTHORITY), id.toLong()),
+        null,
+        null,
+        null,
+        null)
+
     val gpsList = ArrayList<GPS>()
     cursor.moveToFirst()
     while (!cursor.isAfterLast) {
-        val gps = GPS()
-        gps.parentId = cursor.getInt(cursor.getColumnIndex(GPS.PARENTID))
-        gps.lat = cursor.getDouble(cursor.getColumnIndex(GPS.LAT))
-        gps.long = cursor.getDouble(cursor.getColumnIndex(GPS.LONG))
-        gps.ele = cursor.getDouble(cursor.getColumnIndex(GPS.ELE))
-        gps.time = cursor.getLong(cursor.getColumnIndex(GPS.TIME))
+
+        var pKey = cursor.getInt(cursor.getColumnIndex(PKEY))
+        var parentId = cursor.getInt(cursor.getColumnIndex(PARENTID))
+        var time = cursor.getLong(cursor.getColumnIndex(TIME))
+        var lat = cursor.getDouble(cursor.getColumnIndex(LATITUDE))
+        var long = cursor.getDouble(cursor.getColumnIndex(LONGITUDE))
+//        gps.ele = cursor.getDouble(cursor.getColumnIndex(GPS.ELE))
+        val gps = GPS(pKey = pKey, parentId = parentId, timestamp = time, latitude = lat, longitude = long)
         gpsList.add(gps)
         cursor.moveToNext()
         Log.v("Resolver: GetGPSList", gps.toString())
@@ -45,3 +63,33 @@ fun ContentResolver.getGPSList(): ArrayList<GPS> {
 }
 
 
+
+
+
+fun ContentResolver.getAllGPSList(): ArrayList<GPS> {
+    val cursor = query(
+        Uri.parse(GPS_AUTHORITY),
+        null,
+        null,
+        null,
+        null)
+
+
+    val gpsList = ArrayList<GPS>()
+    cursor.moveToFirst()
+    while (!cursor.isAfterLast) {
+        var pKey = cursor.getInt(cursor.getColumnIndex(PKEY))
+        var parentId = cursor.getInt(cursor.getColumnIndex(PARENTID))
+        var time = cursor.getLong(cursor.getColumnIndex(TIME))
+        var lat = cursor.getDouble(cursor.getColumnIndex(LATITUDE))
+        var long = cursor.getDouble(cursor.getColumnIndex(LONGITUDE))
+        val gps = GPS(pKey = pKey, parentId = parentId, timestamp = time, latitude = lat, longitude = long)
+
+//        gps.ele = cursor.getDouble(cursor.getColumnIndex(GPS.ELE))
+        gpsList.add(gps)
+        cursor.moveToNext()
+        Log.v("Resolver: GetGPSList", gps.toString())
+    }
+    cursor.close()
+    return gpsList
+}

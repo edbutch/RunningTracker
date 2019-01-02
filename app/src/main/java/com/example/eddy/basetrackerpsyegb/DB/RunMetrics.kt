@@ -1,25 +1,30 @@
 package com.example.eddy.basetrackerpsyegb.DB
 
+import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
+import java.util.*
 
 @Entity
-
-
-class RunMetrics{
-
+data class RunMetrics(@PrimaryKey(autoGenerate = true) var id : Int,
+                      @ColumnInfo(name = "startTime") var startTime : Long,
+                      @ColumnInfo(name = "endTime") var endTime : Long,
+                      @ColumnInfo(name = "totalDistance") var totalDistance :Long){
     companion object{
         const val ID ="id"
-        const val START_TIME = "starttime"
-        const val END_TIME = "starttime"
-        const val RUN_SPEED = "runspeed"
+        const val START_TIME = "startTime"
+        const val END_TIME = "endTime"
+        const val TOTAL_DISTANCE = "totalDistance"
     }
 
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
-    var startTime : Long = 0L
-    var endtTime : Long = 0L
 
+
+    constructor():this(id = 0 , startTime = 0L, endTime = 0L, totalDistance = 0L)
+
+    override fun toString(): String {
+        return "RunMetrics(id=$id, startTime=$startTime, endTime=$endTime, totalDistance=$totalDistance)"
+    }
 
 
 }
+
