@@ -1,5 +1,4 @@
 package com.example.eddy.basetrackerpsyegb
-import android.R.menu
 import android.content.Context
 
 
@@ -24,7 +23,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
 import android.os.Bundle
@@ -40,21 +38,28 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
-import com.example.eddy.basetrackerpsyegb.DB.getGPSList
-import com.example.eddy.basetrackerpsyegb.DB.getRuns
-import com.example.eddy.basetrackerpsyegb.R
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+import com.google.android.gms.maps.model.LatLng
 
 /**
  * This shows to include a map in lite mode in a ListView.
  * Note the use of the view holder pattern with the
  * [com.google.android.gms.maps.OnMapReadyCallback].
  */
-class LiteListDemoActivity(val context: Context) : AppCompatActivity() {
+class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
+    override fun dbReady(
+        runMetrics: ArrayList<RunMetrics>,
+        runList: ArrayList<ArrayList<GPS>>
+    ) {
+        mRecyclerView!!.setHasFixedSize(true)
+        mRecyclerView!!.layoutManager = mLinearLayoutManager
+        mRecyclerView!!.adapter = MapAdapter(runMetrics,runList)
+        //TODO
+        mRecyclerView!!.setRecyclerListener(mRecycleListener)
+    }
 
     private var mRecyclerView: RecyclerView? = null
 
+    val context: Context = this
     private var mLinearLayoutManager: LinearLayoutManager? = null
     private var mGridLayoutManager: GridLayoutManager? = null
 
@@ -82,12 +87,10 @@ class LiteListDemoActivity(val context: Context) : AppCompatActivity() {
         mGridLayoutManager = GridLayoutManager(this, 2)
         mLinearLayoutManager = LinearLayoutManager(this)
 
+        val locations = AllJourneys(this, this)
         // Set up the RecyclerView
         mRecyclerView = findViewById(R.id.recycler_view)
-        mRecyclerView!!.setHasFixedSize(true)
-        mRecyclerView!!.layoutManager = mLinearLayoutManager
-        mRecyclerView!!.adapter = MapAdapter(LIST_LOCATIONS)
-        mRecyclerView!!.setRecyclerListener(mRecycleListener)
+
     }
 
     /** Create a menu to switch between Linear and Grid LayoutManager.  */
@@ -110,9 +113,11 @@ class LiteListDemoActivity(val context: Context) : AppCompatActivity() {
      * that is programatically initialised in
      * [.]
      */
-    private inner class MapAdapter (private val runMetrics: ArrayList<RunMetrics>, private val runList : ArrayList<ArrayList<GPS>>) :
+    private inner class MapAdapter(
+        private val runMetrics: ArrayList<RunMetrics>,
+        private val runList: ArrayList<ArrayList<GPS>>
+    ) :
         RecyclerView.Adapter<MapAdapter.ViewHolder>() {
-
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -180,26 +185,34 @@ class LiteListDemoActivity(val context: Context) : AppCompatActivity() {
             private fun setMapLocation() {
                 if (map == null) return
 
-                val data = mapView!!.tag as RunMetrics ?: return
+                val data = mapView!!.tag as RunUtils ?: return
 
 
-                // Add a marker for this item and set the camera
-                map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(data.location, 13f))
-                map!!.addMarker(MarkerOptions().position(data.location))
+                val latLong = LatLng(data.gpsList[0].latitude, data.gpsList[0].longitude)
+
+
+//
+//                latlng.longitude = gpsList[0].longitude
+//                latlng.latitude = gpsList[0].latitude
+//                // Add a marker for this item and set the camera
+                map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLong, 13f))
+                map!!.addMarker(MarkerOptions().position(latLong))
 
                 // Set the map type back to normal.
                 map!!.mapType = GoogleMap.MAP_TYPE_NORMAL
             }
 
             internal fun bindView(pos: Int) {
-                val item = runMetrics[pos]
+                //todo
+                val item = RunUtils(runMetrics[pos], runList[pos])
                 // Store a reference of the ViewHolder object in the layout.
                 layout.tag = this
                 // Store a reference to the item in the mapView's tag. We use it to get the
                 // coordinate of a location, when setting the map location.
                 mapView!!.tag = item
                 setMapLocation()
-                title.text = item.name
+
+                title.text = "Run ${runMetrics[pos].id}"
             }
         }
     }
@@ -209,27 +222,10 @@ class LiteListDemoActivity(val context: Context) : AppCompatActivity() {
      * name ([java.lang.String]).
      */
 
-    private class Locations(val context: Context, callBack : DBReadyCallback){
-        interface DBReadyCallback {
-             fun dbReady()
-        }
-
-        lateinit var runMetrics: ArrayList<RunMetrics>
-        lateinit var runList: ArrayList<ArrayList<GPS>>
-        init{
-            doAsync {
-                runMetrics = context.contentResolver.getRuns()
-                for(metric in runMetrics){
-                    runList.add(context.contentResolver.getGPSList(metric.id))
-                }
-                uiThread {
-                    callBack.dbReady()
-                }
-            }
-        }
 
 
-    }
+
+
 //    private class NamedLocation internal constructor(val name: String, val location: LatLng)
 //
 //    companion object {
