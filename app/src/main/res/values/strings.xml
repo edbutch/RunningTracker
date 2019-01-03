@@ -6,4 +6,5 @@
     <string name="title_activity_recap">Map</string>
     <string name="linear">Linear</string>
     <string name="grid">Grid</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

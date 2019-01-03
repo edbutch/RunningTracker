@@ -1,18 +1,22 @@
 package com.example.eddy.basetrackerpsyegb.map
 
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
-import com.example.eddy.basetrackerpsyegb.DB.getAllGPSList
 import com.example.eddy.basetrackerpsyegb.DB.getGPSList
+import com.example.eddy.basetrackerpsyegb.R
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Polyline
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.*
 import com.google.maps.android.PolyUtil
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import java.util.Arrays.asList
+import com.google.android.gms.maps.model.PatternItem
+import com.google.android.gms.maps.model.Gap
+
 
 /*
  * Copyright 2013 Google Inc.
@@ -31,46 +35,63 @@ import org.jetbrains.anko.uiThread
  */
 
 
-class PolyDecodeDemoActivity : BaseDemoActivity() {
+class PolyDecodeDemoActivity : BaseDemoActivity(), GoogleMap.OnPolylineClickListener {
 
-    var id : Int = 1
+
+    override fun onPolylineClick(p0: Polyline?) {
+        Log.v("OnPolyLine", ";asd;")
+
+//        for(latlng in p0!!.points){
+//            Log.e("itearating", "lat : ${latlng.latitude} long : ${latlng.longitude}")
+//        }
+        Log.e("onPolylineClick", "P0 ${p0.toString()}")
+    }
+
+    var id: Int = 0
+    lateinit var polyLine: Polyline
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.e("EEEEEEEEEE", "EEEEEEEEEEEE")
 
-        if(intent.extras?.getInt(RunMetrics.ID) != null){
-            id = intent.extras!!.getInt(RunMetrics.ID)
-        }
+        id = intent.getIntExtra(RunMetrics.ID, 0)
+        Log.e("ONCREATE", "ID $id")
+
+
     }
+
+    private lateinit var coordList: ArrayList<LatLng>
 
     protected override fun startDemo() {
         val decodedPath = PolyUtil.decode(LINE)
 
+        map!!.setOnPolylineClickListener(this)
+
+
 
         doAsync {
-            var coordList = arrayListOf<LatLng>()
-            var list = contentResolver.getGPSList(id)
-            for(gps in list){
+            coordList = arrayListOf<LatLng>()
+            val list = contentResolver.getGPSList(id)
+            for (gps in list) {
                 val latitude = gps.latitude
                 val longitude = gps.longitude
-                Log.v("iterating: ", "gps : ${gps.toString()}")
                 val latLong = LatLng(latitude, longitude)
 
-                if(!coordList.contains(latLong)){
+                if (!coordList.contains(latLong)) {
                     coordList.add(latLong)
                 }
             }
 
             uiThread {
-                if(!coordList.isEmpty()){
+                if (!coordList.isEmpty()) {
                     drawLine(coordList)
-                }else{
+                } else {
                     Log.e("emptylist", "corord list is empty")
                 }
 
             }
         }
-
 
 
 //        map?.addPolyline(PolylineOptions().addAll(decodedPath))
@@ -83,11 +104,48 @@ class PolyDecodeDemoActivity : BaseDemoActivity() {
             return
         }
 
-        val mid = points.size / 2
-        val line = map!!.addPolyline(PolylineOptions().width(3f).color(Color.RED))
-        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(points[mid], 24f))
 
-        line.points = points
+        val start = points[0]
+        val end = points[points.size - 1]
+
+        val mid = points.size / 2
+        polyLine = map!!.addPolyline(PolylineOptions().width(3f).color(Color.BLACK))
+        polyLine.isClickable = true
+        map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(points[mid], 18f))
+
+
+
+
+        polyLine.width = 8F
+        polyLine.jointType = JointType.ROUND
+        val gap: PatternItem = Gap(20F)
+
+        val dot = Dot()
+
+
+        val patternList = arrayListOf(gap, dot)
+        polyLine.pattern = patternList
+
+//        polyLine.startCap = CustomCap(BitmapDescriptorFactory.fromResource(android.R.drawable.arrow_down_float))
+//        polyLine.endCap = CustomCap(BitmapDescriptorFactory.fromResource(android.R.drawable.arrow_down_float))
+
+
+        map!!.addMarker(
+            MarkerOptions()
+                .position(start)
+                .title("START")
+
+        )
+        map!!.addMarker(
+            MarkerOptions()
+                .position(end)
+                .title("END")
+        )
+
+
+
+
+        polyLine.points = points
     }
 
     companion object {

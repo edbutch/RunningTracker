@@ -26,7 +26,7 @@ class TrackingActivity : AppCompatActivity() {
 
 
     private fun startTracking() {
-        trackingBtnStart.visibility = INVISIBLE
+//        trackingBtnStart.visibility = INVISIBLE
         EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.START))
         trackingBtnStop.visibility = VISIBLE
     }

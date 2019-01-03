@@ -35,8 +35,6 @@ class AllRunsAdapter(
 
 
     override fun onBindViewHolder(holder: ViewHolder, pos: Int ) {
-
-
         if(pos != HEADER){
             holder?.listId.text = runList.get(pos).id.toString()
             holder?.runDistance.text = runList.get(pos).totalDistance.toString()
@@ -45,22 +43,17 @@ class AllRunsAdapter(
             var endTime = runList.get(pos).endTime
             holder?.runDuration.text = calculateDuration(startTime, endTime)
             holder?.rootView.setOnClickListener { startMapViewActivity(runList.get(pos).id) }
-        }else{
-            holder?.listId.text = "RUN: #"
-            holder?.runDistance.text = "Distance"
-            holder?.startDate.text = "Date"
-            holder?.runDuration.text = "Duration"
         }
 
 
-
+        Log.v("onBindView" , "date width :: ${holder.startDate.width}" )
     }
 
 
     private fun startMapViewActivity(id: Int){
         Log.e("startMapViewActivity", "hello ID $id")
         val intent = Intent(context, PolyDecodeDemoActivity::class.java)
-        intent.extras?.putInt(RunMetrics.ID, id)
+        intent.putExtra(RunMetrics.ID, id)
         context.startActivity(intent)
     }
     private fun calculateDuration(startTime: Long, endTime: Long): String {

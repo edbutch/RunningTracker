@@ -56,7 +56,7 @@ fun ContentResolver.getGPSList(id: Int): ArrayList<GPS> {
         val gps = GPS(pKey = pKey, parentId = parentId, timestamp = time, latitude = lat, longitude = long)
         gpsList.add(gps)
         cursor.moveToNext()
-        Log.v("Resolver: GetGPSList", gps.toString())
+//        Log.v("Resolver: GetGPSList", gps.toString())
     }
     cursor.close()
     return gpsList

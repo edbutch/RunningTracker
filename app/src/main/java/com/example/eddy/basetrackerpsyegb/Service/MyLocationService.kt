@@ -26,7 +26,6 @@ import com.example.eddy.basetrackerpsyegb.Service.ServiceEvent.Control.*
 import org.greenrobot.eventbus.EventBus
 
 
-
 class MyLocationService : Service() {
 
 
@@ -48,10 +47,10 @@ class MyLocationService : Service() {
     private var mLocationManager: LocationManager? = null
 
     //    var timer: Boolean = false
-    private var mLocationListeners = arrayOf(LocationListener(LocationManager.PASSIVE_PROVIDER))
+    private var mLocationListener = (LocationListener(LocationManager.GPS_PROVIDER))
 
     private inner class LocationListener(provider: String) : android.location.LocationListener {
-        var initialized = false
+        public var initialized = false
         internal var currentID: Int = 0
         internal var mLastLocation: Location
 
@@ -78,7 +77,8 @@ class MyLocationService : Service() {
 //            gps.ele = location.altitude
             var timestamp = location.time
 
-            val gps = GPS(pKey = 0, parentId = parentId, longitude = longitude,latitude = latitude,timestamp = timestamp)
+            val gps =
+                GPS(pKey = 0, parentId = parentId, longitude = longitude, latitude = latitude, timestamp = timestamp)
 
 
             putDB(gps, time)
@@ -92,7 +92,6 @@ class MyLocationService : Service() {
 //            }
 
         }
-
 
 
         override fun onProviderDisabled(provider: String) {
@@ -151,8 +150,11 @@ class MyLocationService : Service() {
         }
 
         public fun stopMetrics() {
-            Log.e("STOPMETRICS", "STOPPING METRICS")
+            Log.e("STOPMETRICS", "STOPPING METRICS id =  $currentID")
             var rm = RunMetrics()
+
+            initialized = false
+
 
 
             rm = contentResolver.endMetrics(mLastLocation.time, currentID)
@@ -218,7 +220,7 @@ class MyLocationService : Service() {
                 LocationManager.GPS_PROVIDER,
                 LOCATION_INTERVAL.toLong(),
                 LOCATION_DISTANCE,
-                mLocationListeners[0]
+                mLocationListener
             )
         } catch (ex: java.lang.SecurityException) {
             Log.i(TAG, "fail to request location update, ignore", ex)
@@ -231,30 +233,28 @@ class MyLocationService : Service() {
     private fun stopTracking() {
         if (mLocationManager != null) {
             var caught = false
-            for (i in mLocationListeners.indices) {
-                try {
-                    if (ActivityCompat.checkSelfPermission(
-                            this,
-                            android.Manifest.permission.ACCESS_FINE_LOCATION
-                        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                            this,
-                            android.Manifest.permission.ACCESS_COARSE_LOCATION
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        return
-                    }
-                    doAsync{
-                        mLocationListeners[i].stopMetrics()
-                    }
 
-
-                    mLocationManager!!.removeUpdates(mLocationListeners[i])
-                } catch (ex: Exception) {
-                    Log.i(TAG, "fail to remove location listener, ignore", ex)
-                    true
+            try {
+                if (ActivityCompat.checkSelfPermission(
+                        this,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        this,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    return
                 }
 
+                doAsync {
+                    mLocationListener.stopMetrics()
+                }
+                mLocationManager!!.removeUpdates(mLocationListener)
+            } catch (ex: Exception) {
+                Log.i(TAG, "fail to remove location listener, ignore", ex)
+                true
             }
+
             if (!caught) {
                 mLocationManager = null
 
