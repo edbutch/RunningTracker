@@ -1,5 +1,6 @@
 package com.example.eddy.basetrackerpsyegb
 import android.content.Context
+import android.content.Intent
 
 
 /*
@@ -30,6 +31,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -38,7 +40,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
+import com.example.eddy.basetrackerpsyegb.map.PolyDecodeDemoActivity
 import com.google.android.gms.maps.model.LatLng
+import org.w3c.dom.Text
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * This shows to include a map in lite mode in a ListView.
@@ -123,7 +130,7 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.lite_list_demo_row, parent, false)
+                    .inflate(R.layout.allruns_row_element, parent, false)
             )
         }
 
@@ -157,10 +164,16 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
             var mapView: MapView? = null
             var title: TextView
             var map: GoogleMap? = null
+            var date : TextView
+            var distance : TextView
+            var duration : TextView
 
             init {
+                distance = layout.findViewById(R.id.lite_listrow_distance)
+                duration = layout.findViewById(R.id.lite_listrow_duration)
+                date = layout.findViewById(R.id.lite_listrow_date)
                 mapView = layout.findViewById(R.id.lite_listrow_map)
-                title = layout.findViewById(R.id.lite_listrow_text)
+                title = layout.findViewById(R.id.lite_listrow_title)
                 if (mapView != null) {
                     // Initialise the MapView
                     mapView!!.onCreate(null)
@@ -200,6 +213,16 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
 
                 // Set the map type back to normal.
                 map!!.mapType = GoogleMap.MAP_TYPE_NORMAL
+                map!!.setOnMapClickListener {startMapViewActivity(data.metrics.id)
+                }
+            }
+
+
+            private fun startMapViewActivity(id: Int){
+                Log.e("startMapViewActivity", "hello ID $id")
+                val intent = Intent(context, PolyDecodeDemoActivity::class.java)
+                intent.putExtra(RunMetrics.ID, id)
+                context.startActivity(intent)
             }
 
             internal fun bindView(pos: Int) {
@@ -213,6 +236,12 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
                 setMapLocation()
 
                 title.text = "Run ${runMetrics[pos].id}"
+                date.text = getDate(runMetrics[pos].startTime)
+                duration.text = calculateDuration(startTime = runMetrics[pos].startTime , endTime = runMetrics[pos].endTime)
+                //TODO DISTANCE
+                val dist = runMetrics[pos].totalDistance / 100
+                distance.text = (dist).toString()
+
             }
         }
     }
@@ -223,6 +252,25 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
      */
 
 
+
+    private fun getDate(time: Long): String? {
+        val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+        val date = Date(time)
+        return format.format(date)
+    }
+
+    private fun calculateDuration(startTime: Long, endTime: Long): String {
+
+        var durMillis = (endTime - startTime)
+
+        val hms = String.format(
+            "%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(durMillis),
+            TimeUnit.MILLISECONDS.toMinutes(durMillis) % TimeUnit.HOURS.toMinutes(1),
+            TimeUnit.MILLISECONDS.toSeconds(durMillis) % TimeUnit.MINUTES.toSeconds(1)
+        )
+
+        return hms
+    }
 
 
 

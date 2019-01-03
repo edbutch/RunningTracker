@@ -16,8 +16,6 @@ class AllJourneys(val context: Context, callBack: DBReadyCallback) {
             runList: ArrayList<ArrayList<GPS>>
         )
     }
-
-
     init {
         doAsync {
             val runMetrics = context.contentResolver.getRuns()
