@@ -30,6 +30,6 @@ interface RunMetricsDAO {
 
 
     @Query("UPDATE RunMetrics SET totalDistance = totalDistance + :distance WHERE id == :id")
-    fun updateDistance(distance: Long, id: Int) : Int
+    fun updateDistance(distance: Float, id: Int) : Int
 
 }

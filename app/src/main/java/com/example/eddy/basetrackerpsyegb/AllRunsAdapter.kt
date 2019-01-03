@@ -2,6 +2,8 @@ package com.example.eddy.basetrackerpsyegb
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -27,6 +29,7 @@ class AllRunsAdapter(
     val HEADER = 0
     init{
         runList.add(RunMetrics())
+
         runList.sortByDescending { it.id }
         runList.reverse()
     }
@@ -43,6 +46,23 @@ class AllRunsAdapter(
             var endTime = runList.get(pos).endTime
             holder?.runDuration.text = calculateDuration(startTime, endTime)
             holder?.rootView.setOnClickListener { startMapViewActivity(runList.get(pos).id) }
+        }else{
+
+//            val icon : Drawable? = context.getDrawable(android.R.drawable.arrow_down_float)
+//            icon?.setBounds(0,0,((icon.intrinsicWidth * .5).toInt()) , ((icon.intrinsicHeight * .5).toInt()))
+
+//            holder?.listId.setCompoundDrawablesWithIntrinsicBounds(icon,icon,icon,icon)
+//            holder?.runDistance.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.arrow_down_float, 0, 0, 0)
+//            holder?.startDate.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.arrow_down_float, 0, 0, 0)
+//            holder?.runDuration.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.arrow_down_float, 0, 0, 0)
+
+
+//            holder?.listId?.setOnClickListener{sortRunsByID()}
+//            holder?.runDistance?.setOnClickListener{sortRunsByDistance()}
+//            holder?.startDate?.setOnClickListener{sortRunsByDate()}
+//            holder?.runDuration?.setOnClickListener{sortRunsByDuration()}
+            holder?.rootView.setBackgroundColor(Color.GREEN)
+
         }
 
 
@@ -69,6 +89,10 @@ class AllRunsAdapter(
         return hms
     }
 
+
+    private fun compareDur(startTime: Long, endTime: Long): Long{
+        return endTime - startTime
+    }
     private fun getDate(time: Long): String? {
         val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val date = Date(time)
@@ -103,6 +127,28 @@ class AllRunsAdapter(
         this.runList.sortByDescending { it.startTime }
         notifyDataSetChanged()
     }
+
+    fun sortRunsByID(){
+        this.runList.sortByDescending { it.id }
+        notifyDataSetChanged()
+    }
+
+    fun sortRunsByDate(){
+        this.runList.sortByDescending { it.startTime }
+        notifyDataSetChanged()
+    }
+
+    fun sortRunsByDistance(){
+        this.runList.sortByDescending { it.totalDistance }
+        notifyDataSetChanged()
+    }
+
+
+    fun sortRunsByDuration(){
+        this.runList.sortByDescending { calculateDuration(it.startTime,it.endTime)}
+        notifyDataSetChanged()
+    }
+
 
 
 

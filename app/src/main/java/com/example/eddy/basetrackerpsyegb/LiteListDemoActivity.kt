@@ -1,5 +1,6 @@
-
+package com.example.eddy.basetrackerpsyegb
 import android.R.menu
+import android.content.Context
 
 
 /*
@@ -17,8 +18,6 @@ import android.R.menu
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -39,14 +38,20 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.example.eddy.basetrackerpsyegb.DB.GPS
+import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
+import com.example.eddy.basetrackerpsyegb.DB.getGPSList
+import com.example.eddy.basetrackerpsyegb.DB.getRuns
 import com.example.eddy.basetrackerpsyegb.R
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 /**
  * This shows to include a map in lite mode in a ListView.
  * Note the use of the view holder pattern with the
  * [com.google.android.gms.maps.OnMapReadyCallback].
  */
-class LiteListDemoActivity : AppCompatActivity() {
+class LiteListDemoActivity(val context: Context) : AppCompatActivity() {
 
     private var mRecyclerView: RecyclerView? = null
 
@@ -105,8 +110,10 @@ class LiteListDemoActivity : AppCompatActivity() {
      * that is programatically initialised in
      * [.]
      */
-    private inner class MapAdapter (private val namedLocations: Array<NamedLocation>) :
+    private inner class MapAdapter (private val runMetrics: ArrayList<RunMetrics>, private val runList : ArrayList<ArrayList<GPS>>) :
         RecyclerView.Adapter<MapAdapter.ViewHolder>() {
+
+
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
@@ -127,7 +134,7 @@ class LiteListDemoActivity : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            return namedLocations.size
+            return runMetrics.size
         }
 
         /**
@@ -168,10 +175,13 @@ class LiteListDemoActivity : AppCompatActivity() {
              * [com.google.android.gms.maps.GoogleMap].
              * Adds a marker and centers the camera on the NamedLocation with the normal map type.
              */
+
+            /*TODO*/
             private fun setMapLocation() {
                 if (map == null) return
 
-                val data = mapView!!.tag as NamedLocation ?: return
+                val data = mapView!!.tag as RunMetrics ?: return
+
 
                 // Add a marker for this item and set the camera
                 map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(data.location, 13f))
@@ -182,7 +192,7 @@ class LiteListDemoActivity : AppCompatActivity() {
             }
 
             internal fun bindView(pos: Int) {
-                val item = namedLocations[pos]
+                val item = runMetrics[pos]
                 // Store a reference of the ViewHolder object in the layout.
                 layout.tag = this
                 // Store a reference to the item in the mapView's tag. We use it to get the
@@ -198,49 +208,71 @@ class LiteListDemoActivity : AppCompatActivity() {
      * Location represented by a position ([com.google.android.gms.maps.model.LatLng] and a
      * name ([java.lang.String]).
      */
-    private class NamedLocation internal constructor(val name: String, val location: LatLng)
 
-    companion object {
+    private class Locations(val context: Context, callBack : DBReadyCallback){
+        interface DBReadyCallback {
+             fun dbReady()
+        }
 
-        /**
-         * A list of locations to show in this ListView.
-         */
-        private val LIST_LOCATIONS = arrayOf(
-            NamedLocation("Cape Town", LatLng(-33.920455, 18.466941)),
-            NamedLocation("Beijing", LatLng(39.937795, 116.387224)),
-            NamedLocation("Bern", LatLng(46.948020, 7.448206)),
-            NamedLocation("Breda", LatLng(51.589256, 4.774396)),
-            NamedLocation("Brussels", LatLng(50.854509, 4.376678)),
-            NamedLocation("Copenhagen", LatLng(55.679423, 12.577114)),
-            NamedLocation("Hannover", LatLng(52.372026, 9.735672)),
-            NamedLocation("Helsinki", LatLng(60.169653, 24.939480)),
-            NamedLocation("Hong Kong", LatLng(22.325862, 114.165532)),
-            NamedLocation("Istanbul", LatLng(41.034435, 28.977556)),
-            NamedLocation("Johannesburg", LatLng(-26.202886, 28.039753)),
-            NamedLocation("Lisbon", LatLng(38.707163, -9.135517)),
-            NamedLocation("London", LatLng(51.500208, -0.126729)),
-            NamedLocation("Madrid", LatLng(40.420006, -3.709924)),
-            NamedLocation("Mexico City", LatLng(19.427050, -99.127571)),
-            NamedLocation("Moscow", LatLng(55.750449, 37.621136)),
-            NamedLocation("New York", LatLng(40.750580, -73.993584)),
-            NamedLocation("Oslo", LatLng(59.910761, 10.749092)),
-            NamedLocation("Paris", LatLng(48.859972, 2.340260)),
-            NamedLocation("Prague", LatLng(50.087811, 14.420460)),
-            NamedLocation("Rio de Janeiro", LatLng(-22.90187, -43.232437)),
-            NamedLocation("Rome", LatLng(41.889998, 12.500162)),
-            NamedLocation("Sao Paolo", LatLng(-22.863878, -43.244097)),
-            NamedLocation("Seoul", LatLng(37.560908, 126.987705)),
-            NamedLocation("Stockholm", LatLng(59.330650, 18.067360)),
-            NamedLocation("Sydney", LatLng(-33.873651, 151.2068896)),
-            NamedLocation("Taipei", LatLng(25.022112, 121.478019)),
-            NamedLocation("Tokyo", LatLng(35.670267, 139.769955)),
-            NamedLocation("Tulsa Oklahoma", LatLng(36.149777, -95.993398)),
-            NamedLocation("Vaduz", LatLng(47.141076, 9.521482)),
-            NamedLocation("Vienna", LatLng(48.209206, 16.372778)),
-            NamedLocation("Warsaw", LatLng(52.235474, 21.004057)),
-            NamedLocation("Wellington", LatLng(-41.286480, 174.776217)),
-            NamedLocation("Winnipeg", LatLng(49.875832, -97.150726))
-        )
+        lateinit var runMetrics: ArrayList<RunMetrics>
+        lateinit var runList: ArrayList<ArrayList<GPS>>
+        init{
+            doAsync {
+                runMetrics = context.contentResolver.getRuns()
+                for(metric in runMetrics){
+                    runList.add(context.contentResolver.getGPSList(metric.id))
+                }
+                uiThread {
+                    callBack.dbReady()
+                }
+            }
+        }
+
+
     }
+//    private class NamedLocation internal constructor(val name: String, val location: LatLng)
+//
+//    companion object {
+//
+//        /**
+//         * A list of locations to show in this ListView.
+//         */
+//        private val LIST_LOCATIONS = arrayOf(
+//            NamedLocation("Cape Town", LatLng(-33.920455, 18.466941)),
+//            NamedLocation("Beijing", LatLng(39.937795, 116.387224)),
+//            NamedLocation("Bern", LatLng(46.948020, 7.448206)),
+//            NamedLocation("Breda", LatLng(51.589256, 4.774396)),
+//            NamedLocation("Brussels", LatLng(50.854509, 4.376678)),
+//            NamedLocation("Copenhagen", LatLng(55.679423, 12.577114)),
+//            NamedLocation("Hannover", LatLng(52.372026, 9.735672)),
+//            NamedLocation("Helsinki", LatLng(60.169653, 24.939480)),
+//            NamedLocation("Hong Kong", LatLng(22.325862, 114.165532)),
+//            NamedLocation("Istanbul", LatLng(41.034435, 28.977556)),
+//            NamedLocation("Johannesburg", LatLng(-26.202886, 28.039753)),
+//            NamedLocation("Lisbon", LatLng(38.707163, -9.135517)),
+//            NamedLocation("London", LatLng(51.500208, -0.126729)),
+//            NamedLocation("Madrid", LatLng(40.420006, -3.709924)),
+//            NamedLocation("Mexico City", LatLng(19.427050, -99.127571)),
+//            NamedLocation("Moscow", LatLng(55.750449, 37.621136)),
+//            NamedLocation("New York", LatLng(40.750580, -73.993584)),
+//            NamedLocation("Oslo", LatLng(59.910761, 10.749092)),
+//            NamedLocation("Paris", LatLng(48.859972, 2.340260)),
+//            NamedLocation("Prague", LatLng(50.087811, 14.420460)),
+//            NamedLocation("Rio de Janeiro", LatLng(-22.90187, -43.232437)),
+//            NamedLocation("Rome", LatLng(41.889998, 12.500162)),
+//            NamedLocation("Sao Paolo", LatLng(-22.863878, -43.244097)),
+//            NamedLocation("Seoul", LatLng(37.560908, 126.987705)),
+//            NamedLocation("Stockholm", LatLng(59.330650, 18.067360)),
+//            NamedLocation("Sydney", LatLng(-33.873651, 151.2068896)),
+//            NamedLocation("Taipei", LatLng(25.022112, 121.478019)),
+//            NamedLocation("Tokyo", LatLng(35.670267, 139.769955)),
+//            NamedLocation("Tulsa Oklahoma", LatLng(36.149777, -95.993398)),
+//            NamedLocation("Vaduz", LatLng(47.141076, 9.521482)),
+//            NamedLocation("Vienna", LatLng(48.209206, 16.372778)),
+//            NamedLocation("Warsaw", LatLng(52.235474, 21.004057)),
+//            NamedLocation("Wellington", LatLng(-41.286480, 174.776217)),
+//            NamedLocation("Winnipeg", LatLng(49.875832, -97.150726))
+//        )
+//    }
 
 }

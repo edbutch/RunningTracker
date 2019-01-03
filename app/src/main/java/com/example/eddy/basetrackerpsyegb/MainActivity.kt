@@ -26,11 +26,16 @@ class MainActivity : AppCompatActivity() {
         btnViewMap.setOnClickListener { viewMap() }
 
         btnViewTrips.setOnClickListener { viewAllRuns() }
+        btnSettings.setOnClickListener{startLiteList()}
 
 
 
 
 
+    }
+
+    private fun startLiteList() {
+        startActivity(Intent(this, LiteListDemoActivity::class.java))
     }
 
     private fun viewAllRuns() {

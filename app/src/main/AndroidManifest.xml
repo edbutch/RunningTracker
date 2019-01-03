@@ -40,6 +40,9 @@
         </activity>
         <activity android:name=".AllRunsActivity">
         </activity>
+
+        <activity android:name=".LiteListDemoActivity">
+        </activity>
         <activity android:name=".map.PolyDecodeDemoActivity"/>
         <activity android:name=".map.PolySimplifyDemoActivity"/>
     </application>

@@ -99,7 +99,7 @@ fun ContentResolver.endMetrics(time: Long, id: Int): RunMetrics {
 }
 
 
-fun ContentResolver.updateRunDistance(distance: Long, id: Int){
+fun ContentResolver.updateRunDistance(distance: Float, id: Int){
     val cv = ContentValues()
     cv.put(RunMetrics.ID, id)
     cv.put(RunMetrics.TOTAL_DISTANCE, distance)
@@ -125,7 +125,7 @@ fun ContentResolver.getAllRuns(): ArrayList<RunMetrics> {
         var id = cursor.getInt(cursor.getColumnIndex(ID))
         var start = cursor.getLong(cursor.getColumnIndex(START_TIME))
         var end = cursor.getLong(cursor.getColumnIndex(END_TIME))
-        var dist = cursor.getLong(cursor.getColumnIndex(TOTAL_DISTANCE))
+        var dist = cursor.getFloat(cursor.getColumnIndex(TOTAL_DISTANCE))
 
         val rm = RunMetrics(id = id, startTime = start, endTime = end, totalDistance = dist)
 //        gps.ele = cursor.getDouble(cursor.getColumnIndex(GPS.ELE))

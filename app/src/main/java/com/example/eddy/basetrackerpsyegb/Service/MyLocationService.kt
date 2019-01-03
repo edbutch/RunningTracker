@@ -69,19 +69,31 @@ class MyLocationService : Service() {
             var time = location.time - mLastLocation.time
 
 
+            var distance = location.distanceTo(mLastLocation)
+
+
             mLastLocation.set(location)
 
             var parentId = currentID
             var latitude = location.latitude
             var longitude = location.longitude
-//            gps.ele = location.altitude
+            var ele = location.altitude
             var timestamp = location.time
+            var speed = location.speed
 
             val gps =
-                GPS(pKey = 0, parentId = parentId, longitude = longitude, latitude = latitude, timestamp = timestamp)
+                GPS(
+                    pKey = 0,
+                    parentId = parentId,
+                    longitude = longitude,
+                    latitude = latitude,
+                    timestamp = timestamp,
+                    elevation = ele,
+                    speed = speed
+                )
 
 
-            putDB(gps, time)
+            putDB(gps, time, distance)
 
 
 //            if(!timer){
@@ -92,6 +104,8 @@ class MyLocationService : Service() {
 //            }
 
         }
+
+
 
 
         override fun onProviderDisabled(provider: String) {
@@ -109,23 +123,23 @@ class MyLocationService : Service() {
         }
 
 
-        private fun putDB(gps: GPS, time: Long) {
+        private fun putDB(gps: GPS, time: Long, distance: Float) {
             doAsync {
                 if (initialized) {
                     addGPS(gps)
-                    updateTime(gps.parentId, time)
+                    updateDistance(gps.parentId, distance)
                 } else {
                     startMetrics(gps)
                     initialized = true
-                    updateTime(gps.parentId, time)
+                    updateDistance(gps.parentId, distance)
 
                 }
 
             }
         }
 
-        private fun updateTime(parentId: Int, time: Long) {
-            contentResolver.updateRunDistance(time, parentId)
+        private fun updateDistance(parentId: Int, distance: Float) {
+            contentResolver.updateRunDistance(distance, parentId)
         }
 
 

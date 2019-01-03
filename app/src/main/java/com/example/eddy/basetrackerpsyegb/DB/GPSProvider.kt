@@ -108,9 +108,10 @@ class GPSProvider : ContentProvider() {
 
     private fun updateDistance(values: ContentValues?): Int {
 
-        var distance = values?.get(RunMetrics.TOTAL_DISTANCE) as Long
+        var distance = values?.get(RunMetrics.TOTAL_DISTANCE) as Float
         var id = values[RunMetrics.ID] as Int
-        Log.v("UpdateDistance, ", "distance = $distance values = $values")
+        Log.v("UpdateDistance, ", "distance = $distance")
+        Log.v("UpdateDistance, ", "values = $values")
         return database.metricsDao().updateDistance(distance, id)
 
     }
@@ -130,9 +131,11 @@ class GPSProvider : ContentProvider() {
         var time = values[TIME] as Long
         var lat = values[LATITUDE] as Double
         var long = values[LONGITUDE] as Double
-//        gps.ele = values[GPS.ELE] as Double
+        var ele = values[GPS.ELE] as Double
+        var speed = values[GPS.SPEED] as Float
 
-        val gps = GPS(pkey, parentId, time, lat, long)
+
+        val gps = GPS(pkey, parentId, time, lat, long, ele, speed)
         val count = database.gpsDao().updateGPS(gps)
         return count
     }
@@ -147,8 +150,9 @@ class GPSProvider : ContentProvider() {
                 var time = values[TIME] as Long
                 var lat = values[LATITUDE] as Double
                 var long = values[LONGITUDE] as Double
-//                gps.ele = values[GPS.ELE] as Double
-                val gps = GPS(pKey, parentId, time, lat, long)
+                var ele = values[GPS.ELE] as Double
+                var speed = values[GPS.SPEED] as Float
+                val gps = GPS(pKey, parentId, time, lat, long, ele, speed)
                 Log.e("INSERT", gps.toString())
                 val retVal = database.gpsDao().insertGPS(gps)
                 return ContentUris.withAppendedId(uri, retVal)

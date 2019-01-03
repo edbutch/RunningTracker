@@ -6,10 +6,12 @@ import android.content.ContentUris
 import android.content.ContentValues
 import android.net.Uri
 import android.util.Log
+import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.ELE
 import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.PKEY
 import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.LONGITUDE
 import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.LATITUDE
 import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.PARENTID
+import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.SPEED
 import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.TIME
 
 const val GPS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.DB.contentprovider/gpsdb"
@@ -22,8 +24,8 @@ fun ContentResolver.addGPS(gps: GPS): Int {
     cv.put(LONGITUDE, gps.longitude)
     cv.put(LATITUDE, gps.latitude)
 
-//    cv.put(GPS.ELE, gps.ele)
-
+    cv.put(GPS.ELE, gps.elevation)
+    cv.put(GPS.SPEED, gps.speed)
 
     val uriRet = insert(Uri.parse(GPS_AUTHORITY), cv)
     val gpsID = ContentUris.parseId(uriRet)
@@ -52,8 +54,10 @@ fun ContentResolver.getGPSList(id: Int): ArrayList<GPS> {
         var time = cursor.getLong(cursor.getColumnIndex(TIME))
         var lat = cursor.getDouble(cursor.getColumnIndex(LATITUDE))
         var long = cursor.getDouble(cursor.getColumnIndex(LONGITUDE))
-//        gps.ele = cursor.getDouble(cursor.getColumnIndex(GPS.ELE))
-        val gps = GPS(pKey = pKey, parentId = parentId, timestamp = time, latitude = lat, longitude = long)
+        var ele = cursor.getDouble(cursor.getColumnIndex(GPS.ELE))
+        var speed = cursor.getFloat(cursor.getColumnIndex(GPS.SPEED))
+
+        val gps = GPS(pKey = pKey, parentId = parentId, timestamp = time, latitude = lat, longitude = long,elevation = ele, speed = speed)
         gpsList.add(gps)
         cursor.moveToNext()
 //        Log.v("Resolver: GetGPSList", gps.toString())
@@ -83,7 +87,10 @@ fun ContentResolver.getAllGPSList(): ArrayList<GPS> {
         var time = cursor.getLong(cursor.getColumnIndex(TIME))
         var lat = cursor.getDouble(cursor.getColumnIndex(LATITUDE))
         var long = cursor.getDouble(cursor.getColumnIndex(LONGITUDE))
-        val gps = GPS(pKey = pKey, parentId = parentId, timestamp = time, latitude = lat, longitude = long)
+        var ele = cursor.getDouble(cursor.getColumnIndex(ELE))
+        var speed = cursor.getFloat(cursor.getColumnIndex(SPEED))
+
+        val gps = GPS(pKey = pKey, parentId = parentId, timestamp = time, latitude = lat, longitude = long, elevation = ele, speed = speed)
 
 //        gps.ele = cursor.getDouble(cursor.getColumnIndex(GPS.ELE))
         gpsList.add(gps)
