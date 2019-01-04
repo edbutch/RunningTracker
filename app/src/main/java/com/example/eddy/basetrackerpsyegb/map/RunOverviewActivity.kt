@@ -1,6 +1,5 @@
 package com.example.eddy.basetrackerpsyegb.map
 
-import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,7 +10,8 @@ import com.example.eddy.basetrackerpsyegb.DB.getGPSList
 import com.example.eddy.basetrackerpsyegb.DB.getRun
 import com.example.eddy.basetrackerpsyegb.utils.ElevationChartUtils
 import com.example.eddy.basetrackerpsyegb.R
-import com.google.android.gms.maps.CameraUpdateFactory
+import com.example.eddy.basetrackerpsyegb.utils.MapUtils
+import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
@@ -47,7 +47,13 @@ class RunOverviewActivity : AppCompatActivity() {
     }
 
 
-
+    @UiThread
+    private fun setOverviewData(duration: String, distance: String, avgSpeed: String, calories: String) {
+        overview_duration.text = duration
+        overview_distance.text = distance
+        overview_avg_speed.text = avgSpeed
+        overview_calories.text = calories
+    }
 
     private fun getRunDataAsync() {
         doAsync {
@@ -65,59 +71,30 @@ class RunOverviewActivity : AppCompatActivity() {
                 }
             }
             uiThread {
-                ElevationChartUtils.initializeChart(elechart, lineData)
+                ElevationChartUtils.initializeChart(
+                    elechart,
+                    lineData,
+                    backgroundColor = getColor(R.color.colorAccent),
+                    holeColor = getColor(R.color.colorPrimaryLight)
+                )
                 if (points.isNotEmpty()) {
-                    drawLine(points)
+                    polyLine = MapUtils.drawPolyLine(map, points)
                 }
+
+                val time = RunUtils.getDuration(runMetrics.endTime, runMetrics.startTime)
+                val speed = "Average Speed: ${RunUtils.getAverageSpeed(gpsList).toString()}m/s"
+                val distance = "Distance:  ${runMetrics.totalDistance}M"
+                setOverviewData(
+                    duration = time,
+                    distance = distance,
+                    avgSpeed = speed,
+                    calories = "No Calories"
+                )
 
             }
 
         }
     }
 
-
-
-    @UiThread
-    private fun drawLine(points: ArrayList<LatLng>) {
-        val start = points[0]
-        val end = points[points.size - 1]
-        val mid = (points.size / 2)
-
-        polyLine = map!!.addPolyline(PolylineOptions().width(3f).color(Color.BLACK))
-        polyLine.isClickable = true
-        map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(points[mid], 18f))
-
-
-
-
-
-        polyLine.width = 8F
-        polyLine.jointType = JointType.ROUND
-        val gap: PatternItem = Gap(20F)
-
-        val dot = Dot()
-
-
-        val patternList = arrayListOf(gap, dot)
-        polyLine.pattern = patternList
-
-//        polyLine.startCap = CustomCap(BitmapDescriptorFactory.fromResource(android.R.drawable.arrow_down_float))
-//        polyLine.endCap = CustomCap(BitmapDescriptorFactory.fromResource(android.R.drawable.arrow_down_float))
-
-
-        map!!.addMarker(
-            MarkerOptions()
-                .position(start)
-                .title("START")
-
-        )
-        map!!.addMarker(
-            MarkerOptions()
-                .position(end)
-                .title("END")
-        )
-        polyLine.points = points
-
-    }
 
 }

@@ -15,9 +15,9 @@ class ElevationChartUtils {
     companion object {
 
         const val TAG = "ElevationChartUtils"
-        fun initializeChart(elechart: LineChart, lineData: LineData) {
+        fun initializeChart(elechart: LineChart, lineData: LineData, holeColor: Int, backgroundColor: Int) {
             Log.e(TAG, "Init chart")
-            (lineData.getDataSetByIndex(0) as LineDataSet).circleHoleColor = Color.BLUE
+            (lineData.getDataSetByIndex(0) as LineDataSet).circleHoleColor = holeColor
 
             // no description text
             elechart.description.isEnabled = true
@@ -37,7 +37,7 @@ class ElevationChartUtils {
 
             // if disabled, scaling can be done on x- and y-axis separately
             elechart.setPinchZoom(false)
-            elechart.setBackgroundColor(Color.CYAN)
+            elechart.setBackgroundColor(backgroundColor)
 
 
             // set custom chart offsets (automatic offset calculation is hereby disabled)
