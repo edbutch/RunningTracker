@@ -40,10 +40,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
-import com.example.eddy.basetrackerpsyegb.map.PolyDecodeDemoActivity
 import com.example.eddy.basetrackerpsyegb.map.RunOverviewActivity
+import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import com.google.android.gms.maps.model.LatLng
-import org.w3c.dom.Text
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit

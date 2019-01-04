@@ -13,9 +13,9 @@ import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import com.example.eddy.basetrackerpsyegb.Service.MyLocationService
 import com.example.eddy.basetrackerpsyegb.Service.ServiceEvent
+import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.activity_tracking.*

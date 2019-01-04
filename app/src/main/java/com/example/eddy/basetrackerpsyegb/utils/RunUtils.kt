@@ -1,4 +1,4 @@
-package com.example.eddy.basetrackerpsyegb
+package com.example.eddy.basetrackerpsyegb.utils
 
 import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics

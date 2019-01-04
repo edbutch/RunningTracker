@@ -9,6 +9,7 @@ import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import com.example.eddy.basetrackerpsyegb.DB.getGPSList
 import com.example.eddy.basetrackerpsyegb.DB.getRun
+import com.example.eddy.basetrackerpsyegb.utils.ElevationChartUtils
 import com.example.eddy.basetrackerpsyegb.R
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -40,15 +41,12 @@ class RunOverviewActivity : AppCompatActivity() {
             if (intent.hasExtra(RunMetrics.ID)) {
                 id = intent.getIntExtra(RunMetrics.ID, 0)
                 getRunDataAsync()
-                initializeChart()
             }
 
         }
     }
 
-    private fun initializeChart() {
-        
-    }
+
 
 
     private fun getRunDataAsync() {
@@ -56,6 +54,8 @@ class RunOverviewActivity : AppCompatActivity() {
             val points = arrayListOf<LatLng>()
             gpsList = contentResolver.getGPSList(id)
             runMetrics = contentResolver.getRun(id)
+            val lineData = ElevationChartUtils.getChartLineData(gpsList)
+
             for (gps in gpsList) {
                 val lat = gps.latitude
                 val long = gps.longitude
@@ -65,13 +65,17 @@ class RunOverviewActivity : AppCompatActivity() {
                 }
             }
             uiThread {
+                ElevationChartUtils.initializeChart(elechart, lineData)
                 if (points.isNotEmpty()) {
                     drawLine(points)
                 }
+
             }
 
         }
     }
+
+
 
     @UiThread
     private fun drawLine(points: ArrayList<LatLng>) {
@@ -82,6 +86,7 @@ class RunOverviewActivity : AppCompatActivity() {
         polyLine = map!!.addPolyline(PolylineOptions().width(3f).color(Color.BLACK))
         polyLine.isClickable = true
         map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(points[mid], 18f))
+
 
 
 
