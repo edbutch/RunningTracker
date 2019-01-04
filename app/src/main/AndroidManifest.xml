@@ -3,7 +3,7 @@
           package="com.example.eddy.basetrackerpsyegb">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
             android:allowBackup="false"
@@ -27,8 +27,6 @@
             </intent-filter>
         </activity>
 
-
-
         <service android:name=".Service.MyLocationService"/>
 
         <provider
@@ -42,11 +40,12 @@
         </activity>
         <activity android:name=".AllRunsActivity">
         </activity>
-
         <activity android:name=".LiteListDemoActivity">
         </activity>
         <activity android:name=".map.PolyDecodeDemoActivity"/>
         <activity android:name=".map.PolySimplifyDemoActivity"/>
+        <activity android:name=".map.RunOverviewActivity">
+        </activity>
     </application>
 
 </manifest>

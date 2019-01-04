@@ -41,6 +41,7 @@ import android.widget.TextView
 import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import com.example.eddy.basetrackerpsyegb.map.PolyDecodeDemoActivity
+import com.example.eddy.basetrackerpsyegb.map.RunOverviewActivity
 import com.google.android.gms.maps.model.LatLng
 import org.w3c.dom.Text
 import java.text.SimpleDateFormat
@@ -222,7 +223,7 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
 
             private fun startMapViewActivity(id: Int){
                 Log.e("startMapViewActivity", "hello ID $id")
-                val intent = Intent(context, PolyDecodeDemoActivity::class.java)
+                val intent = Intent(context, RunOverviewActivity::class.java)
                 intent.putExtra(RunMetrics.ID, id)
                 context.startActivity(intent)
             }

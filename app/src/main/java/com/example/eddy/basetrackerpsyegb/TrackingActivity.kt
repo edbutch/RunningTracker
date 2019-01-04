@@ -25,12 +25,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.concurrent.scheduleAtFixedRate
 import com.example.eddy.basetrackerpsyegb.Service.RECEIVER as BROADCAST
 
-class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
-    override fun onMapReady(p0: GoogleMap?) {
-        Log.e("Asd", "asjkdkasdkasdk")
-        this.map = p0
-        map?.uiSettings?.isMyLocationButtonEnabled = true
-    }
+class TrackingActivity : AppCompatActivity() {
+
 
 
     var map: GoogleMap? = null
@@ -46,8 +42,14 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
         trackingBtnStart.setOnClickListener { startTracking() }
         trackingBtnStop.setOnClickListener { stopTracking() }
 
-        (trackView as SupportMapFragment).getMapAsync(this)
+        (trackView as SupportMapFragment).getMapAsync{
+            Log.e("Asd", "asjkdkasdkasdk")
+            this.map = it
+            map?.uiSettings?.isMyLocationButtonEnabled = true
+        }
     }
+
+
 
     private fun startTracking() {
         trackingBtnStart.visibility = INVISIBLE
