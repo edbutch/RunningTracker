@@ -18,19 +18,20 @@
             android:text="@string/tracking_elaspsed_initial"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/trackingTxtElaspedTime" android:layout_marginTop="20dp"
+            android:id="@+id/trackingTxtElaspedTime" android:layout_marginTop="4dp"
             app:layout_constraintTop_toBottomOf="@+id/trackingTxtTitle" app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp" app:layout_constraintHorizontal_bias="1.0"/>
+            android:layout_marginStart="8dp" app:layout_constraintHorizontal_bias="0.0"/>
     <TextView
             android:text="@string/tracking_distance_initial"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/trackingTxtTotalDistance"
-            android:layout_marginTop="92dp"
+            android:layout_marginTop="32dp"
             app:layout_constraintTop_toBottomOf="@+id/trackingTxtElaspedTime"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"/>
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+            app:layout_constraintHorizontal_bias="1.0"/>
     <Button
             android:text="Start"
             android:layout_width="wrap_content"
@@ -58,14 +59,15 @@
             app:layout_constraintTop_toBottomOf="@+id/trackingTxtElaspedTime" android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/trackingTxtTotalDistance"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp">
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+            app:layout_constraintHorizontal_bias="1.0" app:layout_constraintVertical_bias="0.0">
         <TextView
                 android:text="TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:gravity="start|left"
-                android:id="@+id/trackingLat" />
+                android:id="@+id/trackingLat"/>
         <TextView
                 android:text="TextView"
                 android:gravity="end|right"
@@ -80,8 +82,8 @@
               android:name="com.google.android.gms.maps.SupportMapFragment"
               android:layout_marginTop="44dp"
               map:layout_constraintTop_toBottomOf="@+id/trackingTxtTotalDistance" android:layout_marginBottom="8dp"
-              map:layout_constraintBottom_toBottomOf="parent" map:layout_constraintVertical_bias="0.052"
+              map:layout_constraintBottom_toBottomOf="parent" map:layout_constraintVertical_bias="0.0"
               android:layout_marginEnd="8dp" map:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="8dp"
-              map:layout_constraintStart_toStartOf="parent"/>
+              map:layout_constraintStart_toStartOf="parent" map:layout_constraintHorizontal_bias="1.0"/>
 
 </android.support.constraint.ConstraintLayout>

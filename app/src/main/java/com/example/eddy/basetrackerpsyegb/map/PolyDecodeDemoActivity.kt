@@ -32,6 +32,14 @@ import com.google.android.gms.maps.model.Gap
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ *
+ * G53MDP PSYEGB
+ * This activity has been converted to Kotlin and modified by me so I can take advantage of the polylineclicklistener
+ *
+ * It initially statically added in places, as they all do, but i used it to add lines to my own journeys as I could get the DB data to re create it all
+ *
+ * It was exactly how I intended to do it so I didn't see the need to re write
  */
 
 
@@ -39,11 +47,6 @@ class PolyDecodeDemoActivity : BaseDemoActivity(), GoogleMap.OnPolylineClickList
 
 
     override fun onPolylineClick(p0: Polyline?) {
-        Log.v("OnPolyLine", ";asd;")
-
-//        for(latlng in p0!!.points){
-//            Log.e("itearating", "lat : ${latlng.latitude} long : ${latlng.longitude}")
-//        }
         Log.e("onPolylineClick", "P0 ${p0.toString()}")
     }
 

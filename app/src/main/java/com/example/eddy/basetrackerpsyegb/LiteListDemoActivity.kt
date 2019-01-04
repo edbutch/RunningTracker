@@ -53,8 +53,6 @@ import java.util.concurrent.TimeUnit
  * [com.google.android.gms.maps.OnMapReadyCallback].
  */
 class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
-
-
     override fun dbReady(
         runMetrics: ArrayList<RunMetrics>,
         runList: ArrayList<ArrayList<GPS>>
@@ -163,6 +161,8 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
         internal inner class ViewHolder internal constructor(var layout: View) : RecyclerView.ViewHolder(layout),
             OnMapReadyCallback {
 
+
+            //Created my own view for this anc added my own views to the holder
             var mapView: MapView? = null
             var title: TextView
             var map: GoogleMap? = null
@@ -248,12 +248,6 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
         }
     }
 
-    /**
-     * Location represented by a position ([com.google.android.gms.maps.model.LatLng] and a
-     * name ([java.lang.String]).
-     */
-
-
 
     private fun getDate(time: Long): String? {
         val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
@@ -274,51 +268,5 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
         return hms
     }
 
-
-
-//    private class NamedLocation internal constructor(val name: String, val location: LatLng)
-//
-//    companion object {
-//
-//        /**
-//         * A list of locations to show in this ListView.
-//         */
-//        private val LIST_LOCATIONS = arrayOf(
-//            NamedLocation("Cape Town", LatLng(-33.920455, 18.466941)),
-//            NamedLocation("Beijing", LatLng(39.937795, 116.387224)),
-//            NamedLocation("Bern", LatLng(46.948020, 7.448206)),
-//            NamedLocation("Breda", LatLng(51.589256, 4.774396)),
-//            NamedLocation("Brussels", LatLng(50.854509, 4.376678)),
-//            NamedLocation("Copenhagen", LatLng(55.679423, 12.577114)),
-//            NamedLocation("Hannover", LatLng(52.372026, 9.735672)),
-//            NamedLocation("Helsinki", LatLng(60.169653, 24.939480)),
-//            NamedLocation("Hong Kong", LatLng(22.325862, 114.165532)),
-//            NamedLocation("Istanbul", LatLng(41.034435, 28.977556)),
-//            NamedLocation("Johannesburg", LatLng(-26.202886, 28.039753)),
-//            NamedLocation("Lisbon", LatLng(38.707163, -9.135517)),
-//            NamedLocation("London", LatLng(51.500208, -0.126729)),
-//            NamedLocation("Madrid", LatLng(40.420006, -3.709924)),
-//            NamedLocation("Mexico City", LatLng(19.427050, -99.127571)),
-//            NamedLocation("Moscow", LatLng(55.750449, 37.621136)),
-//            NamedLocation("New York", LatLng(40.750580, -73.993584)),
-//            NamedLocation("Oslo", LatLng(59.910761, 10.749092)),
-//            NamedLocation("Paris", LatLng(48.859972, 2.340260)),
-//            NamedLocation("Prague", LatLng(50.087811, 14.420460)),
-//            NamedLocation("Rio de Janeiro", LatLng(-22.90187, -43.232437)),
-//            NamedLocation("Rome", LatLng(41.889998, 12.500162)),
-//            NamedLocation("Sao Paolo", LatLng(-22.863878, -43.244097)),
-//            NamedLocation("Seoul", LatLng(37.560908, 126.987705)),
-//            NamedLocation("Stockholm", LatLng(59.330650, 18.067360)),
-//            NamedLocation("Sydney", LatLng(-33.873651, 151.2068896)),
-//            NamedLocation("Taipei", LatLng(25.022112, 121.478019)),
-//            NamedLocation("Tokyo", LatLng(35.670267, 139.769955)),
-//            NamedLocation("Tulsa Oklahoma", LatLng(36.149777, -95.993398)),
-//            NamedLocation("Vaduz", LatLng(47.141076, 9.521482)),
-//            NamedLocation("Vienna", LatLng(48.209206, 16.372778)),
-//            NamedLocation("Warsaw", LatLng(52.235474, 21.004057)),
-//            NamedLocation("Wellington", LatLng(-41.286480, 174.776217)),
-//            NamedLocation("Winnipeg", LatLng(49.875832, -97.150726))
-//        )
-//    }
 
 }
