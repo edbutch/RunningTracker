@@ -18,10 +18,10 @@
             android:text="@string/tracking_elaspsed_initial"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/trackingTxtElaspedTime" android:layout_marginTop="96dp"
+            android:id="@+id/trackingTxtElaspedTime" android:layout_marginTop="20dp"
             app:layout_constraintTop_toBottomOf="@+id/trackingTxtTitle" app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="8dp" app:layout_constraintHorizontal_bias="1.0"/>
     <TextView
             android:text="@string/tracking_distance_initial"
             android:layout_width="match_parent"
@@ -39,8 +39,8 @@
             app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/trackingTxtTotalDistance"
             android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp" app:layout_constraintHorizontal_bias="0.217"
-            app:layout_constraintVertical_bias="0.497" app:layout_constraintEnd_toStartOf="@+id/trackingBtnStop"/>
+            android:layout_marginStart="8dp" app:layout_constraintHorizontal_bias="0.22"
+            app:layout_constraintVertical_bias="0.826" app:layout_constraintEnd_toStartOf="@+id/trackingBtnStop"/>
     <Button
             android:text="Stop"
             android:layout_width="wrap_content"
@@ -49,5 +49,39 @@
             android:id="@+id/trackingBtnStop" android:layout_marginTop="104dp"
             app:layout_constraintTop_toBottomOf="@+id/trackingTxtTotalDistance" android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="36dp" app:layout_constraintVertical_bias="0.01"/>
+            android:layout_marginEnd="60dp" app:layout_constraintVertical_bias="0.731"/>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/trackingTxtElaspedTime" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/trackingTxtTotalDistance"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp">
+        <TextView
+                android:text="TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:gravity="start|left"
+                android:id="@+id/trackingLat" />
+        <TextView
+                android:text="TextView"
+                android:gravity="end|right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/trackingLong" android:layout_weight="1"/>
+    </LinearLayout>
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:map="http://schemas.android.com/apk/res-auto"
+              android:id="@+id/trackView"
+              android:layout_width="match_parent"
+              android:layout_height="150dp"
+              android:name="com.google.android.gms.maps.SupportMapFragment"
+              android:layout_marginTop="44dp"
+              map:layout_constraintTop_toBottomOf="@+id/trackingTxtTotalDistance" android:layout_marginBottom="8dp"
+              map:layout_constraintBottom_toBottomOf="parent" map:layout_constraintVertical_bias="0.052"
+              android:layout_marginEnd="8dp" map:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="8dp"
+              map:layout_constraintStart_toStartOf="parent"/>
+
 </android.support.constraint.ConstraintLayout>

@@ -18,19 +18,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Log.v(TAG, "onCreate")
 
-
-
-
         btnStartTracker.setOnClickListener { startTracker() }
-
         btnViewMap.setOnClickListener { viewMap() }
-
         btnViewTrips.setOnClickListener { viewAllRuns() }
         btnSettings.setOnClickListener{startLiteList()}
-
-
-
-
 
     }
 

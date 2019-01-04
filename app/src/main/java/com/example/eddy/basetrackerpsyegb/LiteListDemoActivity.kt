@@ -53,6 +53,8 @@ import java.util.concurrent.TimeUnit
  * [com.google.android.gms.maps.OnMapReadyCallback].
  */
 class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
+
+
     override fun dbReady(
         runMetrics: ArrayList<RunMetrics>,
         runList: ArrayList<ArrayList<GPS>>

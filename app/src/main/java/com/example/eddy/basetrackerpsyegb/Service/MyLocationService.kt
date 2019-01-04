@@ -15,6 +15,7 @@ import android.support.v4.app.NotificationCompat
 import android.os.Build
 import android.preference.PreferenceManager
 import android.support.annotation.RequiresApi
+import android.support.annotation.UiThread
 import android.support.v4.app.NotificationCompat.PRIORITY_MIN
 import com.example.eddy.basetrackerpsyegb.DB.*
 import com.example.eddy.basetrackerpsyegb.MainActivity
@@ -24,6 +25,7 @@ import org.greenrobot.eventbus.ThreadMode
 import org.greenrobot.eventbus.Subscribe
 import com.example.eddy.basetrackerpsyegb.Service.ServiceEvent.Control.*
 import org.greenrobot.eventbus.EventBus
+import com.example.eddy.basetrackerpsyegb.Service.RECEIVER as BROADCAST
 
 
 class MyLocationService : Service() {
@@ -106,8 +108,6 @@ class MyLocationService : Service() {
         }
 
 
-
-
         override fun onProviderDisabled(provider: String) {
             Log.e(TAG, "onProviderDisabled: $provider")
             stopMetrics()
@@ -124,6 +124,7 @@ class MyLocationService : Service() {
 
 
         private fun putDB(gps: GPS, time: Long, distance: Float) {
+
             doAsync {
                 if (initialized) {
                     addGPS(gps)
@@ -132,8 +133,8 @@ class MyLocationService : Service() {
                     startMetrics(gps)
                     initialized = true
                     updateDistance(gps.parentId, distance)
-
                 }
+
 
             }
         }
@@ -147,6 +148,7 @@ class MyLocationService : Service() {
             Log.e("ADDGPS", "gps = " + gps.toString())
 
             contentResolver.addGPS(gps)
+            broadcastData(BROADCAST.TRACKING, gps)
 
         }
 
@@ -160,17 +162,51 @@ class MyLocationService : Service() {
             Log.e("STARMETRICS", "returned id is $currentID which will be assigned")
             gps.parentId = currentID
             contentResolver.addGPS(gps)
+            broadcastData(BROADCAST.START_TRACKING, gps)
+        }
+
+        private fun broadcastData(action: String, gps: GPS? = null, totalDistance: String? = null) {
+
+            val intent = Intent(action)
+
+
+
+            when (action) {
+                BROADCAST.START_TRACKING -> {
+                    if (gps != null) {
+                        intent.putExtra(RunMetrics.ID, currentID)
+                        intent.putExtra(GPS.LATITUDE, gps.latitude)
+                        intent.putExtra(GPS.LONGITUDE, gps.longitude)
+                        intent.putExtra(RunMetrics.START_TIME, gps.timestamp)
+                    }
+                }
+
+                BROADCAST.TRACKING -> {
+                    if (gps != null) {
+                        intent.putExtra(GPS.LATITUDE, gps.latitude)
+                        intent.putExtra(GPS.LONGITUDE, gps.longitude)
+                    }
+
+                }
+
+                BROADCAST.STOP_TRACKING -> {
+                    if (gps != null) {
+                        intent.putExtra(RunMetrics.END_TIME, gps.timestamp)
+                        totalDistance ?: intent.putExtra(RunMetrics.TOTAL_DISTANCE, totalDistance)
+
+                    }
+                }
+            }
+
+            Log.e("broadcastData", "hrmrhrmrhrm")
+            sendBroadcast(intent)
 
         }
 
         public fun stopMetrics() {
             Log.e("STOPMETRICS", "STOPPING METRICS id =  $currentID")
             var rm = RunMetrics()
-
             initialized = false
-
-
-
             rm = contentResolver.endMetrics(mLastLocation.time, currentID)
             Log.e("stopmetrics", rm.toString())
 
