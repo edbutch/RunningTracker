@@ -15,7 +15,6 @@ import android.support.v4.app.NotificationCompat
 import android.os.Build
 import android.preference.PreferenceManager
 import android.support.annotation.RequiresApi
-import android.support.annotation.UiThread
 import android.support.v4.app.NotificationCompat.PRIORITY_MIN
 import com.example.eddy.basetrackerpsyegb.DB.*
 import com.example.eddy.basetrackerpsyegb.MainActivity
@@ -35,7 +34,7 @@ class MyLocationService : Service() {
 
         //TODO THIS INTO SETTINGS THIS
         var LOCATION_INTERVAL = 1
-        var LOCATION_DISTANCE = 1f
+        var LOCATION_DISTANCE = 0F
 
         val KEY_LOCATION_INTERVAL = "LOCATION_INTERVAL"
         val KEY_LOCATION_TIMER = "LOCATION_TIMER"
@@ -51,30 +50,36 @@ class MyLocationService : Service() {
     //    var timer: Boolean = false
     private var mLocationListener = (LocationListener(LocationManager.GPS_PROVIDER))
 
-    private inner class LocationListener(provider: String) : android.location.LocationListener {
-        public var initialized = false
-        internal var currentID: Int = 0
-        internal var mLastLocation: Location
 
-        init {
-            Log.e(TAG, "LocationListener $provider")
-            mLastLocation = Location(provider)
-            Log.v(
-                TAG,
-                "Location?? ${mLastLocation.time} ${mLastLocation.altitude} ${mLastLocation.latitude} ${mLastLocation.longitude}"
-            )
+    private inner class LocationListener(provider: String) : android.location.LocationListener {
+        lateinit var mLastLocation: Location
+        var currentID: Int = 0
+        var initialized: Boolean = false
+
+
+        fun resumeTracking(id: Int) {
+            initialized = true
+            currentID = id
+            Log.v("RESUMETRACKING", "Init $initialized currentiD $currentID")
         }
+
 
         override fun onLocationChanged(location: Location) {
             Log.e(TAG, "onLocationChanged: $location.")
 
-            var time = location.time - mLastLocation.time
 
+            var time = 0L
+            var distance = 0F
+            if (::mLastLocation.isInitialized) {
+                time = location.time - mLastLocation.time
+                distance = mLastLocation.distanceTo(location)
 
-            var distance = location.distanceTo(mLastLocation)
-
+            } else {
+                mLastLocation = Location("")
+            }
 
             mLastLocation.set(location)
+
 
             var parentId = currentID
             var latitude = location.latitude
@@ -94,16 +99,7 @@ class MyLocationService : Service() {
                     speed = speed
                 )
 
-
             putDB(gps, time, distance)
-
-
-//            if(!timer){
-//                Timer(KEY_LOCATION_TIMER, false).scheduleAtFixedRate(500, 2000){
-//                    contentResolver.getGPSList()
-//                }
-//                timer = true
-//            }
 
         }
 
@@ -140,6 +136,7 @@ class MyLocationService : Service() {
         }
 
         private fun updateDistance(parentId: Int, distance: Float) {
+            Log.e("updatedistance", "distance $distance")
             contentResolver.updateRunDistance(distance, parentId)
         }
 
@@ -203,7 +200,7 @@ class MyLocationService : Service() {
 
         }
 
-        public fun stopMetrics() {
+        fun stopMetrics() {
             Log.e("STOPMETRICS", "STOPPING METRICS id =  $currentID")
             var rm = RunMetrics()
             initialized = false
@@ -211,6 +208,8 @@ class MyLocationService : Service() {
             Log.e("stopmetrics", rm.toString())
 
         }
+
+
     }
 
 
@@ -312,6 +311,44 @@ class MyLocationService : Service() {
         }
     }
 
+
+    private fun pauseTracking() {
+        Log.e("pausePlayTracking", "pausePlayTracking")
+        if (mLocationManager != null) {
+            var caught = false
+
+            try {
+                if (ActivityCompat.checkSelfPermission(
+                        this,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        this,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    return
+                }
+
+                mLocationManager!!.removeUpdates(mLocationListener)
+            } catch (ex: Exception) {
+                Log.i(TAG, "fail to remove location listener, ignore", ex)
+                true
+            }
+
+            if (!caught) {
+                mLocationManager = null
+
+            }
+        }
+    }
+
+    private fun resumeTracking(id: Int) {
+        initializeLocationManager()
+        mLocationListener?.resumeTracking(id)
+        startTracking()
+    }
+
+
     override fun stopService(name: Intent?): Boolean {
         stopTracking()
         return super.stopService(name)
@@ -393,7 +430,13 @@ class MyLocationService : Service() {
                 stopTracking()
             }
             PAUSE -> {
-
+                Log.e("onMessageEvent", "pausePlayTracking")
+                pauseTracking()
+            }
+            RESUME -> {
+                if (event.id != 0) {
+                    resumeTracking(event.id)
+                }
             }
 
 

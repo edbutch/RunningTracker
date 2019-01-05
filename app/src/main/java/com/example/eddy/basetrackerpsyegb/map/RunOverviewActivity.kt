@@ -83,7 +83,8 @@ class RunOverviewActivity : AppCompatActivity() {
 
                 val time = RunUtils.getDuration(runMetrics.endTime, runMetrics.startTime)
                 val speed = "Average Speed: ${RunUtils.getAverageSpeed(gpsList).toString()}m/s"
-                val distance = "Distance:  ${runMetrics.totalDistance}M"
+                val d = runMetrics.totalDistance/1000
+                val distance = "Distance:  ${d}KM"
                 setOverviewData(
                     duration = time,
                     distance = distance,

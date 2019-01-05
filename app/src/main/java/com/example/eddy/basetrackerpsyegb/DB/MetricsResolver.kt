@@ -57,6 +57,7 @@ fun ContentResolver.getRun(id: Int): RunMetrics {
     run.id = cursor.getInt(cursor.getColumnIndex(RunMetrics.ID))
     run.startTime = cursor.getLong(cursor.getColumnIndex(RunMetrics.START_TIME))
     run.endTime = cursor.getLong(cursor.getColumnIndex(RunMetrics.END_TIME))
+    run.totalDistance = cursor.getFloat(cursor.getColumnIndex(RunMetrics.TOTAL_DISTANCE))
     cursor.moveToNext()
 
     Log.v("Resolver: getRuns()", run.toString())

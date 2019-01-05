@@ -28,9 +28,11 @@ import com.example.eddy.basetrackerpsyegb.Service.RECEIVER as BROADCAST
 class TrackingActivity : AppCompatActivity() {
 
 
-
     var map: GoogleMap? = null
-    val timer = Timer("Clock",false)
+    var timer = Timer("Clock", false)
+
+    var id: Int = 0
+    var pauseFlag: Boolean = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracking)
@@ -41,8 +43,9 @@ class TrackingActivity : AppCompatActivity() {
 
         trackingBtnStart.setOnClickListener { startTracking() }
         trackingBtnStop.setOnClickListener { stopTracking() }
+        trackingBtnPause.setOnClickListener { pausePlayTracking() }
 
-        (trackView as SupportMapFragment).getMapAsync{
+        (trackView as SupportMapFragment).getMapAsync {
             Log.e("Asd", "asjkdkasdkasdk")
             this.map = it
             map?.uiSettings?.isMyLocationButtonEnabled = true
@@ -50,9 +53,9 @@ class TrackingActivity : AppCompatActivity() {
     }
 
 
-
     private fun startTracking() {
         trackingBtnStart.visibility = INVISIBLE
+        trackingBtnPause.text = "PAUSE"
         registerReceiver(broadCastReceiver, IntentFilter(BROADCAST.START_TRACKING))
         EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.START))
         trackingBtnStop.visibility = VISIBLE
@@ -60,29 +63,31 @@ class TrackingActivity : AppCompatActivity() {
 
 
     private fun stopTracking() {
+        stopTimer()
         trackingBtnStop.visibility = INVISIBLE
         EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.STOP))
         trackingBtnStart.visibility = VISIBLE
-
     }
 
-//    @UiThread
-//    private fun update(
-//        id: String? = null, startTime: String? = null, startLat: String? = null, startLong:
-//        String? = null, curLat: String? = null, curLong: String? = null,
-//        endTime: String? = null, totalDistance: String? = null
-//    ) {
-//        val tag = "TrackingUpdate()"
-//
-//        id ?: Log.v(tag, "id $id")
-//        startTime ?: Log.v(tag, "startTime $startTime")
-//        startLat ?: Log.v(tag, "startLat $startLat")
-//        startLong ?: Log.v(tag, "startLong $startLong")
-//        curLat ?: Log.v(tag, "curLat $curLat")
-//        curLong ?: Log.v(tag, "curLong $curLong")
-//        endTime ?: Log.v(tag, "endTime $endTime")
-//        totalDistance ?: Log.v(tag, "totalDistance $totalDistance")
-//    }
+
+    private fun pausePlayTracking() {
+        if (pauseFlag) {
+            //Paused
+            pauseTimer()
+            unregisterReceiver(broadCastReceiver)
+            EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.PAUSE))
+            trackingBtnPause.text = "PLAY"
+            pauseFlag = false
+        } else {
+            resumeTimer()
+            registerReceiver(broadCastReceiver, IntentFilter(BROADCAST.START_TRACKING))
+            trackingBtnPause.text = "PAUSE"
+            EventBus.getDefault().post(ServiceEvent(id = id, control = ServiceEvent.Control.RESUME))
+            pauseFlag = true
+        }
+    }
+
+
 
     @UiThread
     private fun update(curLat: Double, curLong: Double) {
@@ -92,14 +97,15 @@ class TrackingActivity : AppCompatActivity() {
         trackingLong.text = long
 
 
-
-        var latLng = LatLng(curLat,curLong)
+        var latLng = LatLng(curLat, curLong)
         map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
     }
 
 
+    var counter: Long = 0L
     @UiThread
     private fun startUpdates(id: Int, startTime: Long, startLat: Double, startLong: Double) {
+        this.id = id
         val start = RunUtils.getDate(startTime)
         val title = "Run $id started at $start"
         trackingTxtTitle.text = title
@@ -109,21 +115,38 @@ class TrackingActivity : AppCompatActivity() {
         trackingLong.text = long
 
 
-        var latLng = LatLng(startLat,startLong)
+        var latLng = LatLng(startLat, startLong)
         map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
 
 
         //changes
+        startTimer()
+
+    }
+
+    private fun startTimer() {
         var it = 1000
-        var counter : Long = 0L
-        timer.scheduleAtFixedRate(0,TimeUnit.SECONDS.toMillis(1)){
+        timer = Timer("Clock", false)
+        timer.scheduleAtFixedRate(0, TimeUnit.SECONDS.toMillis(1)) {
             counter += it
-            var mins = (TimeUnit.MILLISECONDS.toMinutes(counter)) %60
+            var mins = (TimeUnit.MILLISECONDS.toMinutes(counter)) % 60
             var seconds = (TimeUnit.MILLISECONDS.toSeconds(counter)) % 60
             var timeElasped = "Time Elasped : $mins:$seconds"
             trackingTxtElaspedTime.text = timeElasped
         }
+    }
 
+    private fun stopTimer(){
+        counter = 0L
+        timer.cancel()
+
+    }
+
+    private fun resumeTimer(){
+        startTimer()
+    }
+    private fun pauseTimer(){
+        timer.cancel()
     }
 
     @UiThread
@@ -134,7 +157,7 @@ class TrackingActivity : AppCompatActivity() {
         trackingTxtTotalDistance.visibility = VISIBLE
         trackingTxtTotalDistance.text = totalDist.toString()
         unregisterReceiver(broadCastReceiver)
-        timer.cancel()
+        stopTimer()
     }
 
 
@@ -155,7 +178,8 @@ class TrackingActivity : AppCompatActivity() {
                         id = id,
                         startTime = startTime,
                         startLat = startLat,
-                        startLong = startLong)
+                        startLong = startLong
+                    )
 
                 }
                 BROADCAST.TRACKING -> {
@@ -171,7 +195,7 @@ class TrackingActivity : AppCompatActivity() {
 
                     val endTime = intent.getLongExtra(RunMetrics.END_TIME, 0L)
                     val totalDist = intent.getFloatExtra(RunMetrics.TOTAL_DISTANCE, 0F)
-                    endUpdates(endTime,totalDist = totalDist)
+                    endUpdates(endTime, totalDist = totalDist)
                 }
             }
         }

@@ -9,7 +9,6 @@ import com.google.android.gms.maps.model.*
 class MapUtils{
 
     companion object {
-
         @UiThread
         fun drawPolyLine(map: GoogleMap?, points: ArrayList<LatLng>): Polyline {
             val start = points[0]
