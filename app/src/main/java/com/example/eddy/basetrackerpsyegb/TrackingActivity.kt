@@ -113,6 +113,7 @@ class TrackingActivity : AppCompatActivity() {
         map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
 
 
+        //changes
         var it = 1000
         var counter : Long = 0L
         timer.scheduleAtFixedRate(0,TimeUnit.SECONDS.toMillis(1)){
