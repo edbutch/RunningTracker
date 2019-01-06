@@ -13,4 +13,8 @@
         <!--<item name="colorIcon">@color/colorIcon</item>-->
     </style>
 
+    <style name="popUpTheme">
+        <item name="android:textColor">@color/colorDivider</item>
+    </style>
+
 </resources>

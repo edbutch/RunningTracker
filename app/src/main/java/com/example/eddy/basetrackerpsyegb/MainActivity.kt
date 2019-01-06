@@ -10,19 +10,20 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     val TAG = "MainActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
         Log.v(TAG, "onCreate")
 
         btnStartTracker.setOnClickListener { startTracker() }
         btnViewMap.setOnClickListener { viewMap() }
         btnViewTrips.setOnClickListener { viewAllRuns() }
         btnSettings.setOnClickListener{startLiteList()}
-
     }
 
     private fun startLiteList() {

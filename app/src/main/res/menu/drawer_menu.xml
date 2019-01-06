@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+>
+    <item
+            android:id="@+id/action_run"
+            android:title="Go run"
+            android:icon="@drawable/ic_run"
+    />
+    <item
+            android:id="@+id/action_run_list"
+            android:title="View all runs"
+            android:icon="@drawable/ic_runlist"
+    />
+    <item
+            android:id="@+id/action_run_overview"
+            android:title="Runs Overview"
+            android:icon="@drawable/ic_chart"
+    />
+
+</menu>

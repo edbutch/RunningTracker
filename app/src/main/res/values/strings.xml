@@ -7,4 +7,9 @@
     <string name="linear">Linear</string>
     <string name="grid">Grid</string>
     <string name="title_activity_maps">Map</string>
+
+
+    <!--drawer-->
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
 </resources>
