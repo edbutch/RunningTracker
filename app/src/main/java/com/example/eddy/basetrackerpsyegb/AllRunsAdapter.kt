@@ -12,8 +12,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
+import com.example.eddy.basetrackerpsyegb.DB.deleteRun
+import com.example.eddy.basetrackerpsyegb.DB.getRuns
 import com.example.eddy.basetrackerpsyegb.map.PolyDecodeDemoActivity
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
+import org.jetbrains.anko.uiThread
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -21,16 +25,20 @@ import javax.xml.datatype.DatatypeConstants.HOURS
 
 
 class AllRunsAdapter(
-    val runList: ArrayList<RunMetrics>,
+    var runList: ArrayList<RunMetrics>,
     val context: Context
 ) : RecyclerView.Adapter<AllRunsAdapter.ViewHolder>() {
     val HEADER = 0
 
     init {
-        runList.add(RunMetrics())
+       initList()
+    }
 
+    private fun initList() {
+        runList.add(RunMetrics())
         runList.sortByDescending { it.id }
         runList.reverse()
+        notifyDataSetChanged()
     }
 
 
@@ -42,7 +50,7 @@ class AllRunsAdapter(
             var startTime = runList.get(pos).startTime
             var endTime = runList.get(pos).endTime
             holder?.runDuration.text = calculateDuration(startTime, endTime)
-            holder?.rootView.setOnClickListener { startMapViewActivity(runList.get(pos).id) }
+            holder?.rootView.setOnClickListener { delete(runList[pos].id) }
         } else {
             holder?.rootView.setBackgroundColor(Color.GREEN)
 
@@ -50,6 +58,18 @@ class AllRunsAdapter(
 
 
         Log.v("onBindView", "date width :: ${holder.startDate.width}")
+    }
+
+    private fun delete(id: Int) {
+        doAsync {
+            context.contentResolver.deleteRun(id.toLong())
+            runList = context.contentResolver.getRuns()
+            uiThread {
+                initList()
+                notifyDataSetChanged()
+            }
+
+        }
     }
 
 

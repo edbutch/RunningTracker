@@ -15,7 +15,9 @@ class ElevationChartUtils {
     companion object {
 
         const val TAG = "ElevationChartUtils"
-        fun initializeChart(elechart: LineChart, lineData: LineData, holeColor: Int, backgroundColor: Int) {
+
+
+        fun initializeChart(elechart: LineChart, lineData: LineData, holeColor: Int, backgroundColor: Int): LineChart {
             Log.e(TAG, "Init chart")
             (lineData.getDataSetByIndex(0) as LineDataSet).circleHoleColor = holeColor
 
@@ -59,6 +61,7 @@ class ElevationChartUtils {
 
             // animate calls invalidate()...
             elechart.animateX(250)
+            return elechart
 
         }
 

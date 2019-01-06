@@ -19,10 +19,13 @@ class GPSProvider : ContentProvider() {
 
     companion object{
 
+
+
         const val AUTHORITY = "com.example.eddy.basetrackerpsyegb.DB.contentprovider"
         const val PATH_GPS = "gpsdb"
         const val PATH_METRICS = "metricstable"
         const val UPDATE = "updatetable"
+        const val PATH_TOTALTIME = "updatetimetable"
         private val sURIMatcher = UriMatcher(UriMatcher.NO_MATCH)
         private const val GPSCODE = 1
         private const val GPSCODE_ID = 2
@@ -30,6 +33,9 @@ class GPSProvider : ContentProvider() {
         private const val METCODE_ID = 4
         private const val UPDATE_DISTANCE = 5
         private const val UPDATE_DISANCE_ID= 6
+        private const val UPDATE_TOTAL_TIME= 7
+        private const val UPDATE_TOTAL_TIME_ID= 8
+
 
         init {
             sURIMatcher.addURI(
@@ -53,6 +59,13 @@ class GPSProvider : ContentProvider() {
 
             sURIMatcher.addURI(AUTHORITY, "$UPDATE/#",
                 UPDATE_DISANCE_ID)
+
+            sURIMatcher.addURI(
+                AUTHORITY, PATH_TOTALTIME,
+                UPDATE_TOTAL_TIME)
+
+            sURIMatcher.addURI(AUTHORITY, "$PATH_TOTALTIME/#",
+                UPDATE_TOTAL_TIME_ID)
 
 
         }
@@ -81,12 +94,9 @@ class GPSProvider : ContentProvider() {
 
 
     override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int {
-
-
         when(sURIMatcher.match(uri)){
             GPSCODE -> {
                 return updateGPS(values)
-
             }
             METCODE->{
                 return updateMetrics(values)
@@ -94,15 +104,20 @@ class GPSProvider : ContentProvider() {
             UPDATE_DISTANCE -> {
                 return updateDistance(values)
             }
-
-
-
+            UPDATE_TOTAL_TIME -> {
+                return updateTotalTIme(values)
+            }
             else ->  throw IllegalArgumentException("Unknown URI: $uri")
-
-
         }
 
 
+
+    }
+
+    private fun updateTotalTIme(values: ContentValues?): Int {
+        val time = values?.get(RunMetrics.TOTAL_TIME) as String
+        var id = values[RunMetrics.ID] as Int
+        return database.metricsDao().setTotalTIme(time, id)
 
     }
 
@@ -191,19 +206,11 @@ class GPSProvider : ContentProvider() {
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
         when (sURIMatcher.match(uri)) {
-            GPSCODE_ID -> {
-
-                var parentId = ContentUris.parseId(uri).toInt()
-                val g = GPS()
-                g.parentId = parentId
-                database.gpsDao().deleteGPS(g)
-                return 1
-            }
-
             METCODE_ID ->{
                 val rm = RunMetrics()
                 rm.id = ContentUris.parseId(uri).toInt()
                 database.metricsDao().deleteRunMetrics(rm)
+                database.gpsDao().deleteRuns(rm.id)
                 return 1
             }
             else -> throw IllegalArgumentException("Unknown  URI: $uri")

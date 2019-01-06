@@ -12,6 +12,10 @@ import com.example.eddy.basetrackerpsyegb.utils.ElevationChartUtils
 import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.utils.MapUtils
 import com.example.eddy.basetrackerpsyegb.utils.RunUtils
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
@@ -19,9 +23,10 @@ import kotlinx.android.synthetic.main.activity_run_overview.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
-class RunOverviewActivity : AppCompatActivity() {
+class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
 
 
+    val points = arrayListOf<LatLng>()
     lateinit var polyLine: Polyline
     var map: GoogleMap? = null
     val TAG = "RunOverviewActivity"
@@ -57,7 +62,6 @@ class RunOverviewActivity : AppCompatActivity() {
 
     private fun getRunDataAsync() {
         doAsync {
-            val points = arrayListOf<LatLng>()
             gpsList = contentResolver.getGPSList(id)
             runMetrics = contentResolver.getRun(id)
             val lineData = ElevationChartUtils.getChartLineData(gpsList)
@@ -81,9 +85,11 @@ class RunOverviewActivity : AppCompatActivity() {
                     polyLine = MapUtils.drawPolyLine(map, points)
                 }
 
-                val time = RunUtils.getDuration(runMetrics.endTime, runMetrics.startTime)
+                elechart.setOnChartValueSelectedListener(this@RunOverviewActivity)
+
+                val time = runMetrics.totalTime
                 val speed = "Average Speed: ${RunUtils.getAverageSpeed(gpsList).toString()}m/s"
-                val d = runMetrics.totalDistance/1000
+                val d = runMetrics.totalDistance / 1000
                 val distance = "Distance:  ${d}KM"
                 setOverviewData(
                     duration = time,
@@ -93,6 +99,25 @@ class RunOverviewActivity : AppCompatActivity() {
                 )
 
             }
+
+        }
+    }
+
+    override fun onNothingSelected() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onValueSelected(e: Entry?, h: Highlight?) {
+        var x = e?.x
+        Log.e("aksdkasd", "aaaa $x")
+
+        x!!
+        if (points.size < x) {
+            val lat = points[x?.toInt()].latitude
+            val long = points[x?.toInt()].longitude
+            val latLng = LatLng(lat, long)
+
+            map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 22f))
 
         }
     }

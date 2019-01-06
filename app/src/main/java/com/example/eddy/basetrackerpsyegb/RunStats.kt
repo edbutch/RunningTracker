@@ -22,6 +22,6 @@ class RunStats : AppCompatActivity(), AllJourneys.DBReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_run_stats)
-        val journeys = AllJourneys(this, this)
+        AllJourneys(this, this)
     }
 }

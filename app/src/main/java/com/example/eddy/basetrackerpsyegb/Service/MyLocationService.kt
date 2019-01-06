@@ -31,24 +31,15 @@ class MyLocationService : Service() {
 
 
     companion object {
-
-        //TODO THIS INTO SETTINGS THIS
-        var LOCATION_INTERVAL = 1
-        var LOCATION_DISTANCE = 0F
-
         val KEY_LOCATION_INTERVAL = "LOCATION_INTERVAL"
-        val KEY_LOCATION_TIMER = "LOCATION_TIMER"
         val KEY_LOCATION_DISTANCE = "LOCATION_DISTANCE"
-
         private val TAG = "MyLocationService"
-
-
     }
 
-    private var mLocationManager: LocationManager? = null
+    private var locationManager: LocationManager? = null
 
     //    var timer: Boolean = false
-    private var mLocationListener = (LocationListener(LocationManager.GPS_PROVIDER))
+    private var locationListener = (LocationListener(LocationManager.GPS_PROVIDER))
 
 
     private inner class LocationListener(provider: String) : android.location.LocationListener {
@@ -60,7 +51,6 @@ class MyLocationService : Service() {
         fun resumeTracking(id: Int) {
             initialized = true
             currentID = id
-            Log.v("RESUMETRACKING", "Init $initialized currentiD $currentID")
         }
 
 
@@ -136,27 +126,20 @@ class MyLocationService : Service() {
         }
 
         private fun updateDistance(parentId: Int, distance: Float) {
-            Log.e("updatedistance", "distance $distance")
             contentResolver.updateRunDistance(distance, parentId)
         }
 
 
         private fun addGPS(gps: GPS) {
-            Log.e("ADDGPS", "gps = " + gps.toString())
-
             contentResolver.addGPS(gps)
             broadcastData(BROADCAST.TRACKING, gps)
 
         }
 
         private fun startMetrics(gps: GPS) {
-
-            Log.e("startMetrics", "gps = ${gps.toString()}")
-
             val rm = RunMetrics()
             rm.startTime = gps.timestamp
             currentID = contentResolver.startMetrics(rm)
-            Log.e("STARMETRICS", "returned id is $currentID which will be assigned")
             gps.parentId = currentID
             contentResolver.addGPS(gps)
             broadcastData(BROADCAST.START_TRACKING, gps)
@@ -195,13 +178,11 @@ class MyLocationService : Service() {
                 }
             }
 
-            Log.e("broadcastData", "hrmrhrmrhrm")
             sendBroadcast(intent)
 
         }
 
         fun stopMetrics() {
-            Log.e("STOPMETRICS", "STOPPING METRICS id =  $currentID")
             var rm = RunMetrics()
             initialized = false
             rm = contentResolver.endMetrics(mLastLocation.time, currentID)
@@ -228,22 +209,6 @@ class MyLocationService : Service() {
     }
 
 
-    fun getLocationFromPreferences() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val resources = getResources()
-
-
-        LOCATION_INTERVAL = prefs.getInt(
-            KEY_LOCATION_INTERVAL,
-            LOCATION_INTERVAL
-        )
-        LOCATION_DISTANCE = prefs.getFloat(
-            KEY_LOCATION_DISTANCE,
-            LOCATION_DISTANCE
-        )
-
-    }
-
 
     override fun onCreate() {
         Log.e(TAG, "onCreate")
@@ -258,18 +223,19 @@ class MyLocationService : Service() {
     }
 
     private fun initializeLocationManager() {
-        if (mLocationManager == null) {
-            mLocationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (locationManager == null) {
+            locationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         }
     }
 
     private fun startTracking() {
         try {
-            mLocationManager!!.requestLocationUpdates(
+            /*TODO TEST PARAMS*/
+            locationManager!!.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                LOCATION_INTERVAL.toLong(),
-                LOCATION_DISTANCE,
-                mLocationListener
+                100L,
+                0F,
+                locationListener
             )
         } catch (ex: java.lang.SecurityException) {
             Log.i(TAG, "fail to request location update, ignore", ex)
@@ -279,8 +245,8 @@ class MyLocationService : Service() {
 
     }
 
-    private fun stopTracking() {
-        if (mLocationManager != null) {
+    private fun stopTracking(totalTime: String = "", id: Int = 0) {
+        if (locationManager != null) {
             var caught = false
 
             try {
@@ -296,16 +262,19 @@ class MyLocationService : Service() {
                 }
 
                 doAsync {
-                    mLocationListener.stopMetrics()
+                    locationListener.stopMetrics()
+                    if (id != 0) {
+                        contentResolver.updateTotalDuration(duration = totalTime, id = id)
+                    }
                 }
-                mLocationManager!!.removeUpdates(mLocationListener)
+                locationManager!!.removeUpdates(locationListener)
             } catch (ex: Exception) {
                 Log.i(TAG, "fail to remove location listener, ignore", ex)
                 true
             }
 
             if (!caught) {
-                mLocationManager = null
+                locationManager = null
 
             }
         }
@@ -313,8 +282,7 @@ class MyLocationService : Service() {
 
 
     private fun pauseTracking() {
-        Log.e("pausePlayTracking", "pausePlayTracking")
-        if (mLocationManager != null) {
+        if (locationManager != null) {
             var caught = false
 
             try {
@@ -329,14 +297,14 @@ class MyLocationService : Service() {
                     return
                 }
 
-                mLocationManager!!.removeUpdates(mLocationListener)
+                locationManager!!.removeUpdates(locationListener)
             } catch (ex: Exception) {
                 Log.i(TAG, "fail to remove location listener, ignore", ex)
                 true
             }
 
             if (!caught) {
-                mLocationManager = null
+                locationManager = null
 
             }
         }
@@ -344,15 +312,10 @@ class MyLocationService : Service() {
 
     private fun resumeTracking(id: Int) {
         initializeLocationManager()
-        mLocationListener?.resumeTracking(id)
+        locationListener?.resumeTracking(id)
         startTracking()
     }
 
-
-    override fun stopService(name: Intent?): Boolean {
-        stopTracking()
-        return super.stopService(name)
-    }
 
     //https://stackoverflow.com/questions/47531742/startforeground-fail-after-upgrade-to-android-8-1
     private fun startForeground() {
@@ -427,10 +390,9 @@ class MyLocationService : Service() {
                 startTracking()
             }
             STOP -> {
-                stopTracking()
+                stopTracking(event.totalTime, event.id)
             }
             PAUSE -> {
-                Log.e("onMessageEvent", "pausePlayTracking")
                 pauseTracking()
             }
             RESUME -> {

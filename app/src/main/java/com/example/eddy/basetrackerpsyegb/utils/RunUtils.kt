@@ -38,6 +38,25 @@ class RunUtils(val metrics: RunMetrics, val gpsList: ArrayList<GPS>) {
             return dur
         }
 
+        fun getDuration(time: Long): String {
+            var mins = (TimeUnit.MILLISECONDS.toMinutes(time)) % 60
+            var seconds = (TimeUnit.MILLISECONDS.toSeconds(time)) % 60
+            var hours = (TimeUnit.MILLISECONDS.toHours(time))
+
+            var dur = ""
+            if (hours > 0) {
+                Log.v(TAG, "hour > 0 ")
+                dur += "$hours:$mins:$seconds"
+
+            } else {
+                Log.v(TAG, " 0 > hours ")
+
+                dur += "$mins:$seconds"
+            }
+
+            return dur
+        }
+
         fun getAverageSpeed(list : ArrayList<GPS>): Float{
             var totalSpeed: Float = 0F
             list.map { totalSpeed+=it.speed }

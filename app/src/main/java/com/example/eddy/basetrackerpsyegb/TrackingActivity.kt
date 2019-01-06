@@ -52,11 +52,20 @@ class TrackingActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(broadCastReceiver, IntentFilter(BROADCAST.START_TRACKING))
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(broadCastReceiver)
+
+    }
 
     private fun startTracking() {
         trackingBtnStart.visibility = INVISIBLE
         trackingBtnPause.text = "PAUSE"
-        registerReceiver(broadCastReceiver, IntentFilter(BROADCAST.START_TRACKING))
         EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.START))
         trackingBtnStop.visibility = VISIBLE
     }
@@ -65,7 +74,7 @@ class TrackingActivity : AppCompatActivity() {
     private fun stopTracking() {
         stopTimer()
         trackingBtnStop.visibility = INVISIBLE
-        EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.STOP))
+        EventBus.getDefault().post(ServiceEvent(control = ServiceEvent.Control.STOP, totalTime = timeElasped, id = id))
         trackingBtnStart.visibility = VISIBLE
     }
 
@@ -74,19 +83,16 @@ class TrackingActivity : AppCompatActivity() {
         if (pauseFlag) {
             //Paused
             pauseTimer()
-            unregisterReceiver(broadCastReceiver)
             EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.PAUSE))
             trackingBtnPause.text = "PLAY"
             pauseFlag = false
         } else {
             resumeTimer()
-            registerReceiver(broadCastReceiver, IntentFilter(BROADCAST.START_TRACKING))
             trackingBtnPause.text = "PAUSE"
             EventBus.getDefault().post(ServiceEvent(id = id, control = ServiceEvent.Control.RESUME))
             pauseFlag = true
         }
     }
-
 
 
     @UiThread
@@ -124,28 +130,29 @@ class TrackingActivity : AppCompatActivity() {
 
     }
 
+    var timeElasped : String = ""
     private fun startTimer() {
         var it = 1000
         timer = Timer("Clock", false)
         timer.scheduleAtFixedRate(0, TimeUnit.SECONDS.toMillis(1)) {
             counter += it
-            var mins = (TimeUnit.MILLISECONDS.toMinutes(counter)) % 60
-            var seconds = (TimeUnit.MILLISECONDS.toSeconds(counter)) % 60
-            var timeElasped = "Time Elasped : $mins:$seconds"
-            trackingTxtElaspedTime.text = timeElasped
+            timeElasped =  RunUtils.getDuration(counter)
+            var txt = "Time Elasped: $timeElasped"
+            trackingTxtElaspedTime.text = txt
         }
     }
 
-    private fun stopTimer(){
+    private fun stopTimer() {
         counter = 0L
         timer.cancel()
 
     }
 
-    private fun resumeTimer(){
+    private fun resumeTimer() {
         startTimer()
     }
-    private fun pauseTimer(){
+
+    private fun pauseTimer() {
         timer.cancel()
     }
 
@@ -156,7 +163,6 @@ class TrackingActivity : AppCompatActivity() {
         trackingTxtTitle.text = title
         trackingTxtTotalDistance.visibility = VISIBLE
         trackingTxtTotalDistance.text = totalDist.toString()
-        unregisterReceiver(broadCastReceiver)
         stopTimer()
     }
 
@@ -169,8 +175,8 @@ class TrackingActivity : AppCompatActivity() {
             when (intent?.action) {
 
                 BROADCAST.START_TRACKING -> {
+                    id = intent.getIntExtra(RunMetrics.ID, 0)
                     Log.e("START_TRACKING", "__")
-                    val id = intent.getIntExtra(RunMetrics.ID, 0)
                     val startTime = intent.getLongExtra(RunMetrics.START_TIME, 0L)
                     val startLat = intent.getDoubleExtra(GPS.LATITUDE, 0.0)
                     val startLong = intent.getDoubleExtra(GPS.LONGITUDE, 0.0)

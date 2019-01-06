@@ -26,6 +26,9 @@ interface   GPSDao {
     @Query("SELECT * From GPS WHERE parentId == :id ")
     fun getGPSByIDCursor(id: Int): Cursor
 
+    @Query("DELETE From GPS WHERE parentId == :id")
+    fun deleteRuns(id: Int)
+
     /* @Query("SELECT * FROM RunMetrics WHERE id = :id")
     fun getMetricsByID(id: Int): Cursor
 
