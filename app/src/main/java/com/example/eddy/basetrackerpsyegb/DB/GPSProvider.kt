@@ -105,6 +105,7 @@ class GPSProvider : ContentProvider() {
                 return updateDistance(values)
             }
             UPDATE_TOTAL_TIME -> {
+                Log.v("UPDATETOTALTIEM", "IASDJKAKSDK")
                 return updateTotalTIme(values)
             }
             else ->  throw IllegalArgumentException("Unknown URI: $uri")
@@ -117,6 +118,7 @@ class GPSProvider : ContentProvider() {
     private fun updateTotalTIme(values: ContentValues?): Int {
         val time = values?.get(RunMetrics.TOTAL_TIME) as String
         var id = values[RunMetrics.ID] as Int
+        Log.v("updateTotalTIme", "time : $time")
         return database.metricsDao().setTotalTIme(time, id)
 
     }

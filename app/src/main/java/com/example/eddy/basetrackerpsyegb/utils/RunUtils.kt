@@ -35,15 +35,15 @@ class RunUtils(val metrics: RunMetrics, val gpsList: List<GPS>) {
             var seconds = (TimeUnit.MILLISECONDS.toSeconds(time)) % 60
             var hours = (TimeUnit.MILLISECONDS.toHours(time))
 
-            var dur = "Duration: "
+            var dur = ""
             if (hours > 0) {
                 Log.v(TAG, "hour > 0 ")
-                dur += "$hours:$mins:$seconds"
+                dur += "${hours}H:${mins}M:${seconds}S"
 
             } else {
                 Log.v(TAG, " 0 > hours ")
 
-                dur += "$mins:$seconds"
+                dur += "${mins}M:${seconds}S"
             }
 
             return dur
@@ -57,12 +57,12 @@ class RunUtils(val metrics: RunMetrics, val gpsList: List<GPS>) {
             var dur = ""
             if (hours > 0) {
                 Log.v(TAG, "hour > 0 ")
-                dur += "$hours:$mins:$seconds"
+                dur += "${hours}H:${mins}M:${seconds}S"
 
             } else {
                 Log.v(TAG, " 0 > hours ")
 
-                dur += "$mins:$seconds"
+                dur += "${mins}M:${seconds}S"
             }
 
             return dur

@@ -16,14 +16,16 @@ import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat.PRIORITY_MIN
 import com.example.eddy.basetrackerpsyegb.DB.*
-import com.example.eddy.basetrackerpsyegb.activities.MainActivity
 import com.example.eddy.basetrackerpsyegb.R
 import org.jetbrains.anko.doAsync
 import org.greenrobot.eventbus.ThreadMode
 import org.greenrobot.eventbus.Subscribe
 import com.example.eddy.basetrackerpsyegb.Service.ServiceEvent.Control.*
+import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import org.greenrobot.eventbus.EventBus
-import com.example.eddy.basetrackerpsyegb.Service.RECEIVER as BROADCAST
+import android.app.PendingIntent
+
+
 
 
 class MyLocationService : Service() {
@@ -40,16 +42,15 @@ class MyLocationService : Service() {
     //    var timer: Boolean = false
     private var locationListener = (LocationListener(LocationManager.GPS_PROVIDER))
 
-
+    var currentTrackingPKey: Int = 0
     private inner class LocationListener(provider: String) : android.location.LocationListener {
         lateinit var mLastLocation: Location
-        var currentID: Int = 0
         var initialized: Boolean = false
 
 
         fun resumeTracking(id: Int) {
             initialized = true
-            currentID = id
+            currentTrackingPKey = id
         }
 
 
@@ -70,7 +71,7 @@ class MyLocationService : Service() {
             mLastLocation.set(location)
 
 
-            var parentId = currentID
+            var parentId = currentTrackingPKey
             var latitude = location.latitude
             var longitude = location.longitude
             var ele = location.altitude
@@ -131,44 +132,46 @@ class MyLocationService : Service() {
 
         private fun addGPS(gps: GPS) {
             contentResolver.addGPS(gps)
-            broadcastData(BROADCAST.TRACKING, gps)
+            broadcastData(COMMAND.UPDATE_TRACKING, gps)
 
         }
 
         private fun startMetrics(gps: GPS) {
             val rm = RunMetrics()
             rm.startTime = gps.timestamp
-            currentID = contentResolver.startMetrics(rm)
-            gps.parentId = currentID
+            currentTrackingPKey = contentResolver.startMetrics(rm)
+            gps.parentId = currentTrackingPKey
             contentResolver.addGPS(gps)
-            broadcastData(BROADCAST.START_TRACKING, gps)
+            broadcastData(COMMAND.START_TRACKING, gps)
         }
 
-        private fun broadcastData(action: String, gps: GPS? = null, totalDistance: String? = null) {
+        private fun broadcastData(command: Int, gps: GPS? = null, totalDistance: String? = null) {
 
-            val intent = Intent(action)
+            val intent = Intent()
 
 
 
-            when (action) {
-                BROADCAST.START_TRACKING -> {
+            when (command) {
+                COMMAND.START_TRACKING -> {
                     if (gps != null) {
-                        intent.putExtra(RunMetrics.ID, currentID)
+                        intent.putExtra(RunMetrics.ID, currentTrackingPKey)
                         intent.putExtra(GPS.LATITUDE, gps.latitude)
                         intent.putExtra(GPS.LONGITUDE, gps.longitude)
                         intent.putExtra(RunMetrics.START_TIME, gps.timestamp)
                     }
                 }
 
-                BROADCAST.TRACKING -> {
+                COMMAND.UPDATE_TRACKING -> {
                     if (gps != null) {
+                        Log.e("TRACK", "ASKLDAKSD")
                         intent.putExtra(GPS.LATITUDE, gps.latitude)
                         intent.putExtra(GPS.LONGITUDE, gps.longitude)
+                        intent.putExtra(GPS.TIME, gps.timestamp)
                     }
 
                 }
 
-                BROADCAST.STOP_TRACKING -> {
+                COMMAND.STOP_TRACKING -> {
                     if (gps != null) {
                         intent.putExtra(RunMetrics.END_TIME, gps.timestamp)
                         totalDistance ?: intent.putExtra(RunMetrics.TOTAL_DISTANCE, totalDistance)
@@ -177,6 +180,10 @@ class MyLocationService : Service() {
                 }
             }
 
+            intent.putExtra(COMMAND.COMMAND, command)
+
+            intent.action = RECEIVER.RECEIVER_FILTER
+
             sendBroadcast(intent)
 
         }
@@ -184,7 +191,7 @@ class MyLocationService : Service() {
         fun stopMetrics() {
             var rm = RunMetrics()
             initialized = false
-            rm = contentResolver.endMetrics(mLastLocation.time, currentID)
+            rm = contentResolver.endMetrics(mLastLocation.time, currentTrackingPKey)
             Log.e("stopmetrics", rm.toString())
 
         }
@@ -200,8 +207,13 @@ class MyLocationService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Log.e(TAG, "onStartCommand")
 
-
+        if(intent.action != null){
+            when(intent.action){
+//                ACTION.STOP_SERVICE
+            }
+        }
         if (intent.action != null && intent.action == ACTION.STOP_SERVICE) {
+            stopTracking(fromPendingIntent = true)
             stopSelf()
         }
         return Service.START_STICKY
@@ -244,7 +256,8 @@ class MyLocationService : Service() {
 
     }
 
-    private fun stopTracking(totalTime: String = "", id: Int = 0) {
+    private fun stopTracking(totalTime: String = "", id: Int = 0, time: Long = 0L, fromPendingIntent: Boolean = false) {
+        Log.e("STOPTRACKING", "Totaltime $totalTime , id $id, time $time")
         if (locationManager != null) {
             var caught = false
 
@@ -276,7 +289,30 @@ class MyLocationService : Service() {
                 locationManager = null
 
             }
+        }else if (id!= 0 && time != 0L){
+
+            Log.e("aksdk"," ID : $id, TIME $time")
+            Log.e("aksdk"," ID : $id, TIME $time")
+            Log.e("aksdk"," ID : $id, TIME $time")
+            Log.e("aksdk"," ID : $id, TIME $time")
+            doAsync {
+                contentResolver.endMetrics(time = time, id = id)
+                contentResolver.updateTotalDuration(duration = totalTime, id = id)
+
+            }
+
         }
+
+        if(fromPendingIntent){
+            Log.e("FROMPENDING!!!!", "wE'RE IN")
+            doAsync {
+                val metric = contentResolver.getRun(currentTrackingPKey)
+                val time = RunUtils.Companion.getDuration(metric.endTime, metric.startTime)
+                contentResolver.updateTotalDuration(time, currentTrackingPKey)
+            }
+        }
+
+
     }
 
 
@@ -316,6 +352,8 @@ class MyLocationService : Service() {
     }
 
 
+
+
     //https://stackoverflow.com/questions/47531742/startforeground-fail-after-upgrade-to-android-8-1
     private fun startForeground() {
         val channelId =
@@ -335,6 +373,8 @@ class MyLocationService : Service() {
             .setContentTitle(TAG)
             .setContentIntent(getContentIntent())
             .setCategory(Notification.CATEGORY_SERVICE)
+            .addAction(getPauseAction())
+            .addAction(getResumeAction())
             .addAction(getStopAction())
             .build()
         startForeground(101, notification)
@@ -368,19 +408,54 @@ class MyLocationService : Service() {
         return stopAction
     }
 
+    private fun getPauseAction(): NotificationCompat.Action{
+
+        val pauseIntent = Intent(this, MyLocationService::class.java)
+        pauseIntent.action = ACTION.PAUSE_TRACKING
+        val pPauseIntent = PendingIntent.getService(
+            this, 0,
+            pauseIntent, 0
+        )
+        val pauseAction =
+            NotificationCompat.Action.Builder(android.R.drawable.ic_menu_delete, "Pause", pPauseIntent).build()
+
+        return pauseAction
+    }
+
+    private fun getResumeAction(): NotificationCompat.Action{
+
+        val resumeIntent = Intent(this, MyLocationService::class.java)
+        resumeIntent.action = ACTION.RESUME_TRACKING
+        val pResumeIntent = PendingIntent.getService(
+            this, 0,
+            resumeIntent, 0
+        )
+        val resumeAction =
+            NotificationCompat.Action.Builder(android.R.drawable.ic_menu_delete, "Resume", pResumeIntent).build()
+
+        return resumeAction
+    }
+
+
     private fun getContentIntent(): PendingIntent {
-        val notificationIntent = Intent(applicationContext, MainActivity::class.java)
-        notificationIntent.action =
-                return PendingIntent.getActivity(
+//        vhttps://stackoverflow.com/questions/5502427/resume-application-and-stack-from-notification
+        val i = packageManager
+            .getLaunchIntentForPackage(packageName)!!
+            .setPackage(null)
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+
+        val pendingIntent = PendingIntent.getActivity(this, 0, i, 0)
+
+
+        return PendingIntent.getActivity(
                     applicationContext, 0,
-                    notificationIntent, 0
+            i, 0
                 )
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: ServiceEvent) {
-        Log.e("hi", "hi")
 
         when (event.control) {
             START -> {
@@ -389,7 +464,7 @@ class MyLocationService : Service() {
                 startTracking()
             }
             STOP -> {
-                stopTracking(event.totalTime, event.id)
+                stopTracking(event.totalTime, event.id, event.time)
             }
             PAUSE -> {
                 pauseTracking()

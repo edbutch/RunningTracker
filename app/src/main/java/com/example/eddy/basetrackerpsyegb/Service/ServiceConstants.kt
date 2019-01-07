@@ -3,12 +3,19 @@ package com.example.eddy.basetrackerpsyegb.Service
 
 object RECEIVER{
     const val FLAG = 100
-    const val FILTER = "com.example.eddy.basetrackerpsyegb.RECEIVER.action.GET_UPDATES"
+    const val RECEIVER_FILTER = "com.example.eddy.basetrackerpsyegb.RECEIVER.action.GET_UPDATES"
 
-    const val START_TRACKING = "com.example.eddy.basetrackerpsyegb.RECEIVER.action.START_TRACKING"
-    const val TRACKING = "com.example.eddy.basetrackerpsyegb.RECEIVER.action.TRACKING"
-    const val STOP_TRACKING = "com.example.eddy.basetrackerpsyegb.RECEIVER.action.STOPTRACKING"
+//    const val START_TRACKING = "com.example.eddy.basetrackerpsyegb.RECEIVER.action.START_TRACKING"
+//    const val TRACKING = "com.example.eddy.basetrackerpsyegb.RECEIVER.action.TRACKING_UPDATE"
+//    const val UPDATE_TRACKING = "com.example.eddy.basetrackerpsyegb.RECEIVER.action.UPDATE_TRACKING"
+//    const val STOP_TRACKING = "com.example.eddy.basetrackerpsyegb.RECEIVER.action.STOPTRACKING"
+}
 
+object COMMAND{
+    val COMMAND = "COMMAND"
+    val START_TRACKING = 0
+    val UPDATE_TRACKING = 1
+    val STOP_TRACKING = 2
 }
 object ACTION{
     const val START_TRACKING = "com.example.eddy.basetrackerpsyegb.action.START_TRACKING"

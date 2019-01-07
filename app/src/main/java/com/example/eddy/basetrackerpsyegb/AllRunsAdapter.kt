@@ -3,7 +3,6 @@ package com.example.eddy.basetrackerpsyegb
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -16,16 +15,14 @@ import com.example.eddy.basetrackerpsyegb.DB.deleteRun
 import com.example.eddy.basetrackerpsyegb.DB.getRuns
 import com.example.eddy.basetrackerpsyegb.map.PolyDecodeDemoActivity
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.find
 import org.jetbrains.anko.uiThread
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-import javax.xml.datatype.DatatypeConstants.HOURS
 
 
 class AllRunsAdapter(
-    var runList: ArrayList<RunMetrics>,
+    var runList: MutableList<RunMetrics>,
     val context: Context
 ) : RecyclerView.Adapter<AllRunsAdapter.ViewHolder>() {
     val HEADER = 0
@@ -36,7 +33,7 @@ class AllRunsAdapter(
 
     private fun initList() {
         runList.add(RunMetrics())
-        runList.sortByDescending { it.id }
+        runList.sortedByDescending { it.id }
         runList.reverse()
         notifyDataSetChanged()
     }
@@ -49,10 +46,10 @@ class AllRunsAdapter(
             holder?.startDate.text = getDate(runList.get(pos).startTime)
             var startTime = runList.get(pos).startTime
             var endTime = runList.get(pos).endTime
-            holder?.runDuration.text = calculateDuration(startTime, endTime)
-            holder?.rootView.setOnClickListener { delete(runList[pos].id) }
+            holder?.runDuration.text = runList[pos].totalTime
+//            holder?.rootView.setOnClickListener { delete(runList[pos].id) }
         } else {
-            holder?.rootView.setBackgroundColor(Color.GREEN)
+            setupHeader(holder, pos)
 
         }
 
@@ -60,10 +57,15 @@ class AllRunsAdapter(
         Log.v("onBindView", "date width :: ${holder.startDate.width}")
     }
 
+    private fun setupHeader(holder: ViewHolder, pos: Int) {
+        holder?.rootView.setBackgroundColor(context.getColor(R.color.colorPrimary))
+
+    }
+
     private fun delete(id: Int) {
         doAsync {
             context.contentResolver.deleteRun(id.toLong())
-            runList = context.contentResolver.getRuns()
+            runList = context.contentResolver.getRuns().toMutableList()
             uiThread {
                 initList()
                 notifyDataSetChanged()

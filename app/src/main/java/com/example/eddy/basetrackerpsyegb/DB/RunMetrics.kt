@@ -15,7 +15,7 @@ data class RunMetrics(@PrimaryKey(autoGenerate = true) var id : Int,
         const val START_TIME = "startTime"
         const val END_TIME = "endTime"
         const val TOTAL_DISTANCE = "totalDistance"
-        const val TOTAL_TIME = "totalDistance"
+        const val TOTAL_TIME = "totalTime"
     }
 
 

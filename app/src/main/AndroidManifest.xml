@@ -46,6 +46,7 @@
         <activity android:name=".map.PolySimplifyDemoActivity"/>
         <activity android:name=".activities.RunStats">
         </activity>
+        <activity android:name=".activities.RunOverviewActivity"/>
     </application>
 
 </manifest>

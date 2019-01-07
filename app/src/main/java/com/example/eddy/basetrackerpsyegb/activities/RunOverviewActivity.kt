@@ -8,7 +8,7 @@ import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import com.example.eddy.basetrackerpsyegb.DB.getGPSList
 import com.example.eddy.basetrackerpsyegb.DB.getRun
-import com.example.eddy.basetrackerpsyegb.utils.ElevationChartUtils
+import com.example.eddy.basetrackerpsyegb.utils.ChartUtils
 import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.utils.MapUtils
 import com.example.eddy.basetrackerpsyegb.utils.RunUtils
@@ -64,8 +64,8 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
         doAsync {
             gpsList = contentResolver.getGPSList(id)
             runMetrics = contentResolver.getRun(id)
-            val lineData = ElevationChartUtils.getChartLineData(gpsList)
-
+            val eleLineData = ChartUtils.getEleLineData(gpsList)
+            val speedLineData = ChartUtils.getSpeedLineData(gpsList)
             for (gps in gpsList) {
                 val lat = gps.latitude
                 val long = gps.longitude
@@ -77,22 +77,29 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
             uiThread {
 //TODO
 //                initBarChart()
-                ElevationChartUtils.initializeChart(
+                ChartUtils.initializeEleChart(this@RunOverviewActivity,
                     elechart,
-                    lineData,
+                    eleLineData,
                     backgroundColor = getColor(R.color.colorAccent),
                     holeColor = getColor(R.color.colorPrimaryLight)
                 )
+
+                ChartUtils.initializeSpeedChart(this@RunOverviewActivity, speedchart, speedLineData, getColor(R.color.colorAccent), getColor(R.color.colorPrimaryLight))
+
+
                 if (points.isNotEmpty()) {
                     polyLine = MapUtils.drawPolyLine(map, points)
                 }
 
-                elechart.setOnChartValueSelectedListener(this@RunOverviewActivity)
+//                elechart.setOnChartValueSelectedListener(this@RunOverviewActivity)
 
                 val time = runMetrics.totalTime
+                Log.v(TAG, "TIME : $time")
                 val speed = "Average Speed: ${RunUtils.getAverageSpeed(gpsList).toString()}m/s"
                 val d = runMetrics.totalDistance / 1000
-                val distance = "Distance:  ${d}KM"
+
+                val distanceRounded:Double = Math.round(d * 1000.0) / 1000.0
+                val distance = "Distance:  ${distanceRounded}KM"
                 setOverviewData(
                     duration = time,
                     distance = distance,
@@ -110,6 +117,9 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
     }
 
     override fun onValueSelected(e: Entry?, h: Highlight?) {
+        /*TODO*/
+        /*Make it so when you select a value it takes you to the point on the run*/
+        /*After spending 2 days on this, I've had to add it to the back stack*/
         var x = e?.x
         Log.e("aksdkasd", "aaaa $x")
 

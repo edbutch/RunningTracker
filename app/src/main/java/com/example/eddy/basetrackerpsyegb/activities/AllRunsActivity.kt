@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.LinearLayout
 import com.example.eddy.basetrackerpsyegb.AllRunsAdapter
-import com.example.eddy.basetrackerpsyegb.DB.getAllRuns
+import com.example.eddy.basetrackerpsyegb.DB.getRuns
 import com.example.eddy.basetrackerpsyegb.R
 import kotlinx.android.synthetic.main.activity_all_runs.*
 import org.jetbrains.anko.doAsync
@@ -29,11 +29,11 @@ class AllRunsActivity : AppCompatActivity() {
 
     private fun fillRecylerView() {
         doAsync {
-            val runs = contentResolver.getAllRuns()
+            val runs = contentResolver.getRuns()
 
             uiThread{
                 allRunsRecylerView.adapter =
-                        AllRunsAdapter(runs, this@AllRunsActivity)
+                        AllRunsAdapter(runs.toMutableList(), this@AllRunsActivity)
 
             }
 
