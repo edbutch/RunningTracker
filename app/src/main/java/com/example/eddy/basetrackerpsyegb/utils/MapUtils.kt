@@ -10,7 +10,7 @@ class MapUtils{
 
     companion object {
         @UiThread
-        fun drawPolyLine(map: GoogleMap?, points: ArrayList<LatLng>): Polyline {
+        fun drawPolyLine(map: GoogleMap?, points: List<LatLng>): Polyline {
             val start = points[0]
             val end = points[points.size - 1]
             val mid = (points.size / 2)

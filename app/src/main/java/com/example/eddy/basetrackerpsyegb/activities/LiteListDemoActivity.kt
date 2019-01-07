@@ -1,4 +1,4 @@
-package com.example.eddy.basetrackerpsyegb
+package com.example.eddy.basetrackerpsyegb.activities
 import android.content.Context
 import android.content.Intent
 
@@ -38,9 +38,10 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.example.eddy.basetrackerpsyegb.AllJourneys
 import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
-import com.example.eddy.basetrackerpsyegb.map.RunOverviewActivity
+import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import com.google.android.gms.maps.model.LatLng
 import java.text.SimpleDateFormat
@@ -54,8 +55,8 @@ import java.util.concurrent.TimeUnit
  */
 class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
     override fun dbReady(
-        runMetrics: ArrayList<RunMetrics>,
-        runList: ArrayList<ArrayList<GPS>>
+        runMetrics: List<RunMetrics>,
+        runList: List<List<GPS>>
     ) {
         mRecyclerView!!.setHasFixedSize(true)
         mRecyclerView!!.layoutManager = mLinearLayoutManager
@@ -121,8 +122,8 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
      * [.]
      */
     private inner class MapAdapter(
-        private val runMetrics: ArrayList<RunMetrics>,
-        private val runList: ArrayList<ArrayList<GPS>>
+        private val runMetrics: List<RunMetrics>,
+        private val runList: List<List<GPS>>
     ) :
         RecyclerView.Adapter<MapAdapter.ViewHolder>() {
 
@@ -238,7 +239,7 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
                 setMapLocation()
 
                 title.text = "Run ${runMetrics[pos].id}"
-                date.text = getDate(runMetrics[pos].startTime)
+                date.text = RunUtils.getDate(runMetrics[pos].startTime)
                 duration.text = calculateDuration(startTime = runMetrics[pos].startTime , endTime = runMetrics[pos].endTime)
                 //TODO DISTANCE
                 val dist = runMetrics[pos].totalDistance / 100
@@ -249,11 +250,6 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
     }
 
 
-    private fun getDate(time: Long): String? {
-        val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-        val date = Date(time)
-        return format.format(date)
-    }
 
     private fun calculateDuration(startTime: Long, endTime: Long): String {
 

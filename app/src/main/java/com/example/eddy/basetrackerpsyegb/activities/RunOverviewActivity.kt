@@ -1,4 +1,4 @@
-package com.example.eddy.basetrackerpsyegb.map
+package com.example.eddy.basetrackerpsyegb.activities
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -75,6 +75,8 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
                 }
             }
             uiThread {
+//TODO
+//                initBarChart()
                 ElevationChartUtils.initializeChart(
                     elechart,
                     lineData,

@@ -4,10 +4,12 @@ import android.util.Log
 import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class RunUtils(val metrics: RunMetrics, val gpsList: ArrayList<GPS>) {
+class RunUtils(val metrics: RunMetrics, val gpsList: List<GPS>) {
 
     companion object {
         val TAG = "RunUtils"
@@ -18,6 +20,15 @@ class RunUtils(val metrics: RunMetrics, val gpsList: ArrayList<GPS>) {
             return format.format(date)
         }
 
+
+
+
+//        fun sortTimeByDay(list: ArrayList<GPS>): ArrayList<GPS>{
+//            val dateTimeStrToLocalDateTime: (String) -> LocalDateTime = {
+//                LocalDateTime.parse(it, DateTimeFormatter.ofPattern("dd-MM-yyyy | HH:mm"))
+//            }
+//
+//        }
         fun getDuration(endTime: Long, startTime: Long): String {
             var time = endTime - startTime
             var mins = (TimeUnit.MILLISECONDS.toMinutes(time)) % 60
@@ -57,31 +68,13 @@ class RunUtils(val metrics: RunMetrics, val gpsList: ArrayList<GPS>) {
             return dur
         }
 
-        fun getAverageSpeed(list : ArrayList<GPS>): Float{
+        fun getAverageSpeed(list: ArrayList<GPS>): Float {
             var totalSpeed: Float = 0F
-            list.map { totalSpeed+=it.speed }
-            return totalSpeed/list.size
+            list.map { totalSpeed += it.speed }
+            return totalSpeed / list.size
         }
     }
 
 
-    lateinit var lastGPS: GPS
-    fun getLength(): Long {
-        for (g in gpsList) {
-            if (!(::lastGPS.isInitialized)) {
-
-            }
-
-
-        }
-        return 0L
-    }
-
-    fun getLatArr() {
-
-    }
-
-    fun getDistance() = metrics.totalDistance
-    fun getDuration(): Long = metrics.endTime - metrics.startTime
 }
 

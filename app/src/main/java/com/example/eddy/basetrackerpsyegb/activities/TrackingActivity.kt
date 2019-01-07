@@ -1,4 +1,4 @@
-package com.example.eddy.basetrackerpsyegb
+package com.example.eddy.basetrackerpsyegb.activities
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.View.*
 import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
+import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.Service.MyLocationService
 import com.example.eddy.basetrackerpsyegb.Service.ServiceEvent
 import com.example.eddy.basetrackerpsyegb.utils.RunUtils

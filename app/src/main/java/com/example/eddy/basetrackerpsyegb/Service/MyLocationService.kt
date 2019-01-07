@@ -13,11 +13,10 @@ import android.support.v4.app.ActivityCompat
 import android.util.Log
 import android.support.v4.app.NotificationCompat
 import android.os.Build
-import android.preference.PreferenceManager
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat.PRIORITY_MIN
 import com.example.eddy.basetrackerpsyegb.DB.*
-import com.example.eddy.basetrackerpsyegb.MainActivity
+import com.example.eddy.basetrackerpsyegb.activities.MainActivity
 import com.example.eddy.basetrackerpsyegb.R
 import org.jetbrains.anko.doAsync
 import org.greenrobot.eventbus.ThreadMode

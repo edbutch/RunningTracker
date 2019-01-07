@@ -1,13 +1,13 @@
-package com.example.eddy.basetrackerpsyegb
+package com.example.eddy.basetrackerpsyegb.activities
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.annotation.UiThread
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.LinearLayout
-import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
+import com.example.eddy.basetrackerpsyegb.AllRunsAdapter
 import com.example.eddy.basetrackerpsyegb.DB.getAllRuns
+import com.example.eddy.basetrackerpsyegb.R
 import kotlinx.android.synthetic.main.activity_all_runs.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -32,7 +32,8 @@ class AllRunsActivity : AppCompatActivity() {
             val runs = contentResolver.getAllRuns()
 
             uiThread{
-                allRunsRecylerView.adapter = AllRunsAdapter(runs, this@AllRunsActivity)
+                allRunsRecylerView.adapter =
+                        AllRunsAdapter(runs, this@AllRunsActivity)
 
             }
 

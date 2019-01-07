@@ -19,7 +19,7 @@
                 android:name="com.google.android.geo.API_KEY"
                 android:value="AIzaSyBC1KhvQE3Hn_4fqRuWfQ779gxC59vHwrw"/>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -36,17 +36,15 @@
                 android:exported="true">
         </provider>
 
-        <activity android:name=".TrackingActivity">
+        <activity android:name=".activities.TrackingActivity">
         </activity>
-        <activity android:name=".AllRunsActivity">
+        <activity android:name=".activities.AllRunsActivity">
         </activity>
-        <activity android:name=".LiteListDemoActivity">
+        <activity android:name=".activities.LiteListDemoActivity">
         </activity>
         <activity android:name=".map.PolyDecodeDemoActivity"/>
         <activity android:name=".map.PolySimplifyDemoActivity"/>
-        <activity android:name=".map.RunOverviewActivity">
-        </activity>
-        <activity android:name=".RunStats">
+        <activity android:name=".activities.RunStats">
         </activity>
     </application>
 

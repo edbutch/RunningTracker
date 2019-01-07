@@ -1,15 +1,17 @@
-package com.example.eddy.basetrackerpsyegb
+package com.example.eddy.basetrackerpsyegb.activities
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.example.eddy.basetrackerpsyegb.AllJourneys
 import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
+import com.example.eddy.basetrackerpsyegb.R
 
 class RunStats : AppCompatActivity(), AllJourneys.DBReadyCallback {
 
-    lateinit var runMetrics: ArrayList<RunMetrics>
-    lateinit var runList: ArrayList<ArrayList<GPS>>
-    override fun dbReady(runMetrics: ArrayList<RunMetrics>, runList: ArrayList<ArrayList<GPS>>) {
+    lateinit var runMetrics: List<RunMetrics>
+    lateinit var runList: List<List<GPS>>
+    override fun dbReady(runMetrics: List<RunMetrics>, runList: List<List<GPS>>) {
         this.runMetrics = runMetrics
         this.runList = runList
         filLView()
