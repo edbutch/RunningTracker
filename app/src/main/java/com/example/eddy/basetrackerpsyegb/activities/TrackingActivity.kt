@@ -68,6 +68,7 @@ class TrackingActivity : AppCompatActivity() {
 
     }
 
+    var counter: Long = 0L
 
     var timeElasped: String = ""
     private fun startTimer() {
@@ -84,12 +85,11 @@ class TrackingActivity : AppCompatActivity() {
     private fun stopTimer() {
         counter = 0L
         timer.cancel()
+        trackingTxtElaspedTime.text = "00:00"
 
     }
 
-    private fun resumeTimer() {
-        startTimer()
-    }
+
 
     private fun pauseTimer() {
         timer.cancel()
@@ -121,7 +121,7 @@ class TrackingActivity : AppCompatActivity() {
             trackingBtnPause.text = "PLAY"
             pauseFlag = false
         } else {
-            resumeTimer()
+            //resumeTimer()
             trackingBtnPause.text = "PAUSE"
             EventBus.getDefault().post(ServiceEvent(control = ServiceEvent.Control.RESUME, id = id, time = currentTime))
             pauseFlag = true
@@ -188,7 +188,6 @@ class TrackingActivity : AppCompatActivity() {
     }
 
 
-    var counter: Long = 0L
     @UiThread
     private fun startUpdates(id: Int, startTime: Long, startLat: Double, startLong: Double) {
         this.id = id

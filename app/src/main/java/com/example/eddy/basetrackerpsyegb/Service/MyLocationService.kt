@@ -42,9 +42,9 @@ class MyLocationService : Service() {
     //    var timer: Boolean = false
     private var locationListener = (LocationListener(LocationManager.GPS_PROVIDER))
 
+    lateinit var mLastLocation: Location
     var currentTrackingPKey: Int = 0
     private inner class LocationListener(provider: String) : android.location.LocationListener {
-        lateinit var mLastLocation: Location
         var initialized: Boolean = false
 
 
@@ -209,13 +209,19 @@ class MyLocationService : Service() {
 
         if(intent.action != null){
             when(intent.action){
-//                ACTION.STOP_SERVICE
+                ACTION.STOP_SERVICE -> {
+                    stopTracking(fromPendingIntent = true)
+                    stopSelf()
+                }
+                ACTION.PAUSE_TRACKING -> {
+                    pauseTracking()
+                }
+                ACTION.RESUME_TRACKING -> {
+                    resumeTracking(currentTrackingPKey)
+                }
             }
         }
-        if (intent.action != null && intent.action == ACTION.STOP_SERVICE) {
-            stopTracking(fromPendingIntent = true)
-            stopSelf()
-        }
+
         return Service.START_STICKY
     }
 
@@ -290,11 +296,8 @@ class MyLocationService : Service() {
 
             }
         }else if (id!= 0 && time != 0L){
-
-            Log.e("aksdk"," ID : $id, TIME $time")
-            Log.e("aksdk"," ID : $id, TIME $time")
-            Log.e("aksdk"," ID : $id, TIME $time")
-            Log.e("aksdk"," ID : $id, TIME $time")
+            //Basically if we call stop metrics from our activity we want to be abel to update the total duration using
+            //The duration in the activity. This is to illustrate communication from Event Busses.
             doAsync {
                 contentResolver.endMetrics(time = time, id = id)
                 contentResolver.updateTotalDuration(duration = totalTime, id = id)
@@ -304,10 +307,13 @@ class MyLocationService : Service() {
         }
 
         if(fromPendingIntent){
+            //If stop has been selected from the pending intent (notificaton), it will close down everything
             Log.e("FROMPENDING!!!!", "wE'RE IN")
             doAsync {
                 val metric = contentResolver.getRun(currentTrackingPKey)
-                val time = RunUtils.Companion.getDuration(metric.endTime, metric.startTime)
+                Log.e("WERE  IN", metric.toString() + "current key $currentTrackingPKey")
+                val time = RunUtils.Companion.getDuration(mLastLocation?.time, metric.startTime)
+                contentResolver.endMetrics(mLastLocation.time, currentTrackingPKey)
                 contentResolver.updateTotalDuration(time, currentTrackingPKey)
             }
         }
