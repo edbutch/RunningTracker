@@ -7,28 +7,37 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.onComplete
 import org.jetbrains.anko.uiThread
 
-class RunsOverview(context: Context){
-    lateinit var runsOverview: Array<Overview>
-    
-    lateinit var runMetrics : List<RunMetrics>
-    lateinit var gpsList : MutableList<List<GPS>>
+class RunsOverview(context: Context) {
+    var runsOverview: MutableList<Overview> = arrayListOf()
+
     init {
         doAsync {
-             runMetrics = context.contentResolver.getRuns()
-            gpsList = arrayListOf<List<GPS>>()
-            for (metric in runMetrics) {
-                gpsList.add(context.contentResolver.getGPSList(metric.id))
+
+            val metrics = context.contentResolver.getRuns()
+            Log.e("METRCISIZE ", metrics.size.toString())
+
+            for (metric in metrics) {
+                val gps = context.contentResolver.getGPSList(metric.id)
+                runsOverview.add(Overview(runMetric = metric, runList = gps))
             }
 
-            uiThread {
-
+            for(overview in runsOverview){
+               Log.v("runsOverview",overview
+                   .toString() )
             }
 
 
-         }
+
+        }
     }
 
-    class Overview(runMetric: RunMetrics , runList: List<GPS> ){
+    class Overview(var runMetric: RunMetrics, var runList: List<GPS>) {
+
+
+
+        override fun toString(): String {
+            return "Overview(runMetric=$runMetric, runList=$runList')"
+        }
 
     }
 }

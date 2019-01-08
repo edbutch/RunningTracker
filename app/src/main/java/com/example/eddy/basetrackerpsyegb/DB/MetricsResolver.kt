@@ -26,7 +26,7 @@ fun ContentResolver.getRuns(): List<RunMetrics> {
 
         run.id = cursor.getInt(cursor.getColumnIndex(RunMetrics.ID))
         run.startTime = cursor.getLong(cursor.getColumnIndex(RunMetrics.START_TIME))
-        run.endTime = cursor.getLong(cursor.getColumnIndex(RunMetrics.ID))
+        run.endTime = cursor.getLong(cursor.getColumnIndex(RunMetrics.END_TIME))
         run.totalDistance = cursor.getFloat(cursor.getColumnIndex(RunMetrics.TOTAL_DISTANCE))
         run.totalTime = cursor.getString(cursor.getColumnIndex(RunMetrics.TOTAL_TIME))
         runList.add(run)
