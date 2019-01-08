@@ -2,9 +2,206 @@
 <android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activities.RunStats">
+        tools:context=".activities.RunStatsActivity">
+
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="vertical" android:gravity="center">
+
+
+            <android.support.v7.widget.CardView android:layout_width="376dp"
+                                                android:layout_height="wrap_content"
+                                                android:elevation="2dp"
+                                                android:divider="@android:color/transparent"
+                                                android:dividerHeight="0.0px"
+                                                android:clipToPadding="false"
+                                                android:clipChildren="false"
+                                                card_view:cardElevation="4dp"
+                                                card_view:cardPreventCornerOverlap="false"
+                                                android:layout_marginTop="8dp"
+                                                android:layout_marginBottom="8dp"
+                                                android:layout_marginStart="8dp"
+                                                android:layout_marginEnd="8dp" android:id="@+id/details">
+
+                <android.support.constraint.ConstraintLayout android:layout_width="match_parent"
+                                                             android:layout_height="wrap_content">
+
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:text="Your Run Details"
+                              android:id="@+id/runtitle"
+                              android:textAppearance="?android:attr/textAppearanceMedium"
+                              android:textColor="#000000"
+                              android:layout_marginTop="8dp" card_view:layout_constraintTop_toTopOf="parent"
+                              card_view:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+                              card_view:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
+                              android:layout_marginBottom="8dp"
+                              card_view:layout_constraintBottom_toBottomOf="@+id/first"
+                              card_view:layout_constraintHorizontal_bias="0.0"
+                              card_view:layout_constraintVertical_bias="0.275"/>
+
+
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/first" android:layout_marginTop="40dp"
+                            app:layout_constraintTop_toBottomOf="@id/runtitle"
+                            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+                            android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginEnd="8dp" card_view:layout_constraintHorizontal_bias="1.0">
+
+
+                        <TextView
+                                android:id="@+id/overview_duration"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="3"
+                                android:gravity="start|left"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                tools:layout_editor_absoluteY="26dp"
+                                tools:layout_editor_absoluteX="42dp" android:text="Time spent Running:"/>
+
+                        <TextView
+                                android:id="@+id/overview_distance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end|right"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                tools:layout_editor_absoluteY="26dp"
+                                tools:layout_editor_absoluteX="42dp" android:text="Total Distance:"/>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/second" android:layout_marginTop="8dp"
+                            app:layout_constraintTop_toBottomOf="@+id/first" android:layout_marginBottom="8dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginEnd="8dp">
+
+
+                        <TextView
+                                android:id="@+id/overview_avg_speed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="3"
+                                android:gravity="start|left"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                tools:layout_editor_absoluteY="26dp"
+                                tools:layout_editor_absoluteX="42dp" android:text="Average Speed: "/>
+
+                        <TextView
+                                android:id="@+id/overview_calories"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end|right"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                tools:layout_editor_absoluteY="26dp"
+                                tools:layout_editor_absoluteX="42dp" android:text="Highest Point: "/>
+
+                    </LinearLayout>
+
+
+                </android.support.constraint.ConstraintLayout>
+
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView android:layout_width="376dp"
+                                                android:layout_height="250dp"
+                                                android:elevation="2dp"
+                                                android:divider="@android:color/transparent"
+                                                android:dividerHeight="0.0px"
+                                                android:clipToPadding="false"
+                                                android:clipChildren="false"
+                                                card_view:cardElevation="4dp"
+                                                card_view:cardPreventCornerOverlap="false"
+                                                android:layout_marginTop="8dp"
+                                                android:layout_marginBottom="8dp"
+                                                android:layout_marginStart="8dp"
+                                                android:layout_marginEnd="8dp" android:id="@+id/map">
+
+                <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                          xmlns:map="http://schemas.android.com/apk/res-auto"
+                          android:id="@+id/all_runs_map"
+                          android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:name="com.google.android.gms.maps.SupportMapFragment"
+                          tools:layout_editor_absoluteY="104dp"
+                          android:layout_marginStart="8dp"
+                          android:layout_marginEnd="8dp"/>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView android:layout_width="376dp"
+                                                android:layout_height="150dp"
+                                                android:elevation="2dp"
+                                                android:divider="@android:color/transparent"
+                                                android:dividerHeight="0.0px"
+                                                android:clipToPadding="false"
+                                                android:clipChildren="false"
+                                                card_view:cardElevation="4dp"
+                                                card_view:cardPreventCornerOverlap="false"
+                                                android:layout_marginTop="8dp"
+                                                android:layout_marginBottom="8dp"
+                                                android:layout_marginStart="8dp"
+                                                android:layout_marginEnd="8dp" android:id="@+id/eleChartCard">
+
+
+                <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/distancebarchart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+
+
+                />
+
+
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView android:layout_width="376dp"
+                                                android:layout_height="150dp"
+                                                android:elevation="2dp"
+                                                android:divider="@android:color/transparent"
+                                                android:dividerHeight="0.0px"
+                                                android:clipToPadding="false"
+                                                android:clipChildren="false"
+                                                card_view:cardElevation="4dp"
+                                                card_view:cardPreventCornerOverlap="false"
+                                                android:layout_marginTop="8dp"
+                                                android:layout_marginBottom="8dp"
+                                                android:layout_marginStart="8dp"
+                                                android:layout_marginEnd="8dp" android:id="@+id/speedChartCard">
+
+
+                <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/speedchart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+
+
+                />
+
+
+            </android.support.v7.widget.CardView>
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
 
 </android.support.constraint.ConstraintLayout>

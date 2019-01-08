@@ -1,4 +1,5 @@
 package com.example.eddy.basetrackerpsyegb.activities
+
 import android.content.Context
 import android.content.Intent
 
@@ -44,9 +45,9 @@ import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import com.google.android.gms.maps.model.LatLng
-import java.text.SimpleDateFormat
-import java.util.*
+import kotlinx.android.synthetic.main.lite_list_demo.*
 import java.util.concurrent.TimeUnit
+
 
 /**
  * This shows to include a map in lite mode in a ListView.
@@ -54,21 +55,10 @@ import java.util.concurrent.TimeUnit
  * [com.google.android.gms.maps.OnMapReadyCallback].
  */
 class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
-    override fun dbReady(
-        runMetrics: List<RunMetrics>,
-        runList: List<List<GPS>>
-    ) {
-        mRecyclerView!!.setHasFixedSize(true)
-        mRecyclerView!!.layoutManager = mLinearLayoutManager
-        mRecyclerView!!.adapter = MapAdapter(runMetrics,runList)
-        //TODO
-        mRecyclerView!!.setRecyclerListener(mRecycleListener)
-    }
 
-    private var mRecyclerView: RecyclerView? = null
 
     val context: Context = this
-    private var mLinearLayoutManager: LinearLayoutManager? = null
+    private var linearLayoutManager: LinearLayoutManager? = null
     private var mGridLayoutManager: GridLayoutManager? = null
 
     /**
@@ -93,27 +83,23 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
         setContentView(R.layout.lite_list_demo)
 
         mGridLayoutManager = GridLayoutManager(this, 2)
-        mLinearLayoutManager = LinearLayoutManager(this)
+        linearLayoutManager = LinearLayoutManager(this)
 
-        val locations = AllJourneys(this, this)
-        // Set up the RecyclerView
-        mRecyclerView = findViewById(R.id.recycler_view)
+        AllJourneys(this, this)
 
     }
 
-    /** Create a menu to switch between Linear and Grid LayoutManager.  */
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.lite_list_menu, menu)
-        return true
+
+    override fun dbReady(
+        runMetrics: List<RunMetrics>,
+        runList: List<List<GPS>>
+    ) {
+        recycler_view!!.setHasFixedSize(true)
+        recycler_view!!.layoutManager = linearLayoutManager
+        recycler_view!!.adapter = MapAdapter(runMetrics, runList)
+        recycler_view!!.setRecyclerListener(mRecycleListener)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.layout_linear -> mRecyclerView!!.layoutManager = mLinearLayoutManager
-            R.id.layout_grid -> mRecyclerView!!.layoutManager = mGridLayoutManager
-        }
-        return true
-    }
 
     /**
      * Adapter that displays a title and [com.google.android.gms.maps.MapView] for each item.
@@ -167,14 +153,11 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
             var mapView: MapView? = null
             var title: TextView
             var map: GoogleMap? = null
-            var date : TextView
-            var distance : TextView
-            var duration : TextView
+            var date: TextView = layout.findViewById(R.id.lite_listrow_date)
+            var distance: TextView = layout.findViewById(R.id.lite_listrow_distance)
+            var duration: TextView = layout.findViewById(R.id.lite_listrow_duration)
 
             init {
-                distance = layout.findViewById(R.id.lite_listrow_distance)
-                duration = layout.findViewById(R.id.lite_listrow_duration)
-                date = layout.findViewById(R.id.lite_listrow_date)
                 mapView = layout.findViewById(R.id.lite_listrow_map)
                 title = layout.findViewById(R.id.lite_listrow_title)
                 if (mapView != null) {
@@ -216,12 +199,13 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
 
                 // Set the map type back to normal.
                 map!!.mapType = GoogleMap.MAP_TYPE_NORMAL
-                map!!.setOnMapClickListener {startMapViewActivity(data.metrics.id)
+                map!!.setOnMapClickListener {
+                    startMapViewActivity(data.metrics.id)
                 }
             }
 
 
-            private fun startMapViewActivity(id: Int){
+            private fun startMapViewActivity(id: Int) {
                 Log.e("startMapViewActivity", "hello ID $id")
                 val intent = Intent(context, RunOverviewActivity::class.java)
                 intent.putExtra(RunMetrics.ID, id)
@@ -238,17 +222,20 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
                 mapView!!.tag = item
                 setMapLocation()
 
-                title.text = "Run ${runMetrics[pos].id}"
-                date.text = RunUtils.getDate(runMetrics[pos].startTime)
-                duration.text = calculateDuration(startTime = runMetrics[pos].startTime , endTime = runMetrics[pos].endTime)
+                title.text = "Run ${pos+1}"
+
+                val dateText = "Started at ${RunUtils.getDate(runMetrics[pos].startTime)}"
+                date.text =dateText
+                duration.text = runMetrics[pos].totalTime
                 //TODO DISTANCE
-                val dist = runMetrics[pos].totalDistance / 100
-                distance.text = (dist).toString()
+
+                val distanceRounded:Double = Math.round(runMetrics[pos].totalDistance * 1000.0) / 1000.0
+                val dist = "${distanceRounded.toString()}KM"
+                distance.text = dist
 
             }
         }
     }
-
 
 
     private fun calculateDuration(startTime: Long, endTime: Long): String {

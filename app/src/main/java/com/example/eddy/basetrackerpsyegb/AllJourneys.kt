@@ -9,7 +9,6 @@ import com.example.eddy.basetrackerpsyegb.DB.getRuns
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
-//Accesses the database Asynchonorously to
 class AllJourneys(val context: Context, callBack: DBReadyCallback) {
     interface DBReadyCallback {
         fun dbReady(
@@ -26,7 +25,6 @@ class AllJourneys(val context: Context, callBack: DBReadyCallback) {
                 Log.e("metric in ", "metric${toString()}")
             }
             uiThread {
-                Log.e("EEK", "EEK")
                 callBack.dbReady(runMetrics, runList)
             }
         }

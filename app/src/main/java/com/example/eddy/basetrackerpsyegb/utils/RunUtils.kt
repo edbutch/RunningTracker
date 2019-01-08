@@ -68,7 +68,7 @@ class RunUtils(val metrics: RunMetrics, val gpsList: List<GPS>) {
             return dur
         }
 
-        fun getAverageSpeed(list: ArrayList<GPS>): Float {
+        fun getAverageSpeed(list: List<GPS>): Float {
             var totalSpeed: Float = 0F
             list.map { totalSpeed += it.speed }
             return totalSpeed / list.size

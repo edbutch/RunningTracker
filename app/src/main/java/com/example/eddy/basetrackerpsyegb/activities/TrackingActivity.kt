@@ -29,20 +29,22 @@ import com.example.eddy.basetrackerpsyegb.Service.COMMAND as COMMAND
 
 class TrackingActivity : AppCompatActivity() {
 
+    var timeStarted: Long = 0L
     private var currentTime: Long = 0L
     var id: Int = 0
 
     var map: GoogleMap? = null
     var timer = Timer("Clock", false)
 
+    var state: STATE = STATE.STOPPED
+
+    enum class STATE  {PAUSED, STOPPED, STARTED}
 
 
-    var isPaused: Boolean = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracking)
 
-        trackingTxtTotalDistance.visibility = INVISIBLE
 
         startService(Intent(this, MyLocationService::class.java))
 
@@ -54,6 +56,12 @@ class TrackingActivity : AppCompatActivity() {
             Log.e("Asd", "asjkdkasdkasdk")
             this.map = it
             map?.uiSettings?.isMyLocationButtonEnabled = true
+        }
+
+        Log.v("cunt bitch", "state $state time $counter")
+
+        if(state == STATE.STARTED){
+            startTimer()
         }
     }
 
@@ -69,9 +77,10 @@ class TrackingActivity : AppCompatActivity() {
     }
 
     var counter: Long = 0L
-
     var timeElasped: String = ""
     private fun startTimer() {
+        state = STATE.STARTED
+        trackingBtnPause.text = "PAUSE"
         var it = 1000
         timer = Timer("Clock", false)
         timer.scheduleAtFixedRate(0, TimeUnit.SECONDS.toMillis(1)) {
@@ -83,46 +92,73 @@ class TrackingActivity : AppCompatActivity() {
     }
 
     private fun stopTimer() {
-        counter = 0L
-        timer.cancel()
-        trackingTxtElaspedTime.text = "00:00"
+        if(state != STATE.STOPPED){
+            state = STATE.STOPPED
+            counter = 0L
+            timer.cancel()
+            trackingTxtElaspedTime.text = "00:00"
+
+        }
 
     }
-
 
 
     private fun pauseTimer() {
-        timer.cancel()
+        if(state != STATE.PAUSED){
+            state = STATE.PAUSED
+            trackingBtnPause.text = "RESUME"
+            timer.cancel()
+        }
+
     }
 
 
-
     private fun startTracking() {
-        trackingBtnPause.text = "PAUSE"
-        EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.START, time = currentTime))
+            if(state == STATE.STOPPED){
+                state = STATE.STARTED
+                Log.e("ey", "kasdkaskdasd")
+                trackingBtnPause.text = "PAUSE"
+                EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.START, time = currentTime))
+            }
+
     }
 
 
     private fun stopTracking() {
-        stopTimer()
-        Log.v("TRACKINGACTIVITY", "Stop Tracking : Time Elasped = $timeElasped currentime = $currentTime" )
-        EventBus.getDefault().post(ServiceEvent(control = ServiceEvent.Control.STOP, totalTime = timeElasped, id = id, time = currentTime))
+        if( state != STATE.STOPPED){
+            stopTimer()
+            Log.v("TRACKINGACTIVITY", "Stop Tracking : Time Elasped = $timeElasped currentime = $currentTime")
+            EventBus.getDefault().post(
+                ServiceEvent(
+                    control = ServiceEvent.Control.STOP,
+                    totalTime = timeElasped,
+                    id = id,
+                    time = currentTime
+                )
+            )
+        }
+
     }
 
 
     private fun pausePlayTracking() {
-        if (isPaused) {
-            //Paused
-            pauseTimer()
-            EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.PAUSE, time = currentTime))
-            trackingBtnPause.text = "PLAY"
-            isPaused = false
-        } else {
-            startTimer()
-            trackingBtnPause.text = "PAUSE"
-            EventBus.getDefault().post(ServiceEvent(control = ServiceEvent.Control.RESUME, id = id, time = currentTime))
-            isPaused = true
+
+        if (state != STATE.STOPPED) {
+            if (state == STATE.STARTED) {
+                //We have clicked PAUSE whilst running, therefore we need to pause
+                pauseTimer()
+                EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.PAUSE, time = currentTime))
+                state = STATE.PAUSED
+                trackingBtnPause.text = "PLAY"
+            } else if(state == STATE.PAUSED) {
+                startTimer()
+                trackingBtnPause.text = "PAUSE"
+                EventBus.getDefault()
+                    .post(ServiceEvent(control = ServiceEvent.Control.RESUME, id = id, time = currentTime))
+                state = STATE.STARTED
+            }
         }
+
     }
 
 
@@ -168,10 +204,10 @@ class TrackingActivity : AppCompatActivity() {
                     endUpdates(endTime, totalDist = totalDist)
                 }
 
-                COMMAND.PAUSE_TRACKING ->{
+                COMMAND.PAUSE_TRACKING -> {
                     pauseTimer()
                 }
-                COMMAND.RESUME_TRACKING ->{
+                COMMAND.RESUME_TRACKING -> {
                     startTimer()
                 }
             }
@@ -195,6 +231,7 @@ class TrackingActivity : AppCompatActivity() {
     private fun startUpdates(id: Int, startTime: Long, startLat: Double, startLong: Double) {
         this.id = id
         val start = RunUtils.getDate(startTime)
+        this.timeStarted = startTime
         val title = "Run $id started at $start"
         trackingTxtTitle.text = title
         val lat = "Latitude: $startLat"
@@ -218,9 +255,9 @@ class TrackingActivity : AppCompatActivity() {
         val end = RunUtils.getDate(endTime)
         val title = "Run ended at $end"
         trackingTxtTitle.text = title
-        trackingTxtTotalDistance.visibility = VISIBLE
         trackingTxtTotalDistance.text = totalDist.toString()
         stopTimer()
+
     }
 
 

@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTracker() {
+        Log.e("huh", "???")
         startActivity(Intent(this, TrackingActivity::class.java))
     }
 }

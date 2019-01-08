@@ -7,7 +7,7 @@ import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import com.example.eddy.basetrackerpsyegb.R
 
-class RunStats : AppCompatActivity(), AllJourneys.DBReadyCallback {
+class RunStatsActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
 
     lateinit var runMetrics: List<RunMetrics>
     lateinit var runList: List<List<GPS>>

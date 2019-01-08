@@ -24,8 +24,7 @@ import com.example.eddy.basetrackerpsyegb.Service.ServiceEvent.Control.*
 import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import org.greenrobot.eventbus.EventBus
 import android.app.PendingIntent
-
-
+import com.example.eddy.basetrackerpsyegb.activities.TrackingActivity
 
 
 class MyLocationService : Service() {
@@ -44,12 +43,13 @@ class MyLocationService : Service() {
 
     lateinit var mLastLocation: Location
     var currentTrackingPKey: Int = 0
+    var isListenerInitialized: Boolean = false
+
     private inner class LocationListener(provider: String) : android.location.LocationListener {
-        var initialized: Boolean = false
 
 
         fun resumeTracking(id: Int) {
-            initialized = true
+            isListenerInitialized = true
             currentTrackingPKey = id
         }
 
@@ -112,12 +112,12 @@ class MyLocationService : Service() {
         private fun putDB(gps: GPS, time: Long, distance: Float) {
 
             doAsync {
-                if (initialized) {
+                if (isListenerInitialized) {
                     addGPS(gps)
                     updateDistance(gps.parentId, distance)
                 } else {
                     startMetrics(gps)
-                    initialized = true
+                    isListenerInitialized = true
                     updateDistance(gps.parentId, distance)
                 }
 
@@ -190,7 +190,7 @@ class MyLocationService : Service() {
 
         fun stopMetrics() {
             var rm = RunMetrics()
-            initialized = false
+            isListenerInitialized = false
             rm = contentResolver.endMetrics(mLastLocation.time, currentTrackingPKey)
             Log.e("stopmetrics", rm.toString())
 
@@ -207,19 +207,49 @@ class MyLocationService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Log.e(TAG, "onStartCommand")
 
-        if(intent.action != null){
-            when(intent.action){
-                ACTION.STOP_SERVICE -> {
+        if (intent.action != null) {
+            when (intent.action) {
+                ACTION.STOP_TRACKING -> {
+                    sendBroadcast(Intent(RECEIVER.RECEIVER_FILTER).putExtra(COMMAND.COMMAND, COMMAND.STOP_TRACKING))
+                    state = TrackingActivity.STATE.STOPPED
                     stopTracking(fromPendingIntent = true)
-                    stopSelf()
+
                 }
                 ACTION.PAUSE_TRACKING -> {
-                    pauseTracking()
-                    sendBroadcast(Intent(RECEIVER.RECEIVER_FILTER).putExtra(COMMAND.COMMAND,COMMAND.PAUSE_TRACKING))
+                    if (state == TrackingActivity.STATE.STARTED) {
+                        /*These states have been included inside the service as well as the actitiy to REFLECT the state of the activity.
+                        The course spec specified the user should select when they want the run to start, which is why it's here, because the run
+                        otherwise could be stopped and then the user could press 'resume', as it hasn't flushed the current ID of the run in the service.
+                        TODO I would like to refactor the state being passed into the event bus so we don't need to set it at all within the service.
+                         */
+                        pauseTracking()
+                        sendBroadcast(
+                            Intent(RECEIVER.RECEIVER_FILTER).putExtra(
+                                COMMAND.COMMAND,
+                                COMMAND.PAUSE_TRACKING
+                            )
+                        )
+                        state = TrackingActivity.STATE.PAUSED
+                    }
+
                 }
                 ACTION.RESUME_TRACKING -> {
-                    resumeTracking(currentTrackingPKey)
-                    sendBroadcast(Intent(RECEIVER.RECEIVER_FILTER).putExtra(COMMAND.COMMAND,COMMAND.RESUME_TRACKING))
+                    if (state == TrackingActivity.STATE.PAUSED) {
+                        state = TrackingActivity.STATE.STARTED
+                        resumeTracking(currentTrackingPKey)
+                        sendBroadcast(
+                            Intent(RECEIVER.RECEIVER_FILTER).putExtra(
+                                COMMAND.COMMAND,
+                                COMMAND.RESUME_TRACKING
+                            )
+                        )
+                    }
+
+                }
+                ACTION.STOP_SERVICE -> {
+//                    stopTracking(fromPendingIntent = true)
+//                    stopSelf()
+                    //Doesn't seem necessary to stop the service.
                 }
             }
         }
@@ -227,10 +257,9 @@ class MyLocationService : Service() {
         return Service.START_STICKY
     }
 
-    private fun resumePauseBroadcast(){
+    private fun resumePauseBroadcast() {
 
     }
-
 
 
     override fun onCreate() {
@@ -301,18 +330,23 @@ class MyLocationService : Service() {
                 locationManager = null
 
             }
-        }else if (id!= 0 && time != 0L){
+        } else if (id != 0 && time != 0L) {
             //Basically if we call stop metrics from our activity we want to be abel to update the total duration using
             //The duration in the activity. This is to illustrate communication from Event Busses.
+            //This is also a way to 'stop' a service that has been 'paused
+            //THis was an issue as I wanted to close down the listener when paused as it's heavy on resources, however I wanted to
+            //If i had more time, i'd refactor the timer inside Tracking acvitvity, and use my start time as a metric with the current time to calculate the time elasped
+            //And take pause times for refrence as well.
             doAsync {
                 contentResolver.endMetrics(time = time, id = id)
                 contentResolver.updateTotalDuration(duration = totalTime, id = id)
+                isListenerInitialized = false
 
             }
 
         }
 
-        if(fromPendingIntent){
+        if (fromPendingIntent) {
             //If stop has been selected from the pending intent (notificaton), it will close down everything
             Log.e("FROMPENDING!!!!", "wE'RE IN")
             doAsync {
@@ -364,8 +398,6 @@ class MyLocationService : Service() {
     }
 
 
-
-
     //https://stackoverflow.com/questions/47531742/startforeground-fail-after-upgrade-to-android-8-1
     private fun startForeground() {
         val channelId =
@@ -409,7 +441,7 @@ class MyLocationService : Service() {
 
     private fun getStopAction(): NotificationCompat.Action {
         val stopIntent = Intent(this, MyLocationService::class.java)
-        stopIntent.action = ACTION.STOP_SERVICE
+        stopIntent.action = ACTION.STOP_TRACKING
         val pStopIntent = PendingIntent.getService(
             this, 0,
             stopIntent, 0
@@ -420,7 +452,7 @@ class MyLocationService : Service() {
         return stopAction
     }
 
-    private fun getPauseAction(): NotificationCompat.Action{
+    private fun getPauseAction(): NotificationCompat.Action {
 
         val pauseIntent = Intent(this, MyLocationService::class.java)
         pauseIntent.action = ACTION.PAUSE_TRACKING
@@ -434,7 +466,7 @@ class MyLocationService : Service() {
         return pauseAction
     }
 
-    private fun getResumeAction(): NotificationCompat.Action{
+    private fun getResumeAction(): NotificationCompat.Action {
 
         val resumeIntent = Intent(this, MyLocationService::class.java)
         resumeIntent.action = ACTION.RESUME_TRACKING
@@ -450,38 +482,47 @@ class MyLocationService : Service() {
 
 
     private fun getContentIntent(): PendingIntent {
-//        vhttps://stackoverflow.com/questions/5502427/resume-application-and-stack-from-notification
+        // https://stackoverflow.com/questions/5502427/resume-application-and-stack-from-notification
+        //This showed me how to get a pending intent which takes you to the activity and maintaints its stack!
         val i = packageManager
             .getLaunchIntentForPackage(packageName)!!
             .setPackage(null)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
 
-        val pendingIntent = PendingIntent.getActivity(this, 0, i, 0)
 
 
         return PendingIntent.getActivity(
-                    applicationContext, 0,
+            applicationContext, 0,
             i, 0
-                )
+        )
     }
 
 
+    var state: TrackingActivity.STATE = TrackingActivity.STATE.STOPPED
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: ServiceEvent) {
 
         when (event.control) {
             START -> {
+                Log.e("hello world", "eeeee")
                 startForeground()
                 initializeLocationManager()
                 startTracking()
+                //As you can see here, the state is initialized to stop like Tracking activity, then started
+                ///And all states are reflected within EVENT.CONTROL, or within the pause / resume intents
+                //I.e, the only place the user CAN control the app.
+                state = TrackingActivity.STATE.STARTED
             }
             STOP -> {
                 stopTracking(event.totalTime, event.id, event.time)
+                state = TrackingActivity.STATE.STOPPED
             }
             PAUSE -> {
                 pauseTracking()
+                state = TrackingActivity.STATE.PAUSED
             }
             RESUME -> {
+                state = TrackingActivity.STATE.STARTED
                 if (event.id != 0) {
                     resumeTracking(event.id)
                 }

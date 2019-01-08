@@ -25,14 +25,12 @@ class AllRunsAdapter(
     var runList: MutableList<RunMetrics>,
     val context: Context
 ) : RecyclerView.Adapter<AllRunsAdapter.ViewHolder>() {
-    val HEADER = 0
 
     init {
-       initList()
+        initList()
     }
 
     private fun initList() {
-        runList.add(RunMetrics())
         runList.sortedByDescending { it.id }
         runList.reverse()
         notifyDataSetChanged()
@@ -40,27 +38,19 @@ class AllRunsAdapter(
 
 
     override fun onBindViewHolder(holder: ViewHolder, pos: Int) {
-        if (pos != HEADER) {
-            holder?.listId.text = runList.get(pos).id.toString()
-            holder?.runDistance.text = runList.get(pos).totalDistance.toString()
-            holder?.startDate.text = getDate(runList.get(pos).startTime)
-            var startTime = runList.get(pos).startTime
-            var endTime = runList.get(pos).endTime
-            holder?.runDuration.text = runList[pos].totalTime
-//            holder?.rootView.setOnClickListener { delete(runList[pos].id) }
-        } else {
-            setupHeader(holder, pos)
 
-        }
+        holder?.listId.text = runList.get(pos).id.toString()
+        holder?.runDistance.text = runList.get(pos).totalDistance.toString()
+        holder?.startDate.text = getDate(runList.get(pos).startTime)
+        var startTime = runList.get(pos).startTime
+        var endTime = runList.get(pos).endTime
+        holder?.runDuration.text = runList[pos].totalTime
+//            holder?.rootView.setOnClickListener { delete(runList[pos].id) }
 
 
         Log.v("onBindView", "date width :: ${holder.startDate.width}")
     }
 
-    private fun setupHeader(holder: ViewHolder, pos: Int) {
-        holder?.rootView.setBackgroundColor(context.getColor(R.color.colorPrimary))
-
-    }
 
     private fun delete(id: Int) {
         doAsync {
