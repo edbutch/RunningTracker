@@ -70,7 +70,7 @@ fun ContentResolver.getGPSList(id: Int): ArrayList<GPS> {
 
 
 
-fun ContentResolver.getAllGPSList(): ArrayList<GPS> {
+fun ContentResolver.getAllGPSList(): List<GPS> {
     val cursor = query(
         Uri.parse(GPS_AUTHORITY),
         null,
@@ -79,7 +79,7 @@ fun ContentResolver.getAllGPSList(): ArrayList<GPS> {
         null)
 
 
-    val gpsList = ArrayList<GPS>()
+    val gpsList = arrayListOf<GPS>()
     cursor.moveToFirst()
     while (!cursor.isAfterLast) {
         var pKey = cursor.getInt(cursor.getColumnIndex(PKEY))

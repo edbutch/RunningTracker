@@ -16,6 +16,8 @@ object COMMAND{
     val START_TRACKING = 0
     val UPDATE_TRACKING = 1
     val STOP_TRACKING = 2
+    val PAUSE_TRACKING =3
+    val RESUME_TRACKING =4
 }
 object ACTION{
     const val START_TRACKING = "com.example.eddy.basetrackerpsyegb.action.START_TRACKING"

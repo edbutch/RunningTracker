@@ -215,14 +215,20 @@ class MyLocationService : Service() {
                 }
                 ACTION.PAUSE_TRACKING -> {
                     pauseTracking()
+                    sendBroadcast(Intent(RECEIVER.RECEIVER_FILTER).putExtra(COMMAND.COMMAND,COMMAND.PAUSE_TRACKING))
                 }
                 ACTION.RESUME_TRACKING -> {
                     resumeTracking(currentTrackingPKey)
+                    sendBroadcast(Intent(RECEIVER.RECEIVER_FILTER).putExtra(COMMAND.COMMAND,COMMAND.RESUME_TRACKING))
                 }
             }
         }
 
         return Service.START_STICKY
+    }
+
+    private fun resumePauseBroadcast(){
+
     }
 
 

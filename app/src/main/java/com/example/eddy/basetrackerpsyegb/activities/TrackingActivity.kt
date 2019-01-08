@@ -37,7 +37,7 @@ class TrackingActivity : AppCompatActivity() {
 
 
 
-    var pauseFlag: Boolean = true
+    var isPaused: Boolean = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracking)
@@ -96,35 +96,32 @@ class TrackingActivity : AppCompatActivity() {
     }
 
 
+
     private fun startTracking() {
-        trackingBtnStart.visibility = INVISIBLE
         trackingBtnPause.text = "PAUSE"
         EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.START, time = currentTime))
-        trackingBtnStop.visibility = VISIBLE
     }
 
 
     private fun stopTracking() {
         stopTimer()
-        trackingBtnStop.visibility = INVISIBLE
         Log.v("TRACKINGACTIVITY", "Stop Tracking : Time Elasped = $timeElasped currentime = $currentTime" )
         EventBus.getDefault().post(ServiceEvent(control = ServiceEvent.Control.STOP, totalTime = timeElasped, id = id, time = currentTime))
-        trackingBtnStart.visibility = VISIBLE
     }
 
 
     private fun pausePlayTracking() {
-        if (pauseFlag) {
+        if (isPaused) {
             //Paused
             pauseTimer()
             EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.PAUSE, time = currentTime))
             trackingBtnPause.text = "PLAY"
-            pauseFlag = false
+            isPaused = false
         } else {
-            //resumeTimer()
+            startTimer()
             trackingBtnPause.text = "PAUSE"
             EventBus.getDefault().post(ServiceEvent(control = ServiceEvent.Control.RESUME, id = id, time = currentTime))
-            pauseFlag = true
+            isPaused = true
         }
     }
 
@@ -169,7 +166,13 @@ class TrackingActivity : AppCompatActivity() {
                     val endTime = intent.getLongExtra(RunMetrics.END_TIME, 0L)
                     val totalDist = intent.getFloatExtra(RunMetrics.TOTAL_DISTANCE, 0F)
                     endUpdates(endTime, totalDist = totalDist)
-                    timer.cancel()
+                }
+
+                COMMAND.PAUSE_TRACKING ->{
+                    pauseTimer()
+                }
+                COMMAND.RESUME_TRACKING ->{
+                    startTimer()
                 }
             }
         }
