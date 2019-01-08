@@ -121,6 +121,41 @@
 
             </android.support.v7.widget.CardView>
 
+
+
+
+            <!--THIS NEEDS ALOT OF REFACTORING-->
+
+            <android.support.v7.widget.CardView android:layout_width="376dp"
+                                                android:layout_height="250dp"
+                                                android:elevation="2dp"
+                                                android:divider="@android:color/transparent"
+                                                android:dividerHeight="0.0px"
+                                                android:clipToPadding="false"
+                                                android:clipChildren="false"
+                                                card_view:cardElevation="4dp"
+                                                card_view:cardPreventCornerOverlap="false"
+                                                android:layout_marginTop="8dp"
+                                                android:layout_marginBottom="8dp"
+                                                android:layout_marginStart="8dp"
+                                                android:layout_marginEnd="8dp" android:id="@+id/calenderCard">
+
+
+                <CalendarView
+                        android:id="@+id/calendarView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="50dp"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginRight="50dp"/>
+
+
+
+
+            </android.support.v7.widget.CardView>
+
+
+
             <android.support.v7.widget.CardView android:layout_width="376dp"
                                                 android:layout_height="250dp"
                                                 android:elevation="2dp"

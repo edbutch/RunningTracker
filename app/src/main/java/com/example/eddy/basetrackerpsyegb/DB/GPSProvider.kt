@@ -26,6 +26,7 @@ class GPSProvider : ContentProvider() {
         const val PATH_METRICS = "metricstable"
         const val UPDATE = "updatetable"
         const val PATH_TOTALTIME = "updatetimetable"
+        const val QUERY_PATH = "querytablefortime"
         private val sURIMatcher = UriMatcher(UriMatcher.NO_MATCH)
         private const val GPSCODE = 1
         private const val GPSCODE_ID = 2
@@ -35,6 +36,8 @@ class GPSProvider : ContentProvider() {
         private const val UPDATE_DISANCE_ID= 6
         private const val UPDATE_TOTAL_TIME= 7
         private const val UPDATE_TOTAL_TIME_ID= 8
+        private const val QUERY_DATE= 9
+        private const val QUERY_DATE_ID= 10
 
 
         init {
@@ -66,6 +69,15 @@ class GPSProvider : ContentProvider() {
 
             sURIMatcher.addURI(AUTHORITY, "$PATH_TOTALTIME/#",
                 UPDATE_TOTAL_TIME_ID)
+
+            sURIMatcher.addURI(
+                AUTHORITY, QUERY_PATH,
+                QUERY_DATE)
+
+            sURIMatcher.addURI(AUTHORITY, "$QUERY_PATH/#",
+                QUERY_DATE)
+
+
 
 
         }
@@ -108,12 +120,15 @@ class GPSProvider : ContentProvider() {
                 Log.v("UPDATETOTALTIEM", "IASDJKAKSDK")
                 return updateTotalTIme(values)
             }
+
+
             else ->  throw IllegalArgumentException("Unknown URI: $uri")
         }
 
 
 
     }
+
 
     private fun updateTotalTIme(values: ContentValues?): Int {
         val time = values?.get(RunMetrics.TOTAL_TIME) as String
@@ -201,6 +216,7 @@ class GPSProvider : ContentProvider() {
             GPSCODE_ID -> database.gpsDao().getGPSByIDCursor(uri.lastPathSegment.toInt())
             METCODE -> database.metricsDao().getMetricsCursorOrderByTime()
             METCODE_ID -> database.metricsDao().getMetricsByID(uri.lastPathSegment.toInt())
+//            QUERY_DATE ->
             else -> throw IllegalArgumentException("Unknown  URI: $uri")
         }
     }
