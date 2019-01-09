@@ -187,15 +187,21 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
                 val data = mapView!!.tag as RunUtils ?: return
 
 
-                val latLong = LatLng(data.gpsList[0].latitude, data.gpsList[0].longitude)
+                if(data.gpsList.isNotEmpty()){
+                    val latLong = LatLng(data.gpsList[0].latitude, data.gpsList[0].longitude)
+                    map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLong, 13f))
+                    map!!.addMarker(MarkerOptions().position(latLong))
+
+                }
 
 
 //
 //                latlng.longitude = gpsList[0].longitude
 //                latlng.latitude = gpsList[0].latitude
 //                // Add a marker for this item and set the camera
-                map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLong, 13f))
-                map!!.addMarker(MarkerOptions().position(latLong))
+
+
+
 
                 // Set the map type back to normal.
                 map!!.mapType = GoogleMap.MAP_TYPE_NORMAL

@@ -99,16 +99,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="3"
                                 android:gravity="start|left"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                tools:layout_editor_absoluteY="26dp"
-                                tools:layout_editor_absoluteX="42dp"/>
-
-                        <TextView
-                                android:id="@+id/overview_calories"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="end|right"
+                                android:maxLines="1"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 tools:layout_editor_absoluteY="26dp"
                                 tools:layout_editor_absoluteX="42dp"/>

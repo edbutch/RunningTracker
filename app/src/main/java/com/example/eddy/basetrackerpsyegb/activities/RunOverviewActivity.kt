@@ -53,11 +53,10 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
 
 
     @UiThread
-    private fun setOverviewData(duration: String, distance: String, avgSpeed: String, calories: String) {
+    private fun setOverviewData(duration: String, distance: String, avgSpeed: String) {
         overview_duration.text = duration
         overview_distance.text = distance
         overview_avg_speed.text = avgSpeed
-        overview_calories.text = calories
     }
 
     private fun getRunDataAsync() {
@@ -98,13 +97,14 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
                 val speed = "Average Speed: ${RunUtils.getAverageSpeed(gpsList).toString()}m/s"
                 val d = runMetrics.totalDistance / 1000
 
-                val distanceRounded:Double = Math.round(d * 1000.0) / 1000.0
+//                val distanceRounded:Double = Math.round(d * 1000.0) / 1000.0
+
+                val distanceRounded = runMetrics.totalDistance
                 val distance = "Distance:  ${distanceRounded}KM"
                 setOverviewData(
                     duration = time,
                     distance = distance,
-                    avgSpeed = speed,
-                    calories = "No Calories"
+                    avgSpeed = speed
                 )
 
             }

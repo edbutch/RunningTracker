@@ -41,7 +41,7 @@ class MyLocationService : Service() {
     //    var timer: Boolean = false
     private var locationListener = (LocationListener(LocationManager.GPS_PROVIDER))
 
-    lateinit var mLastLocation: Location
+    lateinit var lastLocation: Location
     var currentTrackingPKey: Int = 0
     var isListenerInitialized: Boolean = false
 
@@ -60,23 +60,33 @@ class MyLocationService : Service() {
 
             var time = 0L
             var distance = 0F
-            if (::mLastLocation.isInitialized) {
-                time = location.time - mLastLocation.time
-                distance = mLastLocation.distanceTo(location)
+            var speed: Float = 0F
+            if (::lastLocation.isInitialized) {
+                time = location.time - lastLocation.time
+                distance = lastLocation.distanceTo(location)
 
-            } else {
-                mLastLocation = Location("")
+                if(time != 0L){
+                    speed = distance / (time/1000)
+//                    speed = location.speed
+
+                }else{
+//                    speed = location.speed
+                }
+
+
+            }else{
+                lastLocation = Location(LocationManager.GPS_PROVIDER)
             }
 
-            mLastLocation.set(location)
 
+            Log.e(TAG, "time $time distance $distance speed $speed speed = distance / time ${distance/time}")
 
             var parentId = currentTrackingPKey
             var latitude = location.latitude
             var longitude = location.longitude
             var ele = location.altitude
             var timestamp = location.time
-            var speed = location.speed
+
 
             val gps =
                 GPS(
@@ -90,6 +100,7 @@ class MyLocationService : Service() {
                 )
 
             putDB(gps, time, distance)
+            lastLocation.set(location)
 
         }
 
@@ -191,7 +202,7 @@ class MyLocationService : Service() {
         fun stopMetrics() {
             var rm = RunMetrics()
             isListenerInitialized = false
-            rm = contentResolver.endMetrics(mLastLocation.time, currentTrackingPKey)
+            rm = contentResolver.endMetrics(lastLocation.time, currentTrackingPKey)
             Log.e("stopmetrics", rm.toString())
 
         }
@@ -352,8 +363,8 @@ class MyLocationService : Service() {
             doAsync {
                 val metric = contentResolver.getRun(currentTrackingPKey)
                 Log.e("WERE  IN", metric.toString() + "current key $currentTrackingPKey")
-                val time = RunUtils.Companion.getDuration(mLastLocation?.time, metric.startTime)
-                contentResolver.endMetrics(mLastLocation.time, currentTrackingPKey)
+                val time = RunUtils.Companion.getDuration(lastLocation?.time, metric.startTime)
+                contentResolver.endMetrics(lastLocation.time, currentTrackingPKey)
                 contentResolver.updateTotalDuration(time, currentTrackingPKey)
             }
         }
