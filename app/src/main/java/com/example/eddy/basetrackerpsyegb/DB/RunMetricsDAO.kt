@@ -39,6 +39,6 @@ interface RunMetricsDAO {
 
 
     @Query("SELECT * FROM RunMetrics WHERE startTime between :range1 and :range2")
-    fun getRunInDateRange(range1: Long, range2: Long)
+    fun getRunInDateRange(range1: Long, range2: Long) : Cursor
 
 }

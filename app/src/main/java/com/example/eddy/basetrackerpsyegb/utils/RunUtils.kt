@@ -4,8 +4,6 @@ import android.util.Log
 import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -23,12 +21,6 @@ class RunUtils(val metrics: RunMetrics, val gpsList: List<GPS>) {
 
 
 
-//        fun sortTimeByDay(list: ArrayList<GPS>): ArrayList<GPS>{
-//            val dateTimeStrToLocalDateTime: (String) -> LocalDateTime = {
-//                LocalDateTime.parse(it, DateTimeFormatter.ofPattern("dd-MM-yyyy | HH:mm"))
-//            }
-//
-//        }
         fun getDuration(endTime: Long, startTime: Long): String {
             var time = endTime - startTime
             var mins = (TimeUnit.MILLISECONDS.toMinutes(time)) % 60
@@ -72,6 +64,12 @@ class RunUtils(val metrics: RunMetrics, val gpsList: List<GPS>) {
             var totalSpeed: Float = 0F
             list.map { totalSpeed += it.speed }
             return totalSpeed / list.size
+        }
+
+        fun getAverageEle(list: List<GPS>): Double {
+            var totalEle: Double = 0.0
+            list.map { totalEle += it.elevation }
+            return totalEle / list.size
         }
     }
 

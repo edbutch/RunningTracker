@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.example.eddy.basetrackerpsyegb.R
+import com.example.eddy.basetrackerpsyegb.utils.RunOverview
 import com.example.eddy.basetrackerpsyegb.utils.RunsOverview
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -19,7 +20,9 @@ class MainActivity : AppCompatActivity() {
 
         Log.v(TAG, "onCreate")
 
-        RunsOverview(context = this)
+        RunOverview(context = this)
+
+
 
         btnStartTracker.setOnClickListener { startTracker() }
         btnViewAllRuns.setOnClickListener { viewAllRuns() }
