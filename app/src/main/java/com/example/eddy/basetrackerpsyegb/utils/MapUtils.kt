@@ -1,10 +1,21 @@
 package com.example.eddy.basetrackerpsyegb.utils
 
+import android.content.Context
 import android.graphics.Color
 import androidx.annotation.UiThread
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.support.v4.content.ContextCompat
+import android.graphics.drawable.Drawable
+import androidx.annotation.DrawableRes
+import com.example.eddy.basetrackerpsyegb.R
+import com.google.android.gms.maps.model.BitmapDescriptor
+
+
 
 class MapUtils{
 
@@ -52,6 +63,20 @@ class MapUtils{
             polyLine.points = points
 
             return polyLine
+        }
+
+
+        fun bitmapDescriptorFromVector(context: Context, @DrawableRes vectorDrawableResourceId: Int): BitmapDescriptor {
+            val background = ContextCompat.getDrawable(context, R.drawable.ic_baseline_place_24px)
+            background!!.setBounds(0, 0, background.intrinsicWidth, background.intrinsicHeight)
+            val vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId)
+            vectorDrawable!!.setBounds(40, 20, vectorDrawable.intrinsicWidth + 40, vectorDrawable.intrinsicHeight + 20)
+            val bitmap =
+                Bitmap.createBitmap(background.intrinsicWidth, background.intrinsicHeight, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            background.draw(canvas)
+            vectorDrawable.draw(canvas)
+            return BitmapDescriptorFactory.fromBitmap(bitmap)
         }
     }
 

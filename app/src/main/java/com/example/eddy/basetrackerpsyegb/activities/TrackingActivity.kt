@@ -14,11 +14,12 @@ import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.Service.MyLocationService
 import com.example.eddy.basetrackerpsyegb.Service.RECEIVER.RECEIVER_FILTER
 import com.example.eddy.basetrackerpsyegb.Service.ServiceEvent
+import com.example.eddy.basetrackerpsyegb.utils.MapUtils
 import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.activity_tracking.*
 import org.greenrobot.eventbus.EventBus
 import com.example.eddy.basetrackerpsyegb.Service.COMMAND as COMMAND
@@ -34,6 +35,8 @@ class TrackingActivity : AppCompatActivity() {
 
 //    timeElasped = RunUtils.getDuration(counter)
 
+
+    var totalDistance : Float = 0F
 
     var id: Int = 0
 
@@ -162,6 +165,11 @@ class TrackingActivity : AppCompatActivity() {
                     val curLong = intent.getDoubleExtra(GPS.LONGITUDE, 0.0)
 
                     val receivedTime = intent.getLongExtra(GPS.TIME, 0)
+                    totalDistance += intent.getFloatExtra(GPS.DISTANCE,0F)
+                    val ele = intent.getDoubleExtra(GPS.ELE,0.0 )
+                    val speed = intent.getFloatExtra(GPS.SPEED,0F)
+
+
 //                    if(previousTime == 0L){
 //                        previousTime = receivedTime
 //                    }else{
@@ -172,7 +180,7 @@ class TrackingActivity : AppCompatActivity() {
 
                     Log.e("TRACKING", "__ CURRENTTIME $currentTime")
 
-                    update(curLat, curLong)
+                    update(curLat, curLong, speed, ele)
                     updateTime()
 
                 }
@@ -210,7 +218,8 @@ class TrackingActivity : AppCompatActivity() {
         if (previousTime!= 0L && state == STATE.STARTED) {
             timeCounter += (currentTime - previousTime)
             val time = RunUtils.getDuration(timeCounter)
-            trackingTxtElaspedTime?.text = time
+            val text = "Duration : $time"
+            trackingTxtElaspedTime?.text = text
 
         }
         previousTime = currentTime
@@ -218,15 +227,26 @@ class TrackingActivity : AppCompatActivity() {
 
 
     @UiThread
-    private fun update(curLat: Double, curLong: Double) {
-        val lat = "Latitude: $curLat"
-        trackingLat.text = lat
-        val long = "Longitude: $curLong"
-        trackingLong.text = long
+    private fun update(curLat: Double, curLong: Double, speed: Float, ele: Double) {
+        map!!.clear()
+        val speed = "Speed: $speed"
+        trackingSpeed.text = speed
+        val ele = "Ele: $ele"
+        trackingEle.text = ele
+        val dist =  "Distance : ${totalDistance/1000}M"
+        trackingTxtTotalDistance.text =dist
 
 
         var latLng = LatLng(curLat, curLong)
         map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
+
+
+
+        map!!.addMarker(MarkerOptions()
+            .position(latLng)
+            .icon(MapUtils.bitmapDescriptorFromVector(this, R.drawable.ic_run)))
+            .title = "You!"
+
 
 
         //    timeElasped = RunUtils.getDuration(counter)
@@ -244,18 +264,24 @@ class TrackingActivity : AppCompatActivity() {
         val title = "Run $id started at $start"
         trackingTxtTitle.text = title
         val lat = "Latitude: $startLat"
-        trackingLat.text = lat
+        trackingSpeed.text = lat
         val long = "Longitude: $startLong"
-        trackingLong.text = long
+        trackingEle.text = long
 
 
         var latLng = LatLng(startLat, startLong)
         map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
+        map!!.addMarker(MarkerOptions()
+            .position(latLng)
+            .icon(MapUtils.bitmapDescriptorFromVector(this, R.drawable.ic_run)))
+            .title = "You!"
 
 
         //changes
 
     }
+
+
 
 
     @UiThread

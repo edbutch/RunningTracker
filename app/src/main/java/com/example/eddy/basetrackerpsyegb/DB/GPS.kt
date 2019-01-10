@@ -26,6 +26,7 @@ data class GPS (@PrimaryKey(autoGenerate = true) var pKey: Int,
         const val LONGITUDE = "longitude"
         const val ELE = "elevation"
         const val SPEED = "speed"
+        const val DISTANCE = "DISTNACE"
 
     }
 

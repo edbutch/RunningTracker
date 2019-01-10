@@ -2,7 +2,7 @@
     <string name="app_name">BaseTrackerPSYEGB</string>
     <string name="tracking_title_initial">Click Start to Begin Tracking!</string>
     <string name="tracking_elaspsed_initial">Total Time : 0D0H0M</string>
-    <string name="tracking_distance_initial">Total Distance: 0 Steps</string>
+    <string name="tracking_distance_initial">Total Distance</string>
     <string name="title_activity_recap">Map</string>
     <string name="linear">Linear</string>
     <string name="grid">Grid</string>

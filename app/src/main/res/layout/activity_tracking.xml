@@ -43,17 +43,15 @@
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
             app:layout_constraintHorizontal_bias="1.0" app:layout_constraintVertical_bias="0.0">
         <TextView
-                android:text="TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:gravity="start|left"
-                android:id="@+id/trackingLat"/>
+                android:id="@+id/trackingSpeed"/>
         <TextView
-                android:text="TextView"
                 android:gravity="end|right"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/trackingLong" android:layout_weight="1"/>
+                android:layout_height="wrap_content" android:id="@+id/trackingEle" android:layout_weight="1"/>
     </LinearLayout>
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -81,21 +79,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/trackingBtnStart"
-        />
+                android:backgroundTint="@color/colorButtonGradient3" android:textColor="@color/colorPrimaryText"/>
         <Button
                 android:text="Pause"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/trackingBtnPause"
-        />
+                android:backgroundTint="@color/colorButtonGradient2" android:textColor="@color/colorDivider"/>
         <Button
                 android:text="Stop"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/trackingBtnStop"
-        />
+                android:backgroundTint="@color/colorButtonGradient1" android:textColor="@color/colorIcon"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

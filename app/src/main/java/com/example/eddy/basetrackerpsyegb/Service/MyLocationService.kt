@@ -64,21 +64,21 @@ class MyLocationService : Service() {
                 time = location.time - lastLocation.time
                 distance = lastLocation.distanceTo(location)
 
-                if(time != 0L){
-                    speed = distance / (time/1000)
+                if (time != 0L) {
+                    speed = distance / (time / 1000)
 //                    speed = location.speed
 
-                }else{
+                } else {
 //                    speed = location.speed
                 }
 
 
-            }else{
+            } else {
                 lastLocation = Location(LocationManager.GPS_PROVIDER)
             }
 
 
-            Log.e(TAG, "time $time distance $distance speed $speed speed = distance / time ${distance/time}")
+            Log.e(TAG, "time $time distance $distance speed $speed speed = distance / time ${distance / time}")
 
             var parentId = currentTrackingPKey
             var latitude = location.latitude
@@ -95,7 +95,7 @@ class MyLocationService : Service() {
                     latitude = latitude,
                     timestamp = timestamp,
                     elevation = ele,
-                    speed = location.speed
+                    speed = speed
                 )
 
             putDB(gps, time, distance)
@@ -123,7 +123,7 @@ class MyLocationService : Service() {
 
             doAsync {
                 if (isListenerInitialized) {
-                    addGPS(gps)
+                    addGPS(gps, distance)
                     updateDistance(gps.parentId, distance)
                 } else {
                     startMetrics(gps)
@@ -140,9 +140,9 @@ class MyLocationService : Service() {
         }
 
 
-        private fun addGPS(gps: GPS) {
+        private fun addGPS(gps: GPS, distance: Float) {
             contentResolver.addGPS(gps)
-            broadcastData(COMMAND.UPDATE_TRACKING, gps)
+            broadcastData(COMMAND.UPDATE_TRACKING, gps, distance)
 
         }
 
@@ -155,7 +155,7 @@ class MyLocationService : Service() {
             broadcastData(COMMAND.START_TRACKING, gps)
         }
 
-        private fun broadcastData(command: Int, gps: GPS? = null, totalDistance: String? = null) {
+        private fun broadcastData(command: Int, gps: GPS? = null, totalDistance: Float = 0F, distance: Float = 0F) {
 
             val intent = Intent()
 
@@ -171,12 +171,16 @@ class MyLocationService : Service() {
                     }
                 }
 
+
                 COMMAND.UPDATE_TRACKING -> {
                     if (gps != null) {
                         Log.e("TRACK", "ASKLDAKSD")
                         intent.putExtra(GPS.LATITUDE, gps.latitude)
                         intent.putExtra(GPS.LONGITUDE, gps.longitude)
                         intent.putExtra(GPS.TIME, gps.timestamp)
+                        intent.putExtra(GPS.SPEED, gps.speed)
+                        intent.putExtra(GPS.ELE, gps.elevation)
+                        intent.putExtra(GPS.DISTANCE, distance)
                     }
 
                 }
@@ -184,7 +188,9 @@ class MyLocationService : Service() {
                 COMMAND.STOP_TRACKING -> {
                     if (gps != null) {
                         intent.putExtra(RunMetrics.END_TIME, gps.timestamp)
-                        totalDistance ?: intent.putExtra(RunMetrics.TOTAL_DISTANCE, totalDistance)
+                        if (totalDistance != 0F) {
+                            intent.putExtra(RunMetrics.TOTAL_DISTANCE, totalDistance)
+                        }
 
                     }
                 }
@@ -199,10 +205,13 @@ class MyLocationService : Service() {
         }
 
         fun stopMetrics() {
-            var rm = RunMetrics()
-            isListenerInitialized = false
-            rm = contentResolver.endMetrics(lastLocation.time, currentTrackingPKey)
-            Log.e("stopmetrics", rm.toString())
+            doAsync {
+                var rm = RunMetrics()
+                isListenerInitialized = false
+                rm = contentResolver.endMetrics(lastLocation.time, currentTrackingPKey)
+                Log.e("stopmetrics", rm.toString())
+
+            }
 
         }
 
@@ -220,7 +229,12 @@ class MyLocationService : Service() {
         if (intent.action != null) {
             when (intent.action) {
                 ACTION.STOP_TRACKING -> {
-                    sendBroadcast(Intent(RECEIVER.RECEIVER_FILTER).putExtra(COMMAND.COMMAND, COMMAND.STOP_TRACKING).putExtra("fromPendingIntent", true))
+                    sendBroadcast(
+                        Intent(RECEIVER.RECEIVER_FILTER).putExtra(
+                            COMMAND.COMMAND,
+                            COMMAND.STOP_TRACKING
+                        ).putExtra("fromPendingIntent", true)
+                    )
                     state = TrackingActivity.STATE.STOPPED
 
                 }
@@ -323,12 +337,17 @@ class MyLocationService : Service() {
                     return
                 }
 
-                doAsync {
-                    locationListener.stopMetrics()
-                    if (id != 0) {
+
+                locationListener.stopMetrics()
+                if (id != 0) {
+                    doAsync {
+
                         contentResolver.updateTotalDuration(totalTime = totalTime, id = id)
+
                     }
                 }
+
+
                 locationManager!!.removeUpdates(locationListener)
             } catch (ex: Exception) {
                 Log.i(TAG, "fail to remove location listener, ignore", ex)
@@ -359,7 +378,7 @@ class MyLocationService : Service() {
             //If stop has been selected from the pending intent (notificaton), it will close down everything
             doAsync {
                 contentResolver.endMetrics(time = lastLocation.time, id = id)
-                contentResolver.updateTotalDuration(totalTime =  totalTime, id = id)
+                contentResolver.updateTotalDuration(totalTime = totalTime, id = id)
                 isListenerInitialized = false
                 Log.e("STOP TRACKING", "FROM PENDING INTENT")
 
@@ -540,7 +559,7 @@ class MyLocationService : Service() {
 
                 Log.e("STOP FROM INTENT", "${event.id} + ${event.totalTime}")
 
-               stopTracking(totalTime = event.totalTime, id = event.id, fromPendingIntent = true)
+                stopTracking(totalTime = event.totalTime, id = event.id, fromPendingIntent = true)
             }
 
 
