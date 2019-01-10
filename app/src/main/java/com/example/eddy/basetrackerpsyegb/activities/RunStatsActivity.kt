@@ -19,7 +19,7 @@ class RunStatsActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
 
     private fun filLView() {
 
-    }
+    }//
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
