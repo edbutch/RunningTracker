@@ -20,13 +20,14 @@ class AllRunsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_all_runs)
 
         allRunsRecylerView?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
-
         fillRecylerView()
 
 
 
     }
 
+    //Get's the data from our content resolver in the background
+    // And posts it to the list adapter on the ui thread
     private fun fillRecylerView() {
         doAsync {
             val runs = contentResolver.getRuns()
@@ -42,6 +43,5 @@ class AllRunsActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         startActivity(Intent(this, MainActivity::class.java))
-
     }
 }

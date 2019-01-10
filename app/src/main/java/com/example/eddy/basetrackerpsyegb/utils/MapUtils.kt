@@ -22,8 +22,7 @@ class MapUtils{
     companion object {
         @UiThread
         fun drawPolyLine(map: GoogleMap?, points: List<LatLng>): Polyline {
-            val start = points[0]
-            val end = points[points.size - 1]
+
             val mid = (points.size / 2)
 
             val polyLine = map!!.addPolyline(PolylineOptions().width(3f).color(Color.BLACK))
@@ -49,17 +48,7 @@ class MapUtils{
 //        polyLine.endCap = CustomCap(BitmapDescriptorFactory.fromResource(android.R.drawable.arrow_down_float))
 
 
-            map!!.addMarker(
-                MarkerOptions()
-                    .position(start)
-                    .title("START")
 
-            )
-            map!!.addMarker(
-                MarkerOptions()
-                    .position(end)
-                    .title("END")
-            )
             polyLine.points = points
 
             return polyLine

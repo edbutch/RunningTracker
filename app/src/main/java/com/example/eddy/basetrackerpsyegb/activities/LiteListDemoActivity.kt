@@ -29,13 +29,10 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -43,32 +40,22 @@ import com.example.eddy.basetrackerpsyegb.AllJourneys
 import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import com.example.eddy.basetrackerpsyegb.R
+import com.example.eddy.basetrackerpsyegb.utils.MapUtils
 import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.lite_list_demo.*
 import java.util.concurrent.TimeUnit
 
 
-/**
- * This shows to include a map in lite mode in a ListView.
- * Note the use of the view holder pattern with the
- * [com.google.android.gms.maps.OnMapReadyCallback].
- */
 class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
 
 
     val context: Context = this
     private var linearLayoutManager: LinearLayoutManager? = null
-    private var mGridLayoutManager: GridLayoutManager? = null
 
-    /**
-     * RecycleListener that completely clears the [com.google.android.gms.maps.GoogleMap]
-     * attached to a row in the RecyclerView.
-     * Sets the map type to [com.google.android.gms.maps.GoogleMap.MAP_TYPE_NONE] and clears
-     * the map.
-     */
-    private val mRecycleListener = RecyclerView.RecyclerListener { holder ->
-        val mapHolder = holder as MapAdapter.ViewHolder
+
+    private val recyclerListener = RecyclerView.RecyclerListener { holder ->
+        val mapHolder = holder as RunsListAdapter.ViewHolder
         if (mapHolder != null && mapHolder.map != null) {
             // Clear the map and free up resources by changing the map type to none.
             // Also reset the map when it gets reattached to layout, so the previous map would
@@ -82,69 +69,52 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.lite_list_demo)
 
-        mGridLayoutManager = GridLayoutManager(this, 2)
         linearLayoutManager = LinearLayoutManager(this)
 
+        /*AllJourneys takes the activity context, and a
+        callback where It can post the database data to*/
         AllJourneys(this, this)
 
     }
 
-
+    //AllJourneys callback
     override fun dbReady(
         runMetrics: List<RunMetrics>,
         runList: List<List<GPS>>
     ) {
         recycler_view!!.setHasFixedSize(true)
         recycler_view!!.layoutManager = linearLayoutManager
-        recycler_view!!.adapter = MapAdapter(runMetrics, runList)
-        recycler_view!!.setRecyclerListener(mRecycleListener)
+        recycler_view!!.adapter = RunsListAdapter(runMetrics, runList)
+        recycler_view!!.setRecyclerListener(recyclerListener)
     }
 
 
-    /**
-     * Adapter that displays a title and [com.google.android.gms.maps.MapView] for each item.
-     * The layout is defined in `lite_list_demo_row.xml`. It contains a MapView
-     * that is programatically initialised in
-     * [.]
-     */
-    private inner class MapAdapter(
+
+
+
+    private inner class RunsListAdapter(
         private val runMetrics: List<RunMetrics>,
         private val runList: List<List<GPS>>
     ) :
-        RecyclerView.Adapter<MapAdapter.ViewHolder>() {
+        RecyclerView.Adapter<RunsListAdapter.ViewHolder>() {
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
-                LayoutInflater.from(parent.context)
-                    .inflate(R.layout.allruns_row_element, parent, false)
+                LayoutInflater.from(parent.context).inflate(R.layout.allruns_row_element, parent, false)
             )
         }
 
-        /**
-         * This function is called when the user scrolls through the screen and a new item needs
-         * to be shown. So we will need to bind the holder with the details of the next item.
-         */
+
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            if (holder == null) {
-                return
-            }
-            holder.bindView(position)
+            holder?.bindView(position)
         }
 
         override fun getItemCount(): Int {
             return runMetrics.size
         }
 
-        /**
-         * Holder for Views used in the [LiteListDemoActivity.MapAdapter].
-         * Once the  the `map` field is set, otherwise it is null.
-         * When the [.onMapReady] callback is received and
-         * the [com.google.android.gms.maps.GoogleMap] is ready, it stored in the [.map]
-         * field. The map is then initialised with the NamedLocation that is stored as the tag of the
-         * MapView. This ensures that the map is initialised with the latest data that it should
-         * display.
-         */
+
         internal inner class ViewHolder internal constructor(var layout: View) : RecyclerView.ViewHolder(layout),
             OnMapReadyCallback {
 
@@ -174,13 +144,7 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
                 setMapLocation()
             }
 
-            /**
-             * Displays a [LiteListDemoActivity.NamedLocation] on a
-             * [com.google.android.gms.maps.GoogleMap].
-             * Adds a marker and centers the camera on the NamedLocation with the normal map type.
-             */
 
-            /*TODO*/
             private fun setMapLocation() {
                 if (map == null) return
 
@@ -190,7 +154,19 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
                 if(data.gpsList.isNotEmpty()){
                     val latLong = LatLng(data.gpsList[0].latitude, data.gpsList[0].longitude)
                     map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLong, 13f))
-                    map!!.addMarker(MarkerOptions().position(latLong))
+//                    map!!.addMarker(MarkerOptions().position(latLong))
+
+
+                    val points = arrayListOf<LatLng>()
+                    for (gps in data.gpsList) {
+                        val lat = gps.latitude
+                        val long = gps.longitude
+                        val latLng = LatLng(lat, long)
+                        if (!(points.contains(latLng))) {
+                            points.add(latLng)
+                        }
+                    }
+                    if(points.isNotEmpty()){MapUtils.drawPolyLine(map,points)}
 
                 }
 

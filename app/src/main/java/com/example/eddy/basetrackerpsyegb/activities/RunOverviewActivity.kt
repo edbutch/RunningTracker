@@ -88,6 +88,22 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
 
                 if (points.isNotEmpty()) {
                     polyLine = MapUtils.drawPolyLine(map, points)
+
+                    val start = points[0]
+                    val end = points[points.size - 1]
+
+
+
+                    map!!.addMarker(MarkerOptions()
+                        .position(start)
+                        .icon(MapUtils.bitmapDescriptorFromVector(this@RunOverviewActivity, R.drawable.ic_run)))
+                        .title = "START"
+
+                    map!!.addMarker(MarkerOptions()
+                        .position(end)
+                        .icon(MapUtils.bitmapDescriptorFromVector(this@RunOverviewActivity, R.drawable.ic_run)))
+                        .title = "END"
+
                 }
 
 //                elechart.setOnChartValueSelectedListener(this@RunOverviewActivity)
