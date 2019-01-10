@@ -232,7 +232,7 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
 
                 val dateText = "Started at ${RunUtils.getDate(runMetrics[pos].startTime)}"
                 date.text =dateText
-                duration.text = runMetrics[pos].totalTime
+                duration.text = RunUtils.getDuration(runMetrics[pos].totalTime)
                 //TODO DISTANCE
 
                 val distanceRounded:Double = Math.round(runMetrics[pos].totalDistance * 1000.0) / 1000.0

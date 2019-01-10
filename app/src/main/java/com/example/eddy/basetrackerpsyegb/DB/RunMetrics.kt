@@ -9,7 +9,7 @@ data class RunMetrics(@PrimaryKey(autoGenerate = true) var id : Int,
                       @ColumnInfo(name = "startTime") var startTime : Long,
                       @ColumnInfo(name = "endTime") var endTime : Long,
                       @ColumnInfo(name = "totalDistance") var totalDistance :Float,
-                      @ColumnInfo(name = "totalTime") var totalTime: String){
+                      @ColumnInfo(name = "totalTime") var totalTime: Long){
     companion object{
         const val ID ="id"
         const val START_TIME = "startTime"
@@ -20,7 +20,7 @@ data class RunMetrics(@PrimaryKey(autoGenerate = true) var id : Int,
 
 
 
-    constructor():this(id = 0 , startTime = 0L, endTime = 0L, totalDistance = 0F,totalTime =  "00:00")
+    constructor():this(id = 0 , startTime = 0L, endTime = 0L, totalDistance = 0F,totalTime =  0L)
 
     override fun toString(): String {
         return "RunMetrics(id=$id, startTime=$startTime, endTime=$endTime, totalDistance=$totalDistance totalTime $totalTime)"

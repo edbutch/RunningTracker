@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.annotation.UiThread
 import android.util.Log
-import android.view.View.*
 import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import com.example.eddy.basetrackerpsyegb.R
@@ -22,23 +21,27 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.activity_tracking.*
 import org.greenrobot.eventbus.EventBus
-import java.util.*
-import java.util.concurrent.TimeUnit
-import kotlin.concurrent.scheduleAtFixedRate
 import com.example.eddy.basetrackerpsyegb.Service.COMMAND as COMMAND
 
 class TrackingActivity : AppCompatActivity() {
 
-    var timeStarted: Long = 0L
+    val TAG = "TrackingAcvtivity"
     private var currentTime: Long = 0L
+    private var startTime: Long = 0L
+    private var previousTime: Long = 0L
+
+    var timeCounter: Long = 0L
+
+//    timeElasped = RunUtils.getDuration(counter)
+
+
     var id: Int = 0
 
     var map: GoogleMap? = null
-    var timer = Timer("Clock", false)
 
     var state: STATE = STATE.STOPPED
 
-    enum class STATE  {PAUSED, STOPPED, STARTED}
+    enum class STATE { PAUSED, STOPPED, STARTED }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,16 +56,11 @@ class TrackingActivity : AppCompatActivity() {
         trackingBtnPause.setOnClickListener { pausePlayTracking() }
 
         (trackView as SupportMapFragment).getMapAsync {
-            Log.e("Asd", "asjkdkasdkasdk")
             this.map = it
             map?.uiSettings?.isMyLocationButtonEnabled = true
         }
 
-        Log.v("cunt bitch", "state $state time $counter")
 
-        if(state == STATE.STARTED){
-            startTimer()
-        }
     }
 
     override fun onResume() {
@@ -76,68 +74,39 @@ class TrackingActivity : AppCompatActivity() {
 
     }
 
-    var counter: Long = 0L
-    var timeElasped: String = ""
-    private fun startTimer() {
-        state = STATE.STARTED
-        trackingBtnPause.text = "PAUSE"
-        var it = 1000
-        timer = Timer("Clock", false)
-        timer.scheduleAtFixedRate(0, TimeUnit.SECONDS.toMillis(1)) {
-            counter += it
-            timeElasped = RunUtils.getDuration(counter)
-            var txt = "Time Elasped: $timeElasped"
-            trackingTxtElaspedTime.text = txt
-        }
-    }
-
-    private fun stopTimer() {
-        if(state != STATE.STOPPED){
-            state = STATE.STOPPED
-            counter = 0L
-            timer.cancel()
-            trackingTxtElaspedTime.text = "00:00"
-
-        }
-
-    }
-
-
-    private fun pauseTimer() {
-        if(state != STATE.PAUSED){
-            state = STATE.PAUSED
-            trackingBtnPause.text = "RESUME"
-            timer.cancel()
-        }
-
-    }
-
 
     private fun startTracking() {
-            if(state == STATE.STOPPED){
-                state = STATE.STARTED
-                Log.e("ey", "kasdkaskdasd")
-                trackingBtnPause.text = "PAUSE"
-                EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.START, time = currentTime))
-            }
+        if (state == STATE.STOPPED) {
+            state = STATE.STARTED
+            Log.e("ey", "kasdkaskdasd")
+            trackingBtnPause.text = "PAUSE"
+            EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.START))
+        }
 
     }
 
 
     private fun stopTracking() {
-        if( state != STATE.STOPPED){
-            stopTimer()
-            Log.v("TRACKINGACTIVITY", "Stop Tracking : Time Elasped = $timeElasped currentime = $currentTime")
+        if (state != STATE.STOPPED) {
+            Log.e("STOPPED", "CUrrent time $currentTime start time $startTime previous time $previousTime")
+            state = STATE.STOPPED
+            val totalTime =  RunUtils.getDuration(timeCounter)
+            Log.v("TRACKINGACTIVITY", "Stop Tracking : Time Elasped = $totalTime currentime = $currentTime")
             EventBus.getDefault().post(
                 ServiceEvent(
                     control = ServiceEvent.Control.STOP,
-                    totalTime = timeElasped,
-                    id = id,
-                    time = currentTime
+                    totalTime = timeCounter,
+                    id = id
                 )
             )
+            resetPreviousTime()
+
         }
 
+    }
+
+    private fun resetPreviousTime() {
+        previousTime = 0L
     }
 
 
@@ -145,16 +114,18 @@ class TrackingActivity : AppCompatActivity() {
 
         if (state != STATE.STOPPED) {
             if (state == STATE.STARTED) {
+                Log.e(TAG, "STATE = START - > pause ")
                 //We have clicked PAUSE whilst running, therefore we need to pause
-                pauseTimer()
-                EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.PAUSE, time = currentTime))
+                EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.PAUSE))
                 state = STATE.PAUSED
                 trackingBtnPause.text = "PLAY"
-            } else if(state == STATE.PAUSED) {
-                startTimer()
+                resetPreviousTime()
+            } else if (state == STATE.PAUSED) {
+                Log.e(TAG, "STATE = PAISE - > START ")
+
                 trackingBtnPause.text = "PAUSE"
                 EventBus.getDefault()
-                    .post(ServiceEvent(control = ServiceEvent.Control.RESUME, id = id, time = currentTime))
+                    .post(ServiceEvent(control = ServiceEvent.Control.RESUME, id = id))
                 state = STATE.STARTED
             }
         }
@@ -189,11 +160,21 @@ class TrackingActivity : AppCompatActivity() {
 
                     val curLat = intent.getDoubleExtra(GPS.LATITUDE, 0.0)
                     val curLong = intent.getDoubleExtra(GPS.LONGITUDE, 0.0)
-                    currentTime = intent.getLongExtra(GPS.TIME, 0)
+
+                    val receivedTime = intent.getLongExtra(GPS.TIME, 0)
+//                    if(previousTime == 0L){
+//                        previousTime = receivedTime
+//                    }else{
+//                        previousTime = currentTime
+//                    }
+//                    previousTime = currentTime
+                    currentTime = receivedTime
 
                     Log.e("TRACKING", "__ CURRENTTIME $currentTime")
 
                     update(curLat, curLong)
+                    updateTime()
+
                 }
 
                 COMMAND.STOP_TRACKING -> {
@@ -202,17 +183,39 @@ class TrackingActivity : AppCompatActivity() {
                     val endTime = intent.getLongExtra(RunMetrics.END_TIME, 0L)
                     val totalDist = intent.getFloatExtra(RunMetrics.TOTAL_DISTANCE, 0F)
                     endUpdates(endTime, totalDist = totalDist)
+                    state = STATE.STOPPED
+
+                    if(intent.hasExtra("fromPendingIntent")){
+                        EventBus.getDefault().post(ServiceEvent(control = ServiceEvent.Control.STOP_FROM_INTENT, id = id, totalTime = timeCounter))
+
+                    }
                 }
 
                 COMMAND.PAUSE_TRACKING -> {
-                    pauseTimer()
+                    Log.e("PAUSED", "KASDKAKSDKASDK")
+                    resetPreviousTime()
+                    state = STATE.PAUSED
+
                 }
                 COMMAND.RESUME_TRACKING -> {
-                    startTimer()
+                    state = STATE.STARTED
                 }
             }
+
         }
     }
+
+    @UiThread
+    private fun updateTime() {
+        if (previousTime!= 0L && state == STATE.STARTED) {
+            timeCounter += (currentTime - previousTime)
+            val time = RunUtils.getDuration(timeCounter)
+            trackingTxtElaspedTime?.text = time
+
+        }
+        previousTime = currentTime
+    }
+
 
     @UiThread
     private fun update(curLat: Double, curLong: Double) {
@@ -224,14 +227,20 @@ class TrackingActivity : AppCompatActivity() {
 
         var latLng = LatLng(curLat, curLong)
         map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
+
+
+        //    timeElasped = RunUtils.getDuration(counter)
+
     }
 
 
     @UiThread
     private fun startUpdates(id: Int, startTime: Long, startLat: Double, startLong: Double) {
+        timeCounter = 0L
         this.id = id
         val start = RunUtils.getDate(startTime)
-        this.timeStarted = startTime
+        this.startTime = startTime
+        this.currentTime = startTime
         val title = "Run $id started at $start"
         trackingTxtTitle.text = title
         val lat = "Latitude: $startLat"
@@ -245,7 +254,6 @@ class TrackingActivity : AppCompatActivity() {
 
 
         //changes
-        startTimer()
 
     }
 
@@ -253,10 +261,10 @@ class TrackingActivity : AppCompatActivity() {
     @UiThread
     private fun endUpdates(endTime: Long, totalDist: Float) {
         val end = RunUtils.getDate(endTime)
-        val title = "Run ended at $end"
+        val title = "Run ended at $end OR $endTime"
         trackingTxtTitle.text = title
         trackingTxtTotalDistance.text = totalDist.toString()
-        stopTimer()
+        resetPreviousTime()
 
     }
 

@@ -21,7 +21,6 @@ import org.jetbrains.anko.doAsync
 import org.greenrobot.eventbus.ThreadMode
 import org.greenrobot.eventbus.Subscribe
 import com.example.eddy.basetrackerpsyegb.Service.ServiceEvent.Control.*
-import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import org.greenrobot.eventbus.EventBus
 import android.app.PendingIntent
 import com.example.eddy.basetrackerpsyegb.activities.TrackingActivity
@@ -96,7 +95,7 @@ class MyLocationService : Service() {
                     latitude = latitude,
                     timestamp = timestamp,
                     elevation = ele,
-                    speed = speed
+                    speed = location.speed
                 )
 
             putDB(gps, time, distance)
@@ -221,9 +220,8 @@ class MyLocationService : Service() {
         if (intent.action != null) {
             when (intent.action) {
                 ACTION.STOP_TRACKING -> {
-                    sendBroadcast(Intent(RECEIVER.RECEIVER_FILTER).putExtra(COMMAND.COMMAND, COMMAND.STOP_TRACKING))
+                    sendBroadcast(Intent(RECEIVER.RECEIVER_FILTER).putExtra(COMMAND.COMMAND, COMMAND.STOP_TRACKING).putExtra("fromPendingIntent", true))
                     state = TrackingActivity.STATE.STOPPED
-                    stopTracking(fromPendingIntent = true)
 
                 }
                 ACTION.PAUSE_TRACKING -> {
@@ -308,7 +306,7 @@ class MyLocationService : Service() {
 
     }
 
-    private fun stopTracking(totalTime: String = "", id: Int = 0, time: Long = 0L, fromPendingIntent: Boolean = false) {
+    private fun stopTracking(totalTime: Long = 0L, id: Int = 0, time: Long = 0L, fromPendingIntent: Boolean = false) {
         Log.e("STOPTRACKING", "Totaltime $totalTime , id $id, time $time")
         if (locationManager != null) {
             var caught = false
@@ -328,7 +326,7 @@ class MyLocationService : Service() {
                 doAsync {
                     locationListener.stopMetrics()
                     if (id != 0) {
-                        contentResolver.updateTotalDuration(duration = totalTime, id = id)
+                        contentResolver.updateTotalDuration(totalTime = totalTime, id = id)
                     }
                 }
                 locationManager!!.removeUpdates(locationListener)
@@ -341,7 +339,7 @@ class MyLocationService : Service() {
                 locationManager = null
 
             }
-        } else if (id != 0 && time != 0L) {
+        } else if (id != 0 && time != 0L && totalTime != 0L && !fromPendingIntent) {
             //Basically if we call stop metrics from our activity we want to be abel to update the total duration using
             //The duration in the activity. This is to illustrate communication from Event Busses.
             //This is also a way to 'stop' a service that has been 'paused
@@ -350,7 +348,7 @@ class MyLocationService : Service() {
             //And take pause times for refrence as well.
             doAsync {
                 contentResolver.endMetrics(time = time, id = id)
-                contentResolver.updateTotalDuration(duration = totalTime, id = id)
+                contentResolver.updateTotalDuration(totalTime = totalTime, id = id)
                 isListenerInitialized = false
 
             }
@@ -359,13 +357,12 @@ class MyLocationService : Service() {
 
         if (fromPendingIntent) {
             //If stop has been selected from the pending intent (notificaton), it will close down everything
-            Log.e("FROMPENDING!!!!", "wE'RE IN")
             doAsync {
-                val metric = contentResolver.getRun(currentTrackingPKey)
-                Log.e("WERE  IN", metric.toString() + "current key $currentTrackingPKey")
-                val time = RunUtils.Companion.getDuration(lastLocation?.time, metric.startTime)
-                contentResolver.endMetrics(lastLocation.time, currentTrackingPKey)
-                contentResolver.updateTotalDuration(time, currentTrackingPKey)
+                contentResolver.endMetrics(time = lastLocation.time, id = id)
+                contentResolver.updateTotalDuration(totalTime =  totalTime, id = id)
+                isListenerInitialized = false
+                Log.e("STOP TRACKING", "FROM PENDING INTENT")
+
             }
         }
 
@@ -525,7 +522,7 @@ class MyLocationService : Service() {
                 state = TrackingActivity.STATE.STARTED
             }
             STOP -> {
-                stopTracking(event.totalTime, event.id, event.time)
+                stopTracking(event.totalTime, event.id)
                 state = TrackingActivity.STATE.STOPPED
             }
             PAUSE -> {
@@ -537,6 +534,13 @@ class MyLocationService : Service() {
                 if (event.id != 0) {
                     resumeTracking(event.id)
                 }
+            }
+
+            STOP_FROM_INTENT -> {
+
+                Log.e("STOP FROM INTENT", "${event.id} + ${event.totalTime}")
+
+               stopTracking(totalTime = event.totalTime, id = event.id, fromPendingIntent = true)
             }
 
 

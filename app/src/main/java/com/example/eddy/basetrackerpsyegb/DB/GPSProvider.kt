@@ -13,6 +13,8 @@ import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.LONGITUDE
 import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.LATITUDE
 import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.PARENTID
 import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.TIME
+import com.example.eddy.basetrackerpsyegb.activities.TrackingActivity
+
 class GPSProvider : ContentProvider() {
 
     //I'd like to attribute this beautiful code to the Recipe Book Coursework i wrote
@@ -91,6 +93,8 @@ class GPSProvider : ContentProvider() {
             AppDatabase.DB_NAME
         )
             .build()
+
+
         return true
     }
 
@@ -131,7 +135,7 @@ class GPSProvider : ContentProvider() {
 
 
     private fun updateTotalTIme(values: ContentValues?): Int {
-        val time = values?.get(RunMetrics.TOTAL_TIME) as String
+        val time = values?.get(RunMetrics.TOTAL_TIME) as Long
         var id = values[RunMetrics.ID] as Int
         Log.v("updateTotalTIme", "time : $time")
         return database.metricsDao().setTotalTIme(time, id)

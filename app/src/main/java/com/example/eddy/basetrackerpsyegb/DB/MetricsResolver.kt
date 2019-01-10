@@ -5,11 +5,6 @@ import android.content.ContentUris
 import android.content.ContentValues
 import android.net.Uri
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.DB.RunMetrics.Companion.END_TIME
-import com.example.eddy.basetrackerpsyegb.DB.RunMetrics.Companion.ID
-import com.example.eddy.basetrackerpsyegb.DB.RunMetrics.Companion.START_TIME
-import com.example.eddy.basetrackerpsyegb.DB.RunMetrics.Companion.TOTAL_DISTANCE
-import com.example.eddy.basetrackerpsyegb.DB.RunMetrics.Companion.TOTAL_TIME
 
 const val METRICS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.DB.contentprovider/metricstable"
 const val UPDATE_METRICS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.DB.contentprovider/updatetable"
@@ -28,7 +23,7 @@ fun ContentResolver.getRuns(): List<RunMetrics> {
         run.startTime = cursor.getLong(cursor.getColumnIndex(RunMetrics.START_TIME))
         run.endTime = cursor.getLong(cursor.getColumnIndex(RunMetrics.END_TIME))
         run.totalDistance = cursor.getFloat(cursor.getColumnIndex(RunMetrics.TOTAL_DISTANCE))
-        run.totalTime = cursor.getString(cursor.getColumnIndex(RunMetrics.TOTAL_TIME))
+        run.totalTime = cursor.getLong(cursor.getColumnIndex(RunMetrics.TOTAL_TIME))
         runList.add(run)
         cursor.moveToNext()
 
@@ -62,7 +57,7 @@ fun ContentResolver.getRun(id: Int): RunMetrics {
     run.startTime = cursor.getLong(cursor.getColumnIndex(RunMetrics.START_TIME))
     run.endTime = cursor.getLong(cursor.getColumnIndex(RunMetrics.END_TIME))
     run.totalDistance = cursor.getFloat(cursor.getColumnIndex(RunMetrics.TOTAL_DISTANCE))
-    run.totalTime = cursor.getString(cursor.getColumnIndex(RunMetrics.TOTAL_TIME))
+    run.totalTime = cursor.getLong(cursor.getColumnIndex(RunMetrics.TOTAL_TIME))
     cursor.moveToNext()
 
     Log.v("Resolver: getRuns()", run.toString())
@@ -114,10 +109,10 @@ fun ContentResolver.updateRunDistance(distance: Float, id: Int){
 
 }
 
-fun ContentResolver.updateTotalDuration(duration: String, id: Int){
+fun ContentResolver.updateTotalDuration(totalTime: Long, id: Int){
     val cv = ContentValues()
     cv.put(RunMetrics.ID, id)
-    cv.put(RunMetrics.TOTAL_TIME, duration)
+    cv.put(RunMetrics.TOTAL_TIME, totalTime)
 
 
     update(Uri.parse(UPDATE_TOTAL_TIME_AUTHORITY), cv, null, null)

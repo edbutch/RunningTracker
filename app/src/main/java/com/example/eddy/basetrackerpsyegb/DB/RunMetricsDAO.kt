@@ -28,8 +28,8 @@ interface RunMetricsDAO {
     @Query("UPDATE RunMetrics SET endTime = :time WHERE id == :id")
     fun updateEndTime(time: Long, id: Int) : Int
 
-    @Query("UPDATE RunMetrics SET totalTIme = :time WHERE id == :id")
-    fun setTotalTIme(time: String, id: Int) : Int
+    @Query("UPDATE RunMetrics SET totalTime = :time WHERE id == :id")
+    fun setTotalTIme(time: Long, id: Int) : Int
 
     @Query("UPDATE RunMetrics SET totalDistance = totalDistance + :distance WHERE id == :id")
     fun updateDistance(distance: Float, id: Int) : Int

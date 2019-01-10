@@ -14,6 +14,7 @@ import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import com.example.eddy.basetrackerpsyegb.DB.deleteRun
 import com.example.eddy.basetrackerpsyegb.DB.getRuns
 import com.example.eddy.basetrackerpsyegb.map.PolyDecodeDemoActivity
+import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.text.SimpleDateFormat
@@ -44,7 +45,7 @@ class AllRunsAdapter(
         holder?.startDate.text = getDate(runList.get(pos).startTime)
         var startTime = runList.get(pos).startTime
         var endTime = runList.get(pos).endTime
-        holder?.runDuration.text = runList[pos].totalTime
+        holder?.runDuration.text = RunUtils.Companion.getDuration(runList[pos].totalTime)
 //            holder?.rootView.setOnClickListener { delete(runList[pos].id) }
 
 
