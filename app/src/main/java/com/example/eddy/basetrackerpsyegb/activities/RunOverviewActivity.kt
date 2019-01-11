@@ -63,8 +63,8 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
         doAsync {
             gpsList = contentResolver.getGPSList(id)
             runMetrics = contentResolver.getRun(id)
-            val eleLineData = ChartUtils.getEleLineData(gpsList)
-            val speedLineData = ChartUtils.getSpeedLineData(gpsList)
+            val eleLineData = ChartUtils.gpsToEleLine(gpsList)
+            val speedLineData = ChartUtils.gpsToSpeedLine(gpsList)
             for (gps in gpsList) {
                 val lat = gps.latitude
                 val long = gps.longitude
@@ -74,9 +74,10 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
                 }
             }
             uiThread {
-//TODO
-//                initBarChart()
-                ChartUtils.initializeEleChart(this@RunOverviewActivity,
+
+                ChartUtils.initializeLineChart(this@RunOverviewActivity,
+                    "Elevation",
+                    "Time Elevation Graph",
                     elechart,
                     eleLineData,
                     backgroundColor = getColor(R.color.colorAccent),
@@ -114,9 +115,9 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
                 val speed = "Average Speed: ${speedMetresSecond}m/s"
                 val d = runMetrics.totalDistance / 1000
 
-//                val distanceRounded:Double = Math.round(d * 1000.0) / 1000.0
+                val distanceRounded:Double = Math.round(d * 1000.0) / 1000.0
 
-                val distanceRounded = runMetrics.totalDistance
+//                val distanceRounded = runMetrics.totalDistance
                 val distance = "Distance:  ${distanceRounded}KM"
                 setOverviewData(
                     duration = RunUtils.getDuration(time),

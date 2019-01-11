@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.LinearLayout
-import com.example.eddy.basetrackerpsyegb.AllRunsAdapter
+import com.example.eddy.basetrackerpsyegb.utils.AllRunsAdapter
 import com.example.eddy.basetrackerpsyegb.DB.getRuns
 import com.example.eddy.basetrackerpsyegb.R
 import kotlinx.android.synthetic.main.activity_all_runs.*
@@ -34,7 +34,10 @@ class AllRunsActivity : AppCompatActivity() {
 
             uiThread{
                 allRunsRecylerView.adapter =
-                        AllRunsAdapter(runs.toMutableList(), this@AllRunsActivity)
+                        AllRunsAdapter(
+                            runs.toMutableList(),
+                            this@AllRunsActivity
+                        )
 
             }
 

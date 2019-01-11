@@ -6,8 +6,6 @@ import android.arch.persistence.room.migration.Migration
 import android.content.Context
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import com.example.eddy.basetrackerpsyegb.DB.RunMetricsDAO
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 @Database(entities = [GPS::class, RunMetrics::class], version = 2, exportSchema = false)
 

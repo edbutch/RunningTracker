@@ -1,4 +1,4 @@
-package com.example.eddy.basetrackerpsyegb
+package com.example.eddy.basetrackerpsyegb.utils
 
 import android.content.Context
 import android.util.Log

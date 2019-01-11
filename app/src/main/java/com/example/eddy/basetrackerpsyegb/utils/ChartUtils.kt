@@ -4,17 +4,16 @@ import android.graphics.Color
 import android.util.Log
 import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
 import java.util.*
 import android.view.Gravity
 import android.R.attr.gravity
 import android.app.PendingIntent.getActivity
 import android.content.Context
+import android.support.v4.content.ContextCompat
 import android.widget.FrameLayout
 import android.widget.TextView
-
+import com.example.eddy.basetrackerpsyegb.R
+import com.github.mikephil.charting.data.*
 
 
 class ChartUtils {
@@ -80,7 +79,7 @@ class ChartUtils {
         }
 
 
-        fun initializeEleChart(context: Context, elechart: LineChart, lineData: LineData, holeColor: Int, backgroundColor: Int): LineChart {
+        fun initializeLineChart(context: Context,title: String, description: String, elechart: LineChart, lineData: LineData, holeColor: Int, backgroundColor: Int): LineChart {
             Log.e(TAG, "Init chart")
             (lineData.getDataSetByIndex(0) as LineDataSet).circleHoleColor = holeColor
 
@@ -123,10 +122,10 @@ class ChartUtils {
 
             // no description text
             elechart.description.isEnabled = true
-            elechart.description.text = "Time Elevation Graph"
+            elechart.description.text = description
 
             val yAxisName = VerticalTextView(context, null)
-            yAxisName.setText("Elevation")
+            yAxisName.setText(title)
             val params2 =
                 FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
             params2.gravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
@@ -141,7 +140,8 @@ class ChartUtils {
         }
 
 
-        fun getEleLineData(gpsList: ArrayList<GPS>): LineData {
+
+        fun gpsToEleLine(gpsList: ArrayList<GPS>): LineData {
             gpsList.sortByDescending { it.timestamp }
             gpsList.reverse()
 
@@ -163,7 +163,7 @@ class ChartUtils {
             return LineData(dataSet)
         }
 
-        fun getSpeedLineData(gpsList: ArrayList<GPS>): LineData {
+        fun gpsToSpeedLine(gpsList: ArrayList<GPS>): LineData {
             gpsList.sortByDescending { it.timestamp }
             gpsList.reverse()
 
@@ -188,6 +188,52 @@ class ChartUtils {
 
 
         }
+        fun getSpeedLineData( speedList: List<Float>): LineData{
+            val entries = arrayListOf<Entry>()
+
+            for((index, speed) in speedList.withIndex()){
+                if(speed.isFinite()){
+                    entries.add(Entry(index.toFloat(), speed))
+                }else{
+                    entries.add(Entry(index.toFloat(), 0F))
+
+                }
+            }
+            val dataSet = LineDataSet(entries, "Speed ")
+
+            dataSet.setLineWidth(1.75f)
+            dataSet.setCircleRadius(5f)
+            dataSet.setCircleHoleRadius(2.5f)
+            dataSet.setColor(Color.WHITE)
+            dataSet.setCircleColor(Color.WHITE)
+            dataSet.setHighLightColor(Color.WHITE)
+            dataSet.setDrawValues(false)
+
+            return LineData(dataSet)
+
+        }
+
+        fun getDistanceBarData(context: Context, distanceList: List<Float>): BarData {
+            val entries = arrayListOf<BarEntry>()
+
+            for((index, dist) in distanceList.withIndex()){
+                Log.e("Testttt", "inted ${index.toFloat()}, dist $dist")
+                entries.add(BarEntry(index.toFloat(), dist, "Run $index"))
+            }
+            val dataSet = BarDataSet(entries, "A Run")
+
+            dataSet.highLightColor = context.getColor(R.color.colorPrimaryDark)
+            dataSet.setDrawValues(false)
+
+            dataSet.color = ContextCompat.getColor(context, R.color.colorPrimaryLight)
+
+            return BarData(dataSet)
+
+
+
+        }
+
+
 
 
     }

@@ -20,7 +20,6 @@ class MainActivity : AppCompatActivity() {
 
         Log.v(TAG, "onCreate")
 
-        RunOverview(context = this)
 
 
 
@@ -31,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun viewRunOverview() {
+        startActivity(Intent(this, RunStatsActivity::class.java))
 
     }
 

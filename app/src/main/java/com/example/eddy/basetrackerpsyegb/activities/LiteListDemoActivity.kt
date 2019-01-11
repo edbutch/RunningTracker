@@ -25,10 +25,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.MarkerOptions
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -36,7 +36,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.example.eddy.basetrackerpsyegb.AllJourneys
+import com.example.eddy.basetrackerpsyegb.utils.AllJourneys
 import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import com.example.eddy.basetrackerpsyegb.R
@@ -82,10 +82,10 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
         runMetrics: List<RunMetrics>,
         runList: List<List<GPS>>
     ) {
-        recycler_view!!.setHasFixedSize(true)
-        recycler_view!!.layoutManager = linearLayoutManager
-        recycler_view!!.adapter = RunsListAdapter(runMetrics, runList)
-        recycler_view!!.setRecyclerListener(recyclerListener)
+        run_list_view!!.setHasFixedSize(true)
+        run_list_view!!.layoutManager = linearLayoutManager
+        run_list_view!!.adapter = RunsListAdapter(runMetrics, runList)
+        run_list_view!!.setRecyclerListener(recyclerListener)
     }
 
 
@@ -119,13 +119,13 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
             OnMapReadyCallback {
 
 
-            //Created my own view for this anc added my own views to the holder
             var mapView: MapView? = null
             var title: TextView
             var map: GoogleMap? = null
             var date: TextView = layout.findViewById(R.id.lite_listrow_date)
             var distance: TextView = layout.findViewById(R.id.lite_listrow_distance)
             var duration: TextView = layout.findViewById(R.id.lite_listrow_duration)
+            val cardView: CardView = layout.findViewById(R.id.row_element_card)
 
             init {
                 mapView = layout.findViewById(R.id.lite_listrow_map)
@@ -205,6 +205,8 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
                 setMapLocation()
 
                 title.text = "Run ${pos+1}"
+                cardView.setOnClickListener { startMapViewActivity(runMetrics[pos].id) }
+
 
                 val dateText = "Started at ${RunUtils.getDate(runMetrics[pos].startTime)}"
                 date.text =dateText
@@ -214,6 +216,7 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
                 val distanceRounded:Double = Math.round(runMetrics[pos].totalDistance * 1000.0) / 1000.0
                 val dist = "${distanceRounded.toString()}KM"
                 distance.text = dist
+
 
             }
         }

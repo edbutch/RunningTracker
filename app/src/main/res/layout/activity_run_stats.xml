@@ -66,7 +66,8 @@
                                 android:gravity="start|left"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 tools:layout_editor_absoluteY="26dp"
-                                tools:layout_editor_absoluteX="42dp" android:text="Time spent Running:"/>
+                                tools:layout_editor_absoluteX="42dp" android:text="Time spent Running:"
+                                android:textSize="14sp"/>
 
                         <TextView
                                 android:id="@+id/overview_totalDistance"
@@ -76,7 +77,8 @@
                                 android:gravity="end|right"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 tools:layout_editor_absoluteY="26dp"
-                                tools:layout_editor_absoluteX="42dp" android:text="Total Distance:"/>
+                                tools:layout_editor_absoluteX="42dp" android:text="Total Distance:"
+                                android:textSize="14sp"/>
 
                     </LinearLayout>
 
@@ -94,15 +96,6 @@
                             card_view:layout_constraintTop_toTopOf="@+id/runtitle">
 
 
-                        <TextView
-                                android:id="@+id/overview_maxSpeed"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="3"
-                                android:gravity="start|left"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                tools:layout_editor_absoluteY="26dp"
-                                tools:layout_editor_absoluteX="42dp" android:text="Max Speed:"/>
 
                         <TextView
                                 android:id="@+id/overview_avgSpeed"
@@ -112,16 +105,49 @@
                                 android:gravity="end|right"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 tools:layout_editor_absoluteY="26dp"
-                                tools:layout_editor_absoluteX="42dp" android:text="Average Speed:"/>
+                                tools:layout_editor_absoluteX="42dp" android:text="Average Speed:"
+                                android:textSize="14sp"/>
 
                     </LinearLayout>
+
+
+
 
                     <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/third" android:layout_marginTop="8dp"
-                            app:layout_constraintTop_toBottomOf="@+id/second" android:layout_marginBottom="8dp"
+                            android:id="@+id/third"
+                            app:layout_constraintTop_toBottomOf="@+id/second"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginStart="8dp" android:layout_marginTop="8dp"
+                            card_view:layout_constraintTop_toTopOf="@+id/runtitle">
+
+
+                        <TextView
+                                android:id="@+id/overview_maxSpeed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="3"
+                                android:gravity="start|left"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                tools:layout_editor_absoluteY="26dp"
+                                tools:layout_editor_absoluteX="42dp" android:text="Max Speed:" android:textSize="14sp"/>
+
+
+                    </LinearLayout>
+
+
+
+
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/fourth" android:layout_marginTop="8dp"
+                            app:layout_constraintTop_toBottomOf="@+id/third" android:layout_marginBottom="8dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
@@ -136,7 +162,8 @@
                                 android:gravity="start|left"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 tools:layout_editor_absoluteY="26dp"
-                                tools:layout_editor_absoluteX="42dp" android:text="Highest Point:"/>
+                                tools:layout_editor_absoluteX="42dp" android:text="Highest Point:"
+                                android:textSize="14sp"/>
 
                         <TextView
                                 android:id="@+id/overview_minEle"
@@ -146,7 +173,8 @@
                                 android:gravity="end|right"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 tools:layout_editor_absoluteY="26dp"
-                                tools:layout_editor_absoluteX="42dp" android:text="LowestPoint:"/>
+                                tools:layout_editor_absoluteX="42dp" android:text="LowestPoint:"
+                                android:textSize="14sp"/>
 
                     </LinearLayout>
 
@@ -191,6 +219,64 @@
             <!--</android.support.v7.widget.CardView>-->
 
 
+            <android.support.v7.widget.CardView android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:elevation="2dp"
+                                                android:divider="@android:color/transparent"
+                                                android:dividerHeight="0.0px"
+                                                android:clipToPadding="false"
+                                                android:clipChildren="false"
+                                                card_view:cardElevation="4dp"
+                                                card_view:cardPreventCornerOverlap="false"
+                                                android:layout_marginTop="8dp"
+                                                android:layout_marginBottom="8dp"
+                                                android:layout_marginStart="8dp"
+                                                android:layout_marginEnd="8dp" android:id="@+id/mapMoveCard">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:orientation="vertical">
+
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:textAppearance="?android:attr/textAppearanceMedium"
+                              android:text="View on the map!" android:textColor="@color/colorPrimaryDark"
+                              android:textAlignment="center"/>
+
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                    >
+                        <Button
+                                android:text="Highest Point"
+                                android:layout_weight="1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/overview_highest_point"
+                                android:backgroundTint="@color/colorButtonGradient3"
+                                android:textColor="@color/colorPrimaryText"/>
+                        <Button
+                                android:text="Lowest Point"
+                                android:layout_weight="1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/overview_lowest_point"
+                                android:backgroundTint="@color/colorButtonGradient2"
+                                android:textColor="@color/colorDivider"/>
+                        <Button
+                                android:text="Fastest Speed"
+                                android:layout_weight="1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/overview_fastest_speed"
+                                android:backgroundTint="@color/colorButtonGradient1"
+                                android:textColor="@color/colorIcon"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+
 
             <android.support.v7.widget.CardView android:layout_width="376dp"
                                                 android:layout_height="250dp"
@@ -228,7 +314,7 @@
                                                 android:layout_marginTop="8dp"
                                                 android:layout_marginBottom="8dp"
                                                 android:layout_marginStart="8dp"
-                                                android:layout_marginEnd="8dp" android:id="@+id/eleChartCard">
+                                                android:layout_marginEnd="8dp" android:id="@+id/distanceChartCard">
 
 
                 <com.github.mikephil.charting.charts.BarChart
@@ -238,7 +324,6 @@
 
 
                 />
-
 
             </android.support.v7.widget.CardView>
 
@@ -259,7 +344,7 @@
 
 
                 <com.github.mikephil.charting.charts.LineChart
-                        android:id="@+id/speedchart"
+                        android:id="@+id/overallSpeedChart"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
 

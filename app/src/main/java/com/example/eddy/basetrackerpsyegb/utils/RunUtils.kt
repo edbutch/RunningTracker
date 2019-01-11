@@ -60,6 +60,8 @@ class RunUtils(val metrics: RunMetrics, val gpsList: List<GPS>) {
         }
 
 
+
+
         fun getDistance(d: Double): Double{
             return Math.round(d * 1000.0) / 1000.0
         }

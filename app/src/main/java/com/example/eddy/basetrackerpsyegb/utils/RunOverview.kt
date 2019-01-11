@@ -2,8 +2,10 @@ package com.example.eddy.basetrackerpsyegb.utils
 
 import android.content.Context
 import android.util.Log
+import androidx.annotation.UiThread
 import com.example.eddy.basetrackerpsyegb.DB.*
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.text.SimpleDateFormat
 
 class RunOverview(context: Context, callBack: OverviewListener) {
@@ -25,11 +27,11 @@ class RunOverview(context: Context, callBack: OverviewListener) {
                 runsOverview.add(Overview(runMetric = metric, runList = gps))
             }
 
-            var minEle : Double = 0.0
+            var minEle  = GPS()
             var totalTime: Long = 0L
             var totalDistance: Float = 0F
-            var maxEle: Double = 0.0
-            var maxSpeed = OverviewPoint(0,0)
+            var maxEle = GPS()
+            var maxSpeed = GPS()
             var avgSpeed: Float = 0F
             for (overview in runsOverview) {
                 Log.e("Overview: ", "Runlist ID ${overview.runList[0].parentId} + Metric ID ${overview.runMetric.id}")
@@ -42,18 +44,18 @@ class RunOverview(context: Context, callBack: OverviewListener) {
                 totalDistance += overview.runMetric.totalDistance
                 val mSpeed = overview.runList.sortedByDescending { it.speed }[0]
 
-                if (mSpeed.speed > (maxSpeed.data as Float)) {
-                    maxSpeed.data = mSpeed.speed
+                if (mSpeed.speed > maxSpeed.speed) {
+                    maxSpeed = mSpeed
 
                 }
-                val mEle =  overview.runList.sortedByDescending { it.elevation }[0].elevation
-                if(mEle > maxEle){
+                val mEle =  overview.runList.sortedByDescending { it.elevation }[0]
+                if(mEle.elevation > maxEle.elevation){
                     maxEle = mEle
                 }
 
-                val mnEle = overview.runList.sortedBy { it.elevation }[0].elevation
+                val mnEle = overview.runList.sortedBy { it.elevation }[0]
 
-                if(mnEle < minEle){
+                if(mnEle.elevation < minEle.elevation){
                     minEle = mnEle
                 }
 
@@ -70,30 +72,34 @@ class RunOverview(context: Context, callBack: OverviewListener) {
             }
 
 
+
             //maxele, maxspeed
             avgSpeed = avgSpeed / runsOverview.size
             val averageDistance = totalDistance / runsOverview.size
 
+            uiThread {
+                callBack.DBReady(OverviewData(speedList = speedList,distanceList = distanceList,
+                    topAlt = maxEle,totalDistance = totalDistance,totalTime = totalTime, maxEle = maxEle, maxSpeed = maxSpeed,
+                    minEle = minEle,avgSpeed = avgSpeed, avgDistance = averageDistance ))
 
-            callBack.DBReady(OverviewData(speedList = speedList,distanceList = distanceList,
-                topAlt = maxEle,totalDistance = totalDistance,totalTime = totalTime, maxEle = maxEle, maxSpeed = maxSpeed,
-                minEle = minEle,avgSpeed = avgSpeed, avgDistance = averageDistance ))
+
+            }
+
 
 
         }
     }
 
 
-    data class OverviewPoint(var id: Int, var data: Any)
 
     data class OverviewData(
         val speedList: MutableList<Float>,
         val distanceList: MutableList<Float>,
-        val topAlt: OverviewPoint,
+        val topAlt: GPS,
         val totalDistance: Float,
-        val maxEle: OverviewPoint,
-        val maxSpeed: OverviewPoint,
-        val minEle: OverviewPoint,
+        val maxEle: GPS,
+        val maxSpeed: GPS,
+        val minEle: GPS,
         val avgSpeed: Float,
         val avgDistance: Float,
         val totalTime: Long

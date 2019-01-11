@@ -30,14 +30,11 @@ class MyLocationService : Service() {
 
 
     companion object {
-        val KEY_LOCATION_INTERVAL = "LOCATION_INTERVAL"
-        val KEY_LOCATION_DISTANCE = "LOCATION_DISTANCE"
         private val TAG = "MyLocationService"
     }
 
     private var locationManager: LocationManager? = null
 
-    //    var timer: Boolean = false
     private var locationListener = (LocationListener(LocationManager.GPS_PROVIDER))
 
     lateinit var lastLocation: Location
@@ -359,7 +356,7 @@ class MyLocationService : Service() {
 
             }
         } else if (id != 0 && time != 0L && totalTime != 0L && !fromPendingIntent) {
-            //Basically if we call stop metrics from our activity we want to be abel to update the total duration using
+            // If we call stop metrics from our activity we want to be able to update the total duration using
             //The duration in the activity. This is to illustrate communication from Event Busses.
             //This is also a way to 'stop' a service that has been 'paused
             //THis was an issue as I wanted to close down the listener when paused as it's heavy on resources, however I wanted to

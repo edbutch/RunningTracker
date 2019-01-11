@@ -1,8 +1,7 @@
-package com.example.eddy.basetrackerpsyegb
+package com.example.eddy.basetrackerpsyegb.utils
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -13,8 +12,8 @@ import android.widget.TextView
 import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import com.example.eddy.basetrackerpsyegb.DB.deleteRun
 import com.example.eddy.basetrackerpsyegb.DB.getRuns
+import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.map.PolyDecodeDemoActivity
-import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.text.SimpleDateFormat
@@ -100,7 +99,7 @@ class AllRunsAdapter(
         return runList.size
     }
 
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): AllRunsAdapter.ViewHolder {
+    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolder {
         val v = LayoutInflater.from(p0?.context).inflate(R.layout.runs_list_element, p0, false)
         return ViewHolder(v)
     }
