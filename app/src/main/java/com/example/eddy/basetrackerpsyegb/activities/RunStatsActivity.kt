@@ -135,10 +135,6 @@ class RunStatsActivity : AppCompatActivity(),  RunOverview.OverviewListener {
 
 
 
-    private fun fillView() {
-
-
-    }
 
     lateinit var map: GoogleMap
 
@@ -146,6 +142,8 @@ class RunStatsActivity : AppCompatActivity(),  RunOverview.OverviewListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_run_stats)
         RunOverview(this, this)
+
+
 
         (all_runs_map as SupportMapFragment).getMapAsync {
          map = it

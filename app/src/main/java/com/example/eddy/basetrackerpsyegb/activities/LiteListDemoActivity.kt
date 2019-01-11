@@ -56,7 +56,7 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
 
     private val recyclerListener = RecyclerView.RecyclerListener { holder ->
         val mapHolder = holder as RunsListAdapter.ViewHolder
-        if (mapHolder != null && mapHolder.map != null) {
+        if (mapHolder.map != null) {
             // Clear the map and free up resources by changing the map type to none.
             // Also reset the map when it gets reattached to layout, so the previous map would
             // not be displayed.
@@ -73,8 +73,13 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
 
         /*AllJourneys takes the activity context, and a
         callback where It can post the database data to*/
-        AllJourneys(this, this)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.e("ONPAUSE", "ONRESUME")
+        AllJourneys(this, this)
     }
 
     //AllJourneys callback
@@ -82,6 +87,8 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
         runMetrics: List<RunMetrics>,
         runList: List<List<GPS>>
     ) {
+        run_list_view!!.adapter = null
+        run_list_view!!.layoutManager = null
         run_list_view!!.setHasFixedSize(true)
         run_list_view!!.layoutManager = linearLayoutManager
         run_list_view!!.adapter = RunsListAdapter(runMetrics, runList)

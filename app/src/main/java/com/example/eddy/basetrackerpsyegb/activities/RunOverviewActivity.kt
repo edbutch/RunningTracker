@@ -1,13 +1,11 @@
 package com.example.eddy.basetrackerpsyegb.activities
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.UiThread
-import com.example.eddy.basetrackerpsyegb.DB.GPS
-import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
-import com.example.eddy.basetrackerpsyegb.DB.getGPSList
-import com.example.eddy.basetrackerpsyegb.DB.getRun
+import com.example.eddy.basetrackerpsyegb.DB.*
 import com.example.eddy.basetrackerpsyegb.utils.ChartUtils
 import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.utils.MapUtils
@@ -38,6 +36,8 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_run_overview)
 
+
+
         (overview_map as SupportMapFragment).getMapAsync {
             Log.e(TAG, "mapasync???")
             map = it
@@ -46,6 +46,17 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
             if (intent.hasExtra(RunMetrics.ID)) {
                 id = intent.getIntExtra(RunMetrics.ID, 0)
                 getRunDataAsync()
+                deleteCard.setOnClickListener { delete(id) }
+            }
+
+        }
+    }
+
+    private fun delete(id: Int) {
+        doAsync {
+            this@RunOverviewActivity.contentResolver.deleteRun(id.toLong())
+            uiThread {
+                finish()
             }
 
         }

@@ -63,6 +63,11 @@ class MyLocationService : Service() {
 
                 if (time != 0L) {
                     speed = distance / (time / 1000)
+
+                    if(speed.isInfinite()){
+                        Log.e("SPeed is ", "speed is infinite..")
+                        speed = 0F
+                    }
 //                    speed = location.speed
 
                 } else {
