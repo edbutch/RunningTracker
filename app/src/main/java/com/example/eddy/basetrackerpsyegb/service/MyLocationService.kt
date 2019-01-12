@@ -23,7 +23,7 @@ import org.greenrobot.eventbus.Subscribe
 import com.example.eddy.basetrackerpsyegb.service.ServiceEvent.Control.*
 import org.greenrobot.eventbus.EventBus
 import android.app.PendingIntent
-import com.example.eddy.basetrackerpsyegb.activities.*
+import com.example.eddy.basetrackerpsyegb.activities.TrackingActivity
 
 
 class MyLocationService : Service() {

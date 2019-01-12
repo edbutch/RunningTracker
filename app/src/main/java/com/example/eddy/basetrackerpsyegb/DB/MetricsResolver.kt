@@ -1,11 +1,10 @@
-package com.example.eddy.basetrackerpsyegb.activities
+package com.example.eddy.basetrackerpsyegb.db
 
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.net.Uri
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.db.RunMetrics
 
 const val METRICS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.DB.contentprovider/metricstable"
 const val UPDATE_METRICS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.DB.contentprovider/updatetable"

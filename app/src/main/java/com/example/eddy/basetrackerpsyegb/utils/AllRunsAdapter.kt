@@ -10,10 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.eddy.basetrackerpsyegb.db.RunMetrics
+import com.example.eddy.basetrackerpsyegb.db.deleteRun
+import com.example.eddy.basetrackerpsyegb.db.getRuns
 import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.activities.RunOverviewActivity
-import com.example.eddy.basetrackerpsyegb.activities.deleteRun
-import com.example.eddy.basetrackerpsyegb.activities.getRuns
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.text.SimpleDateFormat

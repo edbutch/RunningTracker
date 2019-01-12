@@ -1,4 +1,4 @@
-package com.example.eddy.basetrackerpsyegb.activities
+package com.example.eddy.basetrackerpsyegb.db
 
 
 import android.content.ContentResolver
@@ -6,7 +6,6 @@ import android.content.ContentUris
 import android.content.ContentValues
 import android.net.Uri
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.db.GPS
 import com.example.eddy.basetrackerpsyegb.db.GPS.Companion.ELE
 import com.example.eddy.basetrackerpsyegb.db.GPS.Companion.PKEY
 import com.example.eddy.basetrackerpsyegb.db.GPS.Companion.LONGITUDE
@@ -58,15 +57,7 @@ fun ContentResolver.getGPSList(id: Int): ArrayList<GPS> {
         var ele = cursor.getDouble(cursor.getColumnIndex(GPS.ELE))
         var speed = cursor.getFloat(cursor.getColumnIndex(GPS.SPEED))
 
-        val gps = GPS(
-            pKey = pKey,
-            parentId = parentId,
-            timestamp = time,
-            latitude = lat,
-            longitude = long,
-            elevation = ele,
-            speed = speed
-        )
+        val gps = GPS(pKey = pKey, parentId = parentId, timestamp = time, latitude = lat, longitude = long,elevation = ele, speed = speed)
         gpsList.add(gps)
         cursor.moveToNext()
 //        Log.v("Resolver: GetGPSList", gps.toString())
@@ -99,15 +90,7 @@ fun ContentResolver.getAllGPSList(): List<GPS> {
         var ele = cursor.getDouble(cursor.getColumnIndex(ELE))
         var speed = cursor.getFloat(cursor.getColumnIndex(SPEED))
 
-        val gps = GPS(
-            pKey = pKey,
-            parentId = parentId,
-            timestamp = time,
-            latitude = lat,
-            longitude = long,
-            elevation = ele,
-            speed = speed
-        )
+        val gps = GPS(pKey = pKey, parentId = parentId, timestamp = time, latitude = lat, longitude = long, elevation = ele, speed = speed)
 
 //        gps.ele = cursor.getDouble(cursor.getColumnIndex(GPS.ELE))
         gpsList.add(gps)

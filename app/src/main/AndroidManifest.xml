@@ -30,7 +30,7 @@
         <service android:name=".service.MyLocationService"/>
 
         <provider
-                android:name=".activities.LocationProvider"
+                android:name=".db.LocationProvider"
                 android:authorities="com.example.eddy.basetrackerpsyegb.db.contentprovider"
                 android:enabled="true"
                 android:exported="true">

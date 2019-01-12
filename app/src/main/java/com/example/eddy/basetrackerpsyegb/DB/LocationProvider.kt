@@ -1,4 +1,4 @@
-package com.example.eddy.basetrackerpsyegb.activities
+package com.example.eddy.basetrackerpsyegb.db
 
 import android.arch.persistence.room.Room
 import android.content.ContentProvider
@@ -8,14 +8,11 @@ import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.db.AppDatabase
-import com.example.eddy.basetrackerpsyegb.db.GPS
 import com.example.eddy.basetrackerpsyegb.db.GPS.Companion.PKEY
 import com.example.eddy.basetrackerpsyegb.db.GPS.Companion.LONGITUDE
 import com.example.eddy.basetrackerpsyegb.db.GPS.Companion.LATITUDE
 import com.example.eddy.basetrackerpsyegb.db.GPS.Companion.PARENTID
 import com.example.eddy.basetrackerpsyegb.db.GPS.Companion.TIME
-import com.example.eddy.basetrackerpsyegb.db.RunMetrics
 
 class LocationProvider : ContentProvider() {
 
@@ -52,36 +49,24 @@ class LocationProvider : ContentProvider() {
                 GPSCODE_ID
             )
             sURIMatcher.addURI(
-                AUTHORITY,
-                PATH_METRICS,
-                METCODE
-            )
-            sURIMatcher.addURI(
-                AUTHORITY, "$PATH_METRICS/#",
-                METCODE_ID
-            )
+                AUTHORITY, PATH_METRICS,
+                METCODE)
+            sURIMatcher.addURI(AUTHORITY, "$PATH_METRICS/#",
+                METCODE_ID)
 
             sURIMatcher.addURI(
-                AUTHORITY,
-                UPDATE,
-                UPDATE_DISTANCE
-            )
+                AUTHORITY, UPDATE,
+                UPDATE_DISTANCE)
+
+            sURIMatcher.addURI(AUTHORITY, "$UPDATE/#",
+                UPDATE_DISANCE_ID)
 
             sURIMatcher.addURI(
-                AUTHORITY, "$UPDATE/#",
-                UPDATE_DISANCE_ID
-            )
+                AUTHORITY, PATH_TOTALTIME,
+                UPDATE_TOTAL_TIME)
 
-            sURIMatcher.addURI(
-                AUTHORITY,
-                PATH_TOTALTIME,
-                UPDATE_TOTAL_TIME
-            )
-
-            sURIMatcher.addURI(
-                AUTHORITY, "$PATH_TOTALTIME/#",
-                UPDATE_TOTAL_TIME_ID
-            )
+            sURIMatcher.addURI(AUTHORITY, "$PATH_TOTALTIME/#",
+                UPDATE_TOTAL_TIME_ID)
 
 
 
@@ -118,7 +103,7 @@ class LocationProvider : ContentProvider() {
             GPSCODE -> {
                 return updateGPS(values)
             }
-            METCODE ->{
+            METCODE->{
                 return updateMetrics(values)
             }
             UPDATE_DISTANCE -> {
