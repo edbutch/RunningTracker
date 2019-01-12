@@ -2,10 +2,10 @@ package com.example.eddy.basetrackerpsyegb.utils
 
 import android.content.Context
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.DB.*
+import com.example.eddy.basetrackerpsyegb.activities.getGPSList
+import com.example.eddy.basetrackerpsyegb.activities.getRuns
+import com.example.eddy.basetrackerpsyegb.db.*
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.onComplete
-import org.jetbrains.anko.uiThread
 import java.text.SimpleDateFormat
 
 class RunsOverview(context: Context) {

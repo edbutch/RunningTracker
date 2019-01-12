@@ -1,10 +1,11 @@
-package com.example.eddy.basetrackerpsyegb.DB
+package com.example.eddy.basetrackerpsyegb.activities
 
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.net.Uri
 import android.util.Log
+import com.example.eddy.basetrackerpsyegb.db.RunMetrics
 
 const val METRICS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.DB.contentprovider/metricstable"
 const val UPDATE_METRICS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.DB.contentprovider/updatetable"
@@ -120,34 +121,7 @@ fun ContentResolver.updateTotalDuration(totalTime: Long, id: Int){
 }
 
 
-//
-//fun ContentResolver.getAllRuns(): ArrayList<RunMetrics> {
-//    val cursor = query(
-//        Uri.parse(METRICS_AUTHORITY),
-//        null,
-//        null,
-//        null,
-//        null)
-//
-//
-//    val runs = ArrayList<RunMetrics>()
-//    cursor.moveToFirst()
-//    while (!cursor.isAfterLast) {
-//        var id = cursor.getInt(cursor.getColumnIndex(ID))
-//        var start = cursor.getLong(cursor.getColumnIndex(START_TIME))
-//        var end = cursor.getLong(cursor.getColumnIndex(END_TIME))
-//        var dist = cursor.getFloat(cursor.getColumnIndex(TOTAL_DISTANCE))
-//        val totalTime = cursor.getString(cursor.getColumnIndex(TOTAL_TIME))
-//
-//        val rm = RunMetrics(id = id, startTime = start, endTime = end, totalDistance = dist, totalTime = totalTime)
-////        gps.ele = cursor.getDouble(cursor.getColumnIndex(GPS.ELE))
-//        runs.add(rm)
-//        cursor.moveToNext()
-//        Log.v("Resolver: getAllRuns()", rm.toString())
-//    }
-//    cursor.close()
-//    return runs
-//}
+
 
 fun ContentResolver.deleteRun(id: Long) {
     delete(

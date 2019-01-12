@@ -8,12 +8,12 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.annotation.UiThread
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.DB.GPS
-import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
+import com.example.eddy.basetrackerpsyegb.db.GPS
+import com.example.eddy.basetrackerpsyegb.db.RunMetrics
 import com.example.eddy.basetrackerpsyegb.R
-import com.example.eddy.basetrackerpsyegb.Service.MyLocationService
-import com.example.eddy.basetrackerpsyegb.Service.RECEIVER.RECEIVER_FILTER
-import com.example.eddy.basetrackerpsyegb.Service.ServiceEvent
+import com.example.eddy.basetrackerpsyegb.service.MyLocationService
+import com.example.eddy.basetrackerpsyegb.service.RECEIVER.RECEIVER_FILTER
+import com.example.eddy.basetrackerpsyegb.service.ServiceEvent
 import com.example.eddy.basetrackerpsyegb.utils.MapUtils
 import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -22,7 +22,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.activity_tracking.*
 import org.greenrobot.eventbus.EventBus
-import com.example.eddy.basetrackerpsyegb.Service.COMMAND as COMMAND
+import com.example.eddy.basetrackerpsyegb.service.COMMAND as COMMAND
 
 class TrackingActivity : AppCompatActivity() {
 
@@ -165,7 +165,9 @@ class TrackingActivity : AppCompatActivity() {
                     val curLong = intent.getDoubleExtra(GPS.LONGITUDE, 0.0)
 
                     val receivedTime = intent.getLongExtra(GPS.TIME, 0)
-                    totalDistance += intent.getFloatExtra(GPS.DISTANCE,0F)
+
+                    val totalDist = intent.getFloatExtra(GPS.DISTANCE,0F)
+                    totalDistance += totalDist
                     val ele = intent.getDoubleExtra(GPS.ELE,0.0 )
                     val speed = intent.getFloatExtra(GPS.SPEED,0F)
 
@@ -233,6 +235,8 @@ class TrackingActivity : AppCompatActivity() {
         trackingSpeed.text = speed
         val ele = "Ele: $ele"
         trackingEle.text = ele
+
+        val totalD = totalDistance/1000
         val dist =  "Distance : ${totalDistance/1000}M"
         trackingTxtTotalDistance.text =dist
 

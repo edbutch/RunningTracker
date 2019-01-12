@@ -3,12 +3,13 @@ package com.example.eddy.basetrackerpsyegb.activities
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.DB.GPS
+import com.example.eddy.basetrackerpsyegb.db.GPS
 import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.utils.ChartUtils
 import com.example.eddy.basetrackerpsyegb.utils.MapUtils
 import com.example.eddy.basetrackerpsyegb.utils.RunOverview
 import com.example.eddy.basetrackerpsyegb.utils.RunUtils
+import com.example.eddy.basetrackerpsyegb.utils.RunUtils.Companion.formatDecimal
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -29,17 +30,17 @@ class RunStatsActivity : AppCompatActivity(), RunOverview.OverviewListener {
         val avgSpeed = "Average Speed : ${overview.avgSpeed}"
         overview_avgSpeed.text = avgSpeed
         val distance = RunUtils.getDistance(overview.totalDistance.toDouble())
-        val totalDistance = "Total Distance: ${formatted(distance)}KM"
+        val totalDistance = "Total Distance: ${formatDecimal(distance)}KM"
         overview_totalDistance.text = totalDistance
-        val maxEle = "Highest Point: ${formatted(overview.maxEle.elevation)}M"
+        val maxEle = "Highest Point: ${formatDecimal(overview.maxEle.elevation)}M"
         overview_maxEle.text = maxEle
         overview_highest_point.setOnClickListener { moveMap(overview.maxEle, "Highest Point") }
-        val minEle = "Lowest Point: ${formatted(overview.minEle.elevation)}M"
+        val minEle = "Lowest Point: ${formatDecimal(overview.minEle.elevation)}M"
         overview_minEle.text = minEle
         overview_lowest_point.setOnClickListener { moveMap(overview.minEle, "Lowest Point") }
         val timeRunning = "Total time ran: ${RunUtils.getDuration(overview.totalTime)}"
         overview_totalTime.text = timeRunning
-        val maxSpeed = "Max Speed: ${formatted(overview.maxSpeed.speed)}M/S"
+        val maxSpeed = "Max Speed: ${formatDecimal(overview.maxSpeed.speed)}M/S"
         overview_maxSpeed.text = maxSpeed
         overview_fastest_speed.setOnClickListener { moveMap(overview.maxSpeed, "Max Speed") }
 
@@ -123,9 +124,6 @@ class RunStatsActivity : AppCompatActivity(), RunOverview.OverviewListener {
 
     }
 
-    fun formatted(data: Any): String {
-        return String.format("%.2f", data)
-    }
 
 
     lateinit var map: GoogleMap

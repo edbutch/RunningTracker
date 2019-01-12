@@ -9,16 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
-import com.example.eddy.basetrackerpsyegb.DB.deleteRun
-import com.example.eddy.basetrackerpsyegb.DB.getRuns
+import com.example.eddy.basetrackerpsyegb.db.RunMetrics
 import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.activities.RunOverviewActivity
+import com.example.eddy.basetrackerpsyegb.activities.deleteRun
+import com.example.eddy.basetrackerpsyegb.activities.getRuns
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 class AllRunsAdapter(

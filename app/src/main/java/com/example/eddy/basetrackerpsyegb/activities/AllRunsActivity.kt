@@ -1,12 +1,10 @@
 package com.example.eddy.basetrackerpsyegb.activities
 
-import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.LinearLayout
 import com.example.eddy.basetrackerpsyegb.utils.AllRunsAdapter
-import com.example.eddy.basetrackerpsyegb.DB.getRuns
 import com.example.eddy.basetrackerpsyegb.R
 import kotlinx.android.synthetic.main.activity_all_runs.*
 import org.jetbrains.anko.doAsync

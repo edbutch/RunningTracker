@@ -2,16 +2,13 @@ package com.example.eddy.basetrackerpsyegb.utils
 
 import android.graphics.Color
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.DB.GPS
+import com.example.eddy.basetrackerpsyegb.db.GPS
 import com.github.mikephil.charting.charts.LineChart
 import java.util.*
 import android.view.Gravity
-import android.R.attr.gravity
-import android.app.PendingIntent.getActivity
 import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.widget.FrameLayout
-import android.widget.TextView
 import com.example.eddy.basetrackerpsyegb.R
 import com.github.mikephil.charting.data.*
 

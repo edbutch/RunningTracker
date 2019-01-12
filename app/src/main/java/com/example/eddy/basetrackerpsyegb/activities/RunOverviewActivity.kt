@@ -1,15 +1,12 @@
 package com.example.eddy.basetrackerpsyegb.activities
 
-import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.UiThread
-import com.example.eddy.basetrackerpsyegb.DB.*
-import com.example.eddy.basetrackerpsyegb.utils.ChartUtils
+import com.example.eddy.basetrackerpsyegb.db.*
 import com.example.eddy.basetrackerpsyegb.R
-import com.example.eddy.basetrackerpsyegb.utils.MapUtils
-import com.example.eddy.basetrackerpsyegb.utils.RunUtils
+import com.example.eddy.basetrackerpsyegb.utils.*
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener

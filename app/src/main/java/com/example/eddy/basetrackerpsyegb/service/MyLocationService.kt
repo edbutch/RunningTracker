@@ -1,4 +1,4 @@
-package com.example.eddy.basetrackerpsyegb.Service
+package com.example.eddy.basetrackerpsyegb.service
 
 import android.app.*
 import android.content.Context
@@ -15,15 +15,15 @@ import android.support.v4.app.NotificationCompat
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat.PRIORITY_MIN
-import com.example.eddy.basetrackerpsyegb.DB.*
+import com.example.eddy.basetrackerpsyegb.db.*
 import com.example.eddy.basetrackerpsyegb.R
 import org.jetbrains.anko.doAsync
 import org.greenrobot.eventbus.ThreadMode
 import org.greenrobot.eventbus.Subscribe
-import com.example.eddy.basetrackerpsyegb.Service.ServiceEvent.Control.*
+import com.example.eddy.basetrackerpsyegb.service.ServiceEvent.Control.*
 import org.greenrobot.eventbus.EventBus
 import android.app.PendingIntent
-import com.example.eddy.basetrackerpsyegb.activities.TrackingActivity
+import com.example.eddy.basetrackerpsyegb.activities.*
 
 
 class MyLocationService : Service() {
@@ -33,22 +33,15 @@ class MyLocationService : Service() {
         private val TAG = "MyLocationService"
     }
 
+
     private var locationManager: LocationManager? = null
-
     private var locationListener = (LocationListener(LocationManager.GPS_PROVIDER))
-
     lateinit var lastLocation: Location
     lateinit var lastGPS: GPS
     var currentTrackingPKey: Int = 0
     var isListenerInitialized: Boolean = false
 
     private inner class LocationListener(provider: String) : android.location.LocationListener {
-
-
-        fun resumeTracking(id: Int) {
-            isListenerInitialized = true
-            currentTrackingPKey = id
-        }
 
 
         override fun onLocationChanged(location: Location) {
@@ -77,7 +70,7 @@ class MyLocationService : Service() {
             }
 
 
-            Log.e(TAG, "time $time distance $distance speed $speed speed = distance / time ${distance / time}")
+            Log.e(TAG, "time $time distance $distance speed $speed speed $speed = distance $distance /  $time time    =     ${distance / time}")
 
             var parentId = currentTrackingPKey
             var latitude = location.latitude
@@ -119,6 +112,12 @@ class MyLocationService : Service() {
         }
 
 
+        fun resumeTracking(id: Int) {
+            isListenerInitialized = true
+            currentTrackingPKey = id
+        }
+
+
         private fun putDB(gps: GPS, time: Long, distance: Float) {
 
             doAsync {
@@ -142,7 +141,7 @@ class MyLocationService : Service() {
 
         private fun addGPS(gps: GPS, distance: Float) {
             contentResolver.addGPS(gps)
-            broadcastData(COMMAND.UPDATE_TRACKING, gps, distance)
+            broadcastData(COMMAND.UPDATE_TRACKING, gps, distance =distance)
 
         }
 
@@ -156,6 +155,7 @@ class MyLocationService : Service() {
         }
 
         private fun broadcastData(command: Int, gps: GPS? = null, totalDistance: Float = 0F, distance: Float = 0F) {
+
 
             val intent = Intent()
 
@@ -174,7 +174,6 @@ class MyLocationService : Service() {
 
                 COMMAND.UPDATE_TRACKING -> {
                     if (gps != null) {
-                        Log.e("TRACK", "ASKLDAKSD")
                         intent.putExtra(GPS.LATITUDE, gps.latitude)
                         intent.putExtra(GPS.LONGITUDE, gps.longitude)
                         intent.putExtra(GPS.TIME, gps.timestamp)
@@ -209,7 +208,6 @@ class MyLocationService : Service() {
                 var rm = RunMetrics()
                 isListenerInitialized = false
                 rm = contentResolver.endMetrics(lastLocation.time, currentTrackingPKey)
-                Log.e("stopmetrics", rm.toString())
 
             }
 
@@ -229,6 +227,7 @@ class MyLocationService : Service() {
         if (intent.action != null) {
             when (intent.action) {
                 ACTION.STOP_TRACKING -> {
+                    //Stop called from outside the activity, so we need to get some final data from the UI before it's sent back
                     sendBroadcast(
                         Intent(RECEIVER.RECEIVER_FILTER).putExtra(
                             COMMAND.COMMAND,
@@ -243,7 +242,6 @@ class MyLocationService : Service() {
                         /*These states have been included inside the service as well as the actitiy to REFLECT the state of the activity.
                         The course spec specified the user should select when they want the run to start, which is why it's here, because the run
                         otherwise could be stopped and then the user could press 'resume', as it hasn't flushed the current ID of the run in the service.
-                        TODO I would like to refactor the state being passed into the event bus so we don't need to set it at all within the service.
                          */
                         pauseTracking()
                         sendBroadcast(
@@ -280,9 +278,6 @@ class MyLocationService : Service() {
         return Service.START_STICKY
     }
 
-    private fun resumePauseBroadcast() {
-
-    }
 
 
     override fun onCreate() {
@@ -305,10 +300,9 @@ class MyLocationService : Service() {
 
     private fun startTracking() {
         try {
-            /*TODO TEST PARAMS*/
             locationManager!!.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                100L,
+                1000,
                 0F,
                 locationListener
             )
@@ -321,7 +315,6 @@ class MyLocationService : Service() {
     }
 
     private fun stopTracking(totalTime: Long = 0L, id: Int = 0, time: Long = 0L, fromPendingIntent: Boolean = false) {
-        Log.e("STOPTRACKING", "Totaltime $totalTime , id $id, time $time")
         if (locationManager != null) {
             var caught = false
 
@@ -531,7 +524,6 @@ class MyLocationService : Service() {
 
         when (event.control) {
             START -> {
-                Log.e("hello world", "eeeee")
                 startForeground()
                 initializeLocationManager()
                 startTracking()

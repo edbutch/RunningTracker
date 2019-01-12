@@ -1,4 +1,4 @@
-package com.example.eddy.basetrackerpsyegb.Service
+package com.example.eddy.basetrackerpsyegb.service
 
 class ServiceEvent(
     var control: Control,

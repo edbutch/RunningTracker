@@ -1,8 +1,8 @@
 package com.example.eddy.basetrackerpsyegb.utils
 
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.DB.GPS
-import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
+import com.example.eddy.basetrackerpsyegb.db.GPS
+import com.example.eddy.basetrackerpsyegb.db.RunMetrics
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -60,6 +60,11 @@ class RunUtils(val metrics: RunMetrics, val gpsList: List<GPS>) {
         }
 
 
+
+
+        fun formatDecimal(data: Any): String {
+            return String.format("%.2f", data)
+        }
 
 
         fun getDistance(d: Double): Double{

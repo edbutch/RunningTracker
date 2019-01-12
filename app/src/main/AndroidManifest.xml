@@ -27,11 +27,11 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".Service.MyLocationService"/>
+        <service android:name=".service.MyLocationService"/>
 
         <provider
-                android:name=".DB.GPSProvider"
-                android:authorities="com.example.eddy.basetrackerpsyegb.DB.contentprovider"
+                android:name=".activities.LocationProvider"
+                android:authorities="com.example.eddy.basetrackerpsyegb.db.contentprovider"
                 android:enabled="true"
                 android:exported="true">
         </provider>
