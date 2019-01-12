@@ -210,7 +210,9 @@ class RunListActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
                 mapView!!.tag = item
                 setMapLocation()
 
-                title.text = "Run ${pos+1}"
+                //"Run ${pos+1}"
+                val runTitle = "Run ${runMetrics.size - pos}"
+                title.text = runTitle
                 cardView.setOnClickListener { startMapViewActivity(runMetrics[pos].id) }
 
 
@@ -220,8 +222,8 @@ class RunListActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
                 //TODO DISTANCE
 
                 val distanceRounded:Double = Math.round(runMetrics[pos].totalDistance * 1000.0) / 1000.0
-                val dist = "${distanceRounded.toString()}KM"
-                distance.text = dist
+                val d = "Distance:  ${RunUtils.totalDistanceToKm(runMetrics[pos].totalDistance)}KM"
+                distance.text = "$d"
 
 
             }

@@ -6,9 +6,9 @@ import android.content.ContentValues
 import android.net.Uri
 import android.util.Log
 
-const val METRICS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.DB.contentprovider/metricstable"
-const val UPDATE_METRICS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.DB.contentprovider/updatetable"
-const val UPDATE_TOTAL_TIME_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.DB.contentprovider/updatetimetable"
+const val METRICS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.database.contentprovider/metricstable"
+const val UPDATE_METRICS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.database.contentprovider/updatetable"
+const val UPDATE_TOTAL_TIME_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.database.contentprovider/updatetimetable"
 
 
 fun ContentResolver.getRuns(): List<RunMetrics> {

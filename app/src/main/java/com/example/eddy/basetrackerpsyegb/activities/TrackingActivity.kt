@@ -231,13 +231,16 @@ class TrackingActivity : AppCompatActivity() {
     @UiThread
     private fun update(curLat: Double, curLong: Double, speed: Float, ele: Double) {
         map!!.clear()
-        val speed = "Speed: $speed"
-        trackingSpeed.text = speed
-        val ele = "Ele: $ele"
+        val speedFormatted = "Speed:" + "%.2f".format(speed) + "M/S"
+
+        trackingSpeed.text = speedFormatted
+        val ele = "Altitude:" +  "%.2f".format(ele) + "M"
         trackingEle.text = ele
 
         val totalD = totalDistance/1000
-        val dist =  "Distance : ${totalDistance/1000}M"
+        val distFormatted = "%.2f".format(totalD) + "KM"
+
+        val dist =  "Distance : $distFormatted"
         trackingTxtTotalDistance.text =dist
 
 
@@ -267,10 +270,6 @@ class TrackingActivity : AppCompatActivity() {
         this.currentTime = startTime
         val title = "Run $id started at $start"
         trackingTxtTitle.text = title
-        val lat = "Latitude: $startLat"
-        trackingSpeed.text = lat
-        val long = "Longitude: $startLong"
-        trackingEle.text = long
 
 
         var latLng = LatLng(startLat, startLong)

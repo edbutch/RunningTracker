@@ -21,7 +21,7 @@ class LocationProvider : ContentProvider() {
 
 
 
-        const val AUTHORITY = "com.example.eddy.basetrackerpsyegb.DB.contentprovider"
+        const val AUTHORITY = "com.example.eddy.basetrackerpsyegb.database.contentprovider"
         const val PATH_GPS = "gpsdb"
         const val PATH_METRICS = "metricstable"
         const val UPDATE = "updatetable"

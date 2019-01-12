@@ -14,7 +14,7 @@ import com.example.eddy.basetrackerpsyegb.database.GPS.Companion.PARENTID
 import com.example.eddy.basetrackerpsyegb.database.GPS.Companion.SPEED
 import com.example.eddy.basetrackerpsyegb.database.GPS.Companion.TIME
 
-const val GPS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.DB.contentprovider/gpsdb"
+const val GPS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.database.contentprovider/gpsdb"
 fun ContentResolver.addGPS(gps: GPS): Int {
     val cv = ContentValues()
 

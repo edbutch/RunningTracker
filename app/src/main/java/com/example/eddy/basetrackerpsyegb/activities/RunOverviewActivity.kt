@@ -122,13 +122,16 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
                 val time = runMetrics.totalTime
                 Log.v(TAG, "TIME : $time")
                 val speedMetresSecond = runMetrics.totalDistance/ (runMetrics.totalTime/1000)
-                val speed = "Average Speed: ${speedMetresSecond}m/s"
-                val d = runMetrics.totalDistance / 1000
 
-                val distanceRounded:Double = Math.round(d * 1000.0) / 1000.0
+                val sp = "%.2f".format(speedMetresSecond)
+                val speed = "Average Speed: ${sp}m/s"
+
+
+
+
 
 //                val distanceRounded = runMetrics.totalDistance
-                val distance = "Distance:  ${distanceRounded}KM"
+                val distance = "Distance:  ${RunUtils.totalDistanceToKm(runMetrics.totalDistance)}KM"
                 setOverviewData(
                     duration = RunUtils.getDuration(time),
                     distance = distance,

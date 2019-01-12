@@ -27,7 +27,8 @@ class AllRunOverviewActivity : AppCompatActivity(), RunOverview.OverviewListener
 
 
         //Uses View Model to format DB data and sets it to the Text Views. Also binds to the GPS points
-        val avgSpeed = "Average Speed : ${overview.avgSpeed}"
+        val speedFormat = "%.2f".format(overview.avgSpeed) + "M/S"
+        val avgSpeed = "Average Speed : $speedFormat"
         overview_avgSpeed.text = avgSpeed
         val distance = RunUtils.getDistance(overview.totalDistance.toDouble())
         val totalDistance = "Total Distance: ${formatDecimal(distance)}KM"

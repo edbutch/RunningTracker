@@ -86,6 +86,12 @@ class RunUtils(val metrics: RunMetrics, val gpsList: List<GPS>) {
             list.map { totalEle += it.elevation }
             return totalEle / list.size
         }
+
+        fun totalDistanceToKm(totalDistance: Float): Double {
+            val d = totalDistance / 1000
+
+            return Math.round(d * 1000.0) / 1000.0
+        }
     }
 
 
