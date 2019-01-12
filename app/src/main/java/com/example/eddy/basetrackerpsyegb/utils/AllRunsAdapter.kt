@@ -9,9 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
-import com.example.eddy.basetrackerpsyegb.DB.deleteRun
-import com.example.eddy.basetrackerpsyegb.DB.getRuns
+import com.example.eddy.basetrackerpsyegb.database.RunMetrics
+import com.example.eddy.basetrackerpsyegb.database.deleteRun
+import com.example.eddy.basetrackerpsyegb.database.getRuns
 import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.activities.RunOverviewActivity
 import org.jetbrains.anko.doAsync

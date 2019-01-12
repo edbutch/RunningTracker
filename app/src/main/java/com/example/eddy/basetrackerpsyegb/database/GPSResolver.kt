@@ -1,4 +1,4 @@
-package com.example.eddy.basetrackerpsyegb.DB
+package com.example.eddy.basetrackerpsyegb.database
 
 
 import android.content.ContentResolver
@@ -6,13 +6,13 @@ import android.content.ContentUris
 import android.content.ContentValues
 import android.net.Uri
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.ELE
-import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.PKEY
-import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.LONGITUDE
-import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.LATITUDE
-import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.PARENTID
-import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.SPEED
-import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.TIME
+import com.example.eddy.basetrackerpsyegb.database.GPS.Companion.ELE
+import com.example.eddy.basetrackerpsyegb.database.GPS.Companion.PKEY
+import com.example.eddy.basetrackerpsyegb.database.GPS.Companion.LONGITUDE
+import com.example.eddy.basetrackerpsyegb.database.GPS.Companion.LATITUDE
+import com.example.eddy.basetrackerpsyegb.database.GPS.Companion.PARENTID
+import com.example.eddy.basetrackerpsyegb.database.GPS.Companion.SPEED
+import com.example.eddy.basetrackerpsyegb.database.GPS.Companion.TIME
 
 const val GPS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.DB.contentprovider/gpsdb"
 fun ContentResolver.addGPS(gps: GPS): Int {

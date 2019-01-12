@@ -3,7 +3,7 @@ package com.example.eddy.basetrackerpsyegb.activities
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.DB.GPS
+import com.example.eddy.basetrackerpsyegb.database.GPS
 import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.utils.ChartUtils
 import com.example.eddy.basetrackerpsyegb.utils.MapUtils

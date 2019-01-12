@@ -30,8 +30,8 @@
         <service android:name=".service.MyLocationService"/>
 
         <provider
-                android:name=".DB.LocationProvider"
-                android:authorities="com.example.eddy.basetrackerpsyegb.DB.contentprovider"
+                android:name=".database.LocationProvider"
+                android:authorities="com.example.eddy.basetrackerpsyegb.database.contentprovider"
                 android:enabled="true"
                 android:exported="true">
         </provider>

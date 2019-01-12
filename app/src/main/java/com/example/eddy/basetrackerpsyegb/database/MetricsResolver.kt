@@ -1,4 +1,4 @@
-package com.example.eddy.basetrackerpsyegb.DB
+package com.example.eddy.basetrackerpsyegb.database
 
 import android.content.ContentResolver
 import android.content.ContentUris
