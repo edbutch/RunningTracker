@@ -2,7 +2,7 @@ package com.example.eddy.basetrackerpsyegb.utils
 
 import android.content.Context
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.db.*
+import com.example.eddy.basetrackerpsyegb.DB.*
 import org.jetbrains.anko.doAsync
 import java.text.SimpleDateFormat
 

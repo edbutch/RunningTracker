@@ -1,10 +1,10 @@
 package com.example.eddy.basetrackerpsyegb.utils
 
 import android.content.Context
-import com.example.eddy.basetrackerpsyegb.db.GPS
-import com.example.eddy.basetrackerpsyegb.db.RunMetrics
-import com.example.eddy.basetrackerpsyegb.db.getGPSList
-import com.example.eddy.basetrackerpsyegb.db.getRuns
+import com.example.eddy.basetrackerpsyegb.DB.GPS
+import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
+import com.example.eddy.basetrackerpsyegb.DB.getGPSList
+import com.example.eddy.basetrackerpsyegb.DB.getRuns
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 //All Journeys takes activity context , and a interface. It uses the context to asynchronously

@@ -1,4 +1,4 @@
-package com.example.eddy.basetrackerpsyegb.db
+package com.example.eddy.basetrackerpsyegb.DB
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
@@ -31,7 +31,7 @@ data class GPS (@PrimaryKey(autoGenerate = true) var pKey: Int,
     }
 
 
-//
+
     constructor():this(0,0,0L,0.0,0.0, 0.0,0F)
 
     override fun toString(): String {

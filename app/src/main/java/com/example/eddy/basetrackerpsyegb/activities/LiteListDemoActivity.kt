@@ -37,8 +37,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.eddy.basetrackerpsyegb.utils.AllJourneys
-import com.example.eddy.basetrackerpsyegb.db.GPS
-import com.example.eddy.basetrackerpsyegb.db.RunMetrics
+import com.example.eddy.basetrackerpsyegb.DB.GPS
+import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.utils.MapUtils
 import com.example.eddy.basetrackerpsyegb.utils.RunUtils

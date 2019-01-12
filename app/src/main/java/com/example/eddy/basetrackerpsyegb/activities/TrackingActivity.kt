@@ -8,8 +8,8 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.annotation.UiThread
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.db.GPS
-import com.example.eddy.basetrackerpsyegb.db.RunMetrics
+import com.example.eddy.basetrackerpsyegb.DB.GPS
+import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.service.MyLocationService
 import com.example.eddy.basetrackerpsyegb.service.RECEIVER.RECEIVER_FILTER

@@ -1,4 +1,4 @@
-package com.example.eddy.basetrackerpsyegb.db
+package com.example.eddy.basetrackerpsyegb.DB
 
 import android.arch.persistence.room.Room
 import android.content.ContentProvider
@@ -8,11 +8,11 @@ import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.db.GPS.Companion.PKEY
-import com.example.eddy.basetrackerpsyegb.db.GPS.Companion.LONGITUDE
-import com.example.eddy.basetrackerpsyegb.db.GPS.Companion.LATITUDE
-import com.example.eddy.basetrackerpsyegb.db.GPS.Companion.PARENTID
-import com.example.eddy.basetrackerpsyegb.db.GPS.Companion.TIME
+import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.PKEY
+import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.LONGITUDE
+import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.LATITUDE
+import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.PARENTID
+import com.example.eddy.basetrackerpsyegb.DB.GPS.Companion.TIME
 
 class LocationProvider : ContentProvider() {
 

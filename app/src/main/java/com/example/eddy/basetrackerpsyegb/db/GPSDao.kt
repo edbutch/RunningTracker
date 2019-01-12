@@ -1,4 +1,4 @@
-package com.example.eddy.basetrackerpsyegb.db
+package com.example.eddy.basetrackerpsyegb.DB
 
 
 import android.arch.persistence.room.*

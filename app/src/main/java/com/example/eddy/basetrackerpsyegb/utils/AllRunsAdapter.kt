@@ -9,9 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.example.eddy.basetrackerpsyegb.db.RunMetrics
-import com.example.eddy.basetrackerpsyegb.db.deleteRun
-import com.example.eddy.basetrackerpsyegb.db.getRuns
+import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
+import com.example.eddy.basetrackerpsyegb.DB.deleteRun
+import com.example.eddy.basetrackerpsyegb.DB.getRuns
 import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.activities.RunOverviewActivity
 import org.jetbrains.anko.doAsync
@@ -71,7 +71,7 @@ class AllRunsAdapter(
         context.startActivity(intent)
     }
 
-
+//
 
 
     private fun getDate(time: Long): String? {

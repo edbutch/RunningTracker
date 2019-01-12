@@ -1,8 +1,8 @@
 package com.example.eddy.basetrackerpsyegb.utils
 
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.db.GPS
-import com.example.eddy.basetrackerpsyegb.db.RunMetrics
+import com.example.eddy.basetrackerpsyegb.DB.GPS
+import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit

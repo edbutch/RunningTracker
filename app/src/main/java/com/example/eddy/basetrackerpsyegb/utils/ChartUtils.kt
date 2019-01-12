@@ -2,7 +2,7 @@ package com.example.eddy.basetrackerpsyegb.utils
 
 import android.graphics.Color
 import android.util.Log
-import com.example.eddy.basetrackerpsyegb.db.GPS
+import com.example.eddy.basetrackerpsyegb.DB.GPS
 import com.github.mikephil.charting.charts.LineChart
 import java.util.*
 import android.view.Gravity
