@@ -71,7 +71,7 @@ class AllRunsAdapter(
         context.startActivity(intent)
     }
 
-//
+
 
 
     private fun getDate(time: Long): String? {
