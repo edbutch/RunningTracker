@@ -20,7 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_run_stats.*
 import kotlinx.android.synthetic.main.activity_run_stats.all_runs_map
 
-class RunStatsActivity : AppCompatActivity(), RunOverview.OverviewListener {
+class AllRunOverviewActivity : AppCompatActivity(), RunOverview.OverviewListener {
 
 
     override fun DBReady(overview: RunOverview.OverviewData) {
@@ -77,7 +77,7 @@ class RunStatsActivity : AppCompatActivity(), RunOverview.OverviewListener {
 
     private fun BarChart.setUpDistanceChart(distanceList: List<Float>) {
 
-        val barData = ChartUtils.getDistanceBarData(this@RunStatsActivity, distanceList)
+        val barData = ChartUtils.getDistanceBarData(this@AllRunOverviewActivity, distanceList)
 
 
         this.data = barData

@@ -5,8 +5,6 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.example.eddy.basetrackerpsyegb.R
-import com.example.eddy.basetrackerpsyegb.utils.RunOverview
-import com.example.eddy.basetrackerpsyegb.utils.RunsOverview
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -30,15 +28,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun viewRunOverview() {
-        startActivity(Intent(this, RunStatsActivity::class.java))
+        startActivity(Intent(this, AllRunOverviewActivity::class.java))
 
     }
 
     private fun viewAllRuns() {
-        startActivity(Intent(this, LiteListDemoActivity::class.java))
+        startActivity(Intent(this, RunListActivity::class.java))
     }
     private fun startBoringList(){
-                startActivity(Intent(this, AllRunsActivity::class.java))
+                startActivity(Intent(this, BoringRunListActivity::class.java))
 
     }
 

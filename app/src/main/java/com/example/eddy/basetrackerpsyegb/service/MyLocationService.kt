@@ -61,7 +61,7 @@ class MyLocationService : Service() {
                         Log.e("SPeed is ", "speed is infinite..")
                         //As we have updated in under the 1S interval
                         //Speed will be 1000, we cannot use speed from location object#
-                        //so we must do speed = d / inverval, to give highest accuracy 
+                        //so we must do speed = d / interval, to give highest accuracy
                         speed = distance / 1000
                     }
                 }

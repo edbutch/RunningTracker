@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.activity_all_runs.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
-class AllRunsActivity : AppCompatActivity() {
+class BoringRunListActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +35,7 @@ class AllRunsActivity : AppCompatActivity() {
                 allRunsRecylerView.adapter =
                         AllRunsAdapter(
                             runs.toMutableList(),
-                            this@AllRunsActivity
+                            this@BoringRunListActivity
                         )
 
             }

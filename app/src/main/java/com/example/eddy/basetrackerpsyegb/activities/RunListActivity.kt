@@ -47,7 +47,7 @@ import kotlinx.android.synthetic.main.lite_list_demo.*
 import java.util.concurrent.TimeUnit
 
 
-class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
+class RunListActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
 
 
     val context: Context = this
@@ -78,7 +78,6 @@ class LiteListDemoActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
 
     override fun onResume() {
         super.onResume()
-        Log.e("ONPAUSE", "ONRESUME")
         AllJourneys(this, this)
     }
 

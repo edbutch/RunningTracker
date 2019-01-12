@@ -39,11 +39,11 @@
         <activity android:name=".activities.TrackingActivity"
                   android:configChanges="orientation">
         </activity>
-        <activity android:name=".activities.AllRunsActivity">
+        <activity android:name=".activities.BoringRunListActivity">
         </activity>
-        <activity android:name=".activities.LiteListDemoActivity">
+        <activity android:name=".activities.RunListActivity">
         </activity>
-        <activity android:name=".activities.RunStatsActivity">
+        <activity android:name=".activities.AllRunOverviewActivity">
         </activity>
         <activity android:name=".activities.RunOverviewActivity"/>
     </application>
