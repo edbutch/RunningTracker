@@ -19,27 +19,6 @@ class RunUtils(val metrics: RunMetrics, val gpsList: List<GPS>) {
         }
 
 
-        fun getDuration(currentTime: Long, previousTime: Long): String {
-
-            var time = currentTime - previousTime
-            var mins = (TimeUnit.MILLISECONDS.toMinutes(time)) % 60
-            var seconds = (TimeUnit.MILLISECONDS.toSeconds(time)) % 60
-            var hours = (TimeUnit.MILLISECONDS.toHours(time))
-
-            var dur = ""
-            if (hours > 0) {
-                Log.v(TAG, "hour > 0 ")
-                dur += "${hours}H:${mins}M:${seconds}S"
-
-            } else {
-                Log.v(TAG, " 0 > hours ")
-
-                dur += "${mins}M:${seconds}S"
-            }
-
-            return dur
-        }
-
         fun getDuration(time: Long): String {
             var mins = (TimeUnit.MILLISECONDS.toMinutes(time)) % 60
             var seconds = (TimeUnit.MILLISECONDS.toSeconds(time)) % 60
@@ -78,11 +57,6 @@ class RunUtils(val metrics: RunMetrics, val gpsList: List<GPS>) {
             return totalSpeed / list.size
         }
 
-//        fun getAverageEle(list: List<GPS>): Double {
-//            var totalEle: Double = 0.0
-//            list.map { totalEle += it.elevation }
-//            return totalEle / list.size
-//        }
 
         fun totalDistanceToKm(totalDistance: Float): Double {
             val d = totalDistance / 1000

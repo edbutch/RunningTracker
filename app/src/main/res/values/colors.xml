@@ -14,4 +14,7 @@
     <color name="colorButtonGradient3">#ce93d8</color>
     <color name="colorButtonGradient4">#e1bee7</color>
     <color name="colorButtonCardStyle">#f3e5f5</color>
+    <color name="stopRed">#c71585 </color>
+
+
 </resources>

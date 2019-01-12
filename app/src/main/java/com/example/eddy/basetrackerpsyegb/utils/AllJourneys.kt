@@ -8,7 +8,7 @@ import com.example.eddy.basetrackerpsyegb.database.getRuns
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 //All Journeys takes activity context , and a interface. It uses the context to asynchronously
-//
+//Access my content provider and then post this data back to the activity on the UI thread.
 class AllJourneys(val context: Context, callBack: DBReadyCallback) {
     interface DBReadyCallback {
         fun dbReady(

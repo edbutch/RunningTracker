@@ -5,10 +5,6 @@ object RECEIVER{
     const val FLAG = 100
     const val RECEIVER_FILTER = "com.example.eddy.basetrackerpsyegb.RECEIVER.action.GET_UPDATES"
 
-//    const val START_TRACKING = "com.example.eddy.basetrackerpsyegb.RECEIVER.action.START_TRACKING"
-//    const val TRACKING = "com.example.eddy.basetrackerpsyegb.RECEIVER.action.TRACKING_UPDATE"
-//    const val UPDATE_TRACKING = "com.example.eddy.basetrackerpsyegb.RECEIVER.action.UPDATE_TRACKING"
-//    const val STOP_TRACKING = "com.example.eddy.basetrackerpsyegb.RECEIVER.action.STOPTRACKING"
 }
 
 object COMMAND{

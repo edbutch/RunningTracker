@@ -107,43 +107,6 @@ class RunOverview(context: Context, callBack: OverviewListener) {
     )
 
 
-//    private fun concatOverviews(lastRun: Overview, overview: Overview): OverallData {
-//        val retOverview: Overview
-//
-//
-//        val speed1 = lastRun.runList.sortedByDescending { it.speed }[lastRun.runList.lastIndex].speed
-//        val speed2 = overview.runList.sortedByDescending { it.speed }[overview.runList.lastIndex].speed
-//        val topSpeed = maxOf(speed1, speed2)
-//
-//        val speedList: List<GPS> = (lastRun.runList + overview.runList)
-//        val averageSpeed = RunUtils.getAverageSpeed(speedList)
-//
-//        val alt1 = lastRun.runList.sortedByDescending { it.elevation }[lastRun.runList.lastIndex].elevation
-//        val alt2 = overview.runList.sortedByDescending { it.elevation }[overview.runList.lastIndex].elevation
-//        val topAlt = maxOf(alt1, alt2)
-//
-//
-//        val totalDistance = lastRun.runMetric.totalDistance + overview.runMetric.totalDistance
-//
-//        Log.e(
-//            "concatOverviews",
-//            "\nTop speed = $topSpeed \nAverage Speed = $averageSpeed\n Top Altitude = $topAlt\n Total Distance = $totalDistance "
-//        )
-//
-//
-//
-//
-//
-//        return OverallData(topSpeed, averageSpeed, topAlt, totalDistance)
-//
-//    }
-
-    fun isSameDay(date1: Long, date2: Long): Boolean {
-        return sdf.format(date1).equals(sdf.format(date2))
-    }
-
-//    data class OverallData(val topSpeed: Float, val averageSpeed: Float, val topAlt: Double, val totalDistance: Float)
-
 
     class Overview(var runMetric: RunMetrics, var runList: List<GPS>) {
 

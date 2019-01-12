@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.example.eddy.basetrackerpsyegb.R
+import com.example.eddy.basetrackerpsyegb.service.MyLocationService
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -20,6 +21,8 @@ class MainActivity : AppCompatActivity() {
 
 
 
+        btnStopService.setOnClickListener { stopService(Intent(this, MyLocationService::class.java))
+        finish()}
 
         btnStartTracker.setOnClickListener { startTracker() }
         btnViewAllRuns.setOnClickListener { viewAllRuns() }

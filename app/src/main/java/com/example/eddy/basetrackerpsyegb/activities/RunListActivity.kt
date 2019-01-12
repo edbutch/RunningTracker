@@ -18,6 +18,11 @@ import android.content.Intent
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Used and modified code from this java class :
+  * https://github.com/googlemaps/android-samples/blob/master/ApiDemos/java/app/src/main/java/com/example/mapdemo/LiteListDemoActivity.java
+  *
+ *
  */
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -44,7 +49,6 @@ import com.example.eddy.basetrackerpsyegb.utils.MapUtils
 import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.activity_run_list.*
-import java.util.concurrent.TimeUnit
 
 
 class RunListActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
@@ -70,9 +74,6 @@ class RunListActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
         setContentView(R.layout.activity_run_list)
 
         linearLayoutManager = LinearLayoutManager(this)
-
-        /*AllJourneys takes the activity context, and a
-        callback where It can post the database data to*/
 
     }
 
@@ -160,7 +161,6 @@ class RunListActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
                 if(data.gpsList.isNotEmpty()){
                     val latLong = LatLng(data.gpsList[0].latitude, data.gpsList[0].longitude)
                     map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLong, 13f))
-//                    map!!.addMarker(MarkerOptions().position(latLong))
 
 
                     val points = arrayListOf<LatLng>()
@@ -175,14 +175,6 @@ class RunListActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
                     if(points.isNotEmpty()){MapUtils.drawPolyLine(map,points)}
 
                 }
-
-
-//
-//                latlng.longitude = gpsList[0].longitude
-//                latlng.latitude = gpsList[0].latitude
-//                // Add a marker for this item and set the camera
-
-
 
 
                 // Set the map type back to normal.
@@ -201,7 +193,6 @@ class RunListActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
             }
 
             internal fun bindView(pos: Int) {
-                //todo
                 val item = RunUtils(runMetrics[pos], runList[pos])
                 // Store a reference of the ViewHolder object in the layout.
                 layout.tag = this
@@ -219,7 +210,6 @@ class RunListActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
                 val dateText = "Started at ${RunUtils.getDate(runMetrics[pos].startTime)}"
                 date.text =dateText
                 duration.text = RunUtils.getDuration(runMetrics[pos].totalTime)
-                //TODO DISTANCE
 
 
 
@@ -232,18 +222,6 @@ class RunListActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
     }
 
 
-    private fun calculateDuration(startTime: Long, endTime: Long): String {
-
-        var durMillis = (endTime - startTime)
-
-        val hms = String.format(
-            "%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(durMillis),
-            TimeUnit.MILLISECONDS.toMinutes(durMillis) % TimeUnit.HOURS.toMinutes(1),
-            TimeUnit.MILLISECONDS.toSeconds(durMillis) % TimeUnit.MINUTES.toSeconds(1)
-        )
-
-        return hms
-    }
 
 
 }

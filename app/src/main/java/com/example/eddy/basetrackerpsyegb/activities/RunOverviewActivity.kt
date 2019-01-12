@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_run_overview.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
-class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
+class RunOverviewActivity : AppCompatActivity() {
 
 
     val points = arrayListOf<LatLng>()
@@ -117,7 +117,6 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
 
                 }
 
-//                elechart.setOnChartValueSelectedListener(this@RunOverviewActivity)
 
                 val time = runMetrics.totalTime
                 Log.v(TAG, "TIME : $time")
@@ -131,7 +130,6 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
 
 
 
-//                val distanceRounded = runMetrics.totalDistance
                 val distance = "Distance:  ${RunUtils.totalDistanceToKm(runMetrics.totalDistance)}KM"
                 setOverviewData(
                     duration = RunUtils.getDuration(time),
@@ -144,27 +142,7 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
         }
     }
 
-    override fun onNothingSelected() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
-    override fun onValueSelected(e: Entry?, h: Highlight?) {
-        /*TODO*/
-        /*Make it so when you select a value it takes you to the point on the run*/
-        /*After spending 2 days on this, I've had to add it to the back stack*/
-        var x = e?.x
-        Log.e("aksdkasd", "aaaa $x")
-
-        x!!
-        if (points.size < x) {
-            val lat = points[x.toInt()].latitude
-            val long = points[x.toInt()].longitude
-            val latLng = LatLng(lat, long)
-
-            map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 22f))
-
-        }
-    }
 
 
 }

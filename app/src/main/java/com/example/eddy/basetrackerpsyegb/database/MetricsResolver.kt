@@ -34,13 +34,7 @@ fun ContentResolver.getRuns(): List<RunMetrics> {
 }
 
 
-/*
-1. Implement getting a run by it's id,
-2. Implement ending a run by toggle
-3. Test if these work
-4. Create a list of all runs
-5. Idk
- */
+
 fun ContentResolver.getRun(id: Int): RunMetrics {
     val cursor = query(
         ContentUris.withAppendedId(Uri.parse(METRICS_AUTHORITY), id.toLong()),

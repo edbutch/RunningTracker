@@ -78,6 +78,10 @@ class TrackingActivity : AppCompatActivity() {
     }
 
 
+    override fun onBackPressed() {
+        stopTracking()
+        super.onBackPressed()
+    }
     private fun startTracking() {
         if (state == STATE.STOPPED) {
             state = STATE.STARTED
