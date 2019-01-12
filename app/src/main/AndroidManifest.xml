@@ -43,8 +43,6 @@
         </activity>
         <activity android:name=".activities.LiteListDemoActivity">
         </activity>
-        <activity android:name=".map.PolyDecodeDemoActivity"/>
-        <activity android:name=".map.PolySimplifyDemoActivity"/>
         <activity android:name=".activities.RunStatsActivity">
         </activity>
         <activity android:name=".activities.RunOverviewActivity"/>

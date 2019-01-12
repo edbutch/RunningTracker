@@ -9,7 +9,6 @@ import org.jetbrains.anko.uiThread
 import java.text.SimpleDateFormat
 
 class RunOverview(context: Context, callBack: OverviewListener) {
-    var newRunOverview: MutableList<Overview> = arrayListOf()
 
     var runsOverview: MutableList<Overview> = arrayListOf()
     val sdf = SimpleDateFormat("yyyyMMdd")
@@ -27,10 +26,11 @@ class RunOverview(context: Context, callBack: OverviewListener) {
                 runsOverview.add(Overview(runMetric = metric, runList = gps))
             }
 
-            var minEle  = GPS()
+            var maxEle  = GPS()
             var totalTime: Long = 0L
             var totalDistance: Float = 0F
-            var maxEle = GPS()
+            //Mount Everest is the highestp oint in the world, so this is initialized to mount everest
+            var minEle = GPS(99,99,99L,27.9881,86.9250,8850.9,99F)
             var maxSpeed = GPS()
             var avgSpeed: Float = 0F
             for (overview in runsOverview) {
@@ -43,6 +43,8 @@ class RunOverview(context: Context, callBack: OverviewListener) {
 
                 totalDistance += overview.runMetric.totalDistance
                 val mSpeed = overview.runList.sortedByDescending { it.speed }[0]
+
+
 
                 if (mSpeed.speed > maxSpeed.speed) {
                     maxSpeed = mSpeed

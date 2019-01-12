@@ -38,6 +38,7 @@ class MyLocationService : Service() {
     private var locationListener = (LocationListener(LocationManager.GPS_PROVIDER))
 
     lateinit var lastLocation: Location
+    lateinit var lastGPS: GPS
     var currentTrackingPKey: Int = 0
     var isListenerInitialized: Boolean = false
 
@@ -63,18 +64,14 @@ class MyLocationService : Service() {
 
                 if (time != 0L) {
                     speed = distance / (time / 1000)
-
-                    if(speed.isInfinite()){
+                    if (speed.isInfinite()) {
                         Log.e("SPeed is ", "speed is infinite..")
-                        speed = 0F
+                        //As we have updated in under the 1S interval
+                        //Speed will be 1000, we cannot use speed from location object#
+                        //so we must do speed = d / inverval, to give highest accuracy 
+                        speed = distance / 1000
                     }
-//                    speed = location.speed
-
-                } else {
-//                    speed = location.speed
                 }
-
-
             } else {
                 lastLocation = Location(LocationManager.GPS_PROVIDER)
             }
@@ -101,6 +98,7 @@ class MyLocationService : Service() {
                 )
 
             putDB(gps, time, distance)
+            lastGPS = gps
             lastLocation.set(location)
 
         }

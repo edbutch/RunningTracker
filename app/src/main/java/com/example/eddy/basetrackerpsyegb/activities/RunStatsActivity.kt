@@ -10,7 +10,6 @@ import com.example.eddy.basetrackerpsyegb.utils.MapUtils
 import com.example.eddy.basetrackerpsyegb.utils.RunOverview
 import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -20,73 +19,62 @@ import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_run_stats.*
 import kotlinx.android.synthetic.main.activity_run_stats.all_runs_map
 
-class RunStatsActivity : AppCompatActivity(),  RunOverview.OverviewListener {
+class RunStatsActivity : AppCompatActivity(), RunOverview.OverviewListener {
 
 
     override fun DBReady(overview: RunOverview.OverviewData) {
 
 
+        //Uses View Model to format DB data and sets it to the Text Views. Also binds to the GPS points
+        val avgSpeed = "Average Speed : ${overview.avgSpeed}"
+        overview_avgSpeed.text = avgSpeed
+        val distance = RunUtils.getDistance(overview.totalDistance.toDouble())
+        val totalDistance = "Total Distance: ${formatted(distance)}KM"
+        overview_totalDistance.text = totalDistance
+        val maxEle = "Highest Point: ${formatted(overview.maxEle.elevation)}M"
+        overview_maxEle.text = maxEle
+        overview_highest_point.setOnClickListener { moveMap(overview.maxEle, "Highest Point") }
+        val minEle = "Lowest Point: ${formatted(overview.minEle.elevation)}M"
+        overview_minEle.text = minEle
+        overview_lowest_point.setOnClickListener { moveMap(overview.minEle, "Lowest Point") }
+        val timeRunning = "Total time ran: ${RunUtils.getDuration(overview.totalTime)}"
+        overview_totalTime.text = timeRunning
+        val maxSpeed = "Max Speed: ${formatted(overview.maxSpeed.speed)}M/S"
+        overview_maxSpeed.text = maxSpeed
+        overview_fastest_speed.setOnClickListener { moveMap(overview.maxSpeed, "Max Speed") }
 
-            //Uses View Model to format DB data and sets it to the Text Views. Also binds to the GPS points
-            val avgSpeed = "Average Speed : ${overview.avgSpeed}"
-            overview_avgSpeed.text = avgSpeed
-            val distance = RunUtils.getDistance(overview.totalDistance.toDouble())
-            val totalDistance = "Total Distance: ${formatted(distance)}KM"
-            overview_totalDistance.text = totalDistance
-            val maxEle = "Highest Point: ${formatted(overview.maxEle.elevation)}M"
-            overview_maxEle.text = maxEle
-            overview_highest_point.setOnClickListener { moveMap(overview.maxEle, "Highest Point") }
-            val minEle = "Lowest Point: ${formatted(overview.minEle.elevation)}M"
-            overview_minEle.text = minEle
-            overview_lowest_point.setOnClickListener { moveMap(overview.minEle, "Lowest Point") }
-            val timeRunning = "Total time ran: ${RunUtils.getDuration(overview.totalTime)}"
-            overview_totalTime.text = timeRunning
-            val maxSpeed = "Max Speed: ${formatted(overview.maxSpeed.speed)}M/S"
-            overview_maxSpeed.text = maxSpeed
-            overview_fastest_speed.setOnClickListener{moveMap(overview.maxSpeed, "Max Speed")}
 
+        //Filling up the Charts
+        distancebarchart.setUpDistanceChart(overview.distanceList)
 
-            //Filling up the Charts
-            distancebarchart.setUpBarChart(overview.distanceList)
-
-            val data = ChartUtils.getSpeedLineData(overview.speedList)
+        val data = ChartUtils.getSpeedLineData(overview.speedList)
 
 
         Log.e("TEST", "tESTOMG")
 
-        for(speed in overview.speedList){
-            Log.e("TEST", "overview speed $speed")
+        for (speed in overview.speedList) {
+            if(speed.isInfinite()){
+                Log.e("TEST", "overview speed $speed")
+
+            }
         }
 
 
-            ChartUtils.initializeLineChart(this,
-                "Speed",
-                "Average Speed per Journey",
-                overallSpeedChart,
-                data,
-                backgroundColor = getColor(R.color.colorAccent),
-               holeColor = getColor(R.color.colorPrimaryLight)
-           )
-
-
-
-
+        ChartUtils.initializeLineChart(
+            this,
+            "Speed",
+            "Average Speed per Journey",
+            overallSpeedChart,
+            data,
+            backgroundColor = getColor(R.color.colorAccent),
+            holeColor = getColor(R.color.colorPrimaryLight)
+        )
 
 
     }
 
 
-    private fun LineChart.setUpLineChart(speedList: List<Float>) {
-        this.data = ChartUtils.getSpeedLineData(speedList)
-
-
-
-
-
-    }
-
-
-    private fun BarChart.setUpBarChart(distanceList: List<Float>) {
+    private fun BarChart.setUpDistanceChart(distanceList: List<Float>) {
 
         val barData = ChartUtils.getDistanceBarData(this@RunStatsActivity, distanceList)
 
@@ -99,20 +87,26 @@ class RunStatsActivity : AppCompatActivity(),  RunOverview.OverviewListener {
 //        this.axisRight.enableGridDashedLine(5f, 5f, 0f)
 //        this.axisLeft.enableGridDashedLine(5f, 5f, 0f)
 //        this.description.position =
+
+//        this.axisLeft.disableAxisLineDashedLine()
+//        this.axisLeft.disableGridDashedLine()
+//        this.axisRight.disableGridDashedLine()
+//        this.axisRight.disableAxisLineDashedLine()
+        this.setDrawGridBackground(false)
+
         this.description.isEnabled = true
         this.description.text = "Distance Per Journey"
 
         this.animateY(1000)
         this.legend.isEnabled = true
-        this.setPinchZoom(true)
+        this.setPinchZoom(false)
         this.data.setDrawValues(false)
 
 
     }
 
 
-
-    private fun moveMap(gps: GPS, title : String) {
+    private fun moveMap(gps: GPS, title: String) {
         Log.v(title, gps.toString())
 
         map?.clear()
@@ -120,20 +114,18 @@ class RunStatsActivity : AppCompatActivity(),  RunOverview.OverviewListener {
         map?.addMarker(
             MarkerOptions()
                 .position(latLng)
-                .icon(MapUtils.bitmapDescriptorFromVector(this, R.drawable.ic_run)))
+                .icon(MapUtils.bitmapDescriptorFromVector(this, R.drawable.ic_run))
+        )
             .title = title
 
-        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 22f))
-
-
-
+        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14f))
 
 
     }
 
-    fun formatted(data: Any): String {return String.format("%.2f", data) }
-
-
+    fun formatted(data: Any): String {
+        return String.format("%.2f", data)
+    }
 
 
     lateinit var map: GoogleMap
@@ -146,7 +138,7 @@ class RunStatsActivity : AppCompatActivity(),  RunOverview.OverviewListener {
 
 
         (all_runs_map as SupportMapFragment).getMapAsync {
-         map = it
+            map = it
 
         }
 

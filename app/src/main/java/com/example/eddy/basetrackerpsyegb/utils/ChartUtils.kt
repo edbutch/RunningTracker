@@ -225,6 +225,7 @@ class ChartUtils {
             dataSet.highLightColor = context.getColor(R.color.colorPrimaryDark)
             dataSet.setDrawValues(false)
 
+
             dataSet.color = ContextCompat.getColor(context, R.color.colorPrimaryLight)
 
             return BarData(dataSet)

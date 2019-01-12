@@ -13,7 +13,7 @@ import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
 import com.example.eddy.basetrackerpsyegb.DB.deleteRun
 import com.example.eddy.basetrackerpsyegb.DB.getRuns
 import com.example.eddy.basetrackerpsyegb.R
-import com.example.eddy.basetrackerpsyegb.map.PolyDecodeDemoActivity
+import com.example.eddy.basetrackerpsyegb.activities.RunOverviewActivity
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.text.SimpleDateFormat
@@ -67,27 +67,13 @@ class AllRunsAdapter(
 
     private fun startMapViewActivity(id: Int) {
         Log.e("startMapViewActivity", "hello ID $id")
-        val intent = Intent(context, PolyDecodeDemoActivity::class.java)
+        val intent = Intent(context, RunOverviewActivity::class.java)
         intent.putExtra(RunMetrics.ID, id)
         context.startActivity(intent)
     }
 
-    private fun calculateDuration(startTime: Long, endTime: Long): String {
 
-        var durMillis = (endTime - startTime)
 
-        val hms = String.format(
-            "%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(durMillis),
-            TimeUnit.MILLISECONDS.toMinutes(durMillis) % TimeUnit.HOURS.toMinutes(1),
-            TimeUnit.MILLISECONDS.toSeconds(durMillis) % TimeUnit.MINUTES.toSeconds(1)
-        )
-
-        return hms
-    }
-
-    private fun compareDur(startTime: Long, endTime: Long): Long {
-        return endTime - startTime
-    }
 
     private fun getDate(time: Long): String? {
         val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")

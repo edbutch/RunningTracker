@@ -35,7 +35,7 @@ data class GPS (@PrimaryKey(autoGenerate = true) var pKey: Int,
     constructor():this(0,0,0L,0.0,0.0, 0.0,0F)
 
     override fun toString(): String {
-        return "GPS(pKey=$pKey, parentId=$parentId, timestamp=$timestamp, latitude=$latitude, longitude=$longitude)"
+        return "GPS(pKey=$pKey, parentId=$parentId, timestamp=$timestamp, latitude=$latitude, longitude=$longitude, ele=$elevation)"
     }
 }
 
