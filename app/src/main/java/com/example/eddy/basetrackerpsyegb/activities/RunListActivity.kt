@@ -43,7 +43,7 @@ import com.example.eddy.basetrackerpsyegb.R
 import com.example.eddy.basetrackerpsyegb.utils.MapUtils
 import com.example.eddy.basetrackerpsyegb.utils.RunUtils
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.android.synthetic.main.lite_list_demo.*
+import kotlinx.android.synthetic.main.activity_run_list.*
 import java.util.concurrent.TimeUnit
 
 
@@ -67,7 +67,7 @@ class RunListActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.lite_list_demo)
+        setContentView(R.layout.activity_run_list)
 
         linearLayoutManager = LinearLayoutManager(this)
 
@@ -113,7 +113,7 @@ class RunListActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
 
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder?.bindView(position)
+            holder.bindView(position)
         }
 
         override fun getItemCount(): Int {
@@ -154,7 +154,7 @@ class RunListActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
             private fun setMapLocation() {
                 if (map == null) return
 
-                val data = mapView!!.tag as RunUtils ?: return
+                val data = mapView!!.tag as RunUtils
 
 
                 if(data.gpsList.isNotEmpty()){
@@ -221,7 +221,8 @@ class RunListActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
                 duration.text = RunUtils.getDuration(runMetrics[pos].totalTime)
                 //TODO DISTANCE
 
-                val distanceRounded:Double = Math.round(runMetrics[pos].totalDistance * 1000.0) / 1000.0
+
+
                 val d = "Distance:  ${RunUtils.totalDistanceToKm(runMetrics[pos].totalDistance)}KM"
                 distance.text = "$d"
 

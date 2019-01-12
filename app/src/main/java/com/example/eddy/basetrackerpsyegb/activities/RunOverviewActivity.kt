@@ -121,8 +121,9 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
 
                 val time = runMetrics.totalTime
                 Log.v(TAG, "TIME : $time")
-                val speedMetresSecond = runMetrics.totalDistance/ (runMetrics.totalTime/1000)
+                var speedMetresSecond = runMetrics.totalDistance/ (runMetrics.totalTime/1000)
 
+                if(speedMetresSecond.isInfinite()){speedMetresSecond = 0F}
                 val sp = "%.2f".format(speedMetresSecond)
                 val speed = "Average Speed: ${sp}m/s"
 
@@ -156,8 +157,8 @@ class RunOverviewActivity : AppCompatActivity(), OnChartValueSelectedListener {
 
         x!!
         if (points.size < x) {
-            val lat = points[x?.toInt()].latitude
-            val long = points[x?.toInt()].longitude
+            val lat = points[x.toInt()].latitude
+            val long = points[x.toInt()].longitude
             val latLng = LatLng(lat, long)
 
             map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 22f))

@@ -27,7 +27,7 @@ class MapUtils{
 
             val polyLine = map!!.addPolyline(PolylineOptions().width(3f).color(Color.BLACK))
             polyLine.isClickable = true
-            map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(points[mid], 18f))
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(points[mid], 18f))
 
 
 

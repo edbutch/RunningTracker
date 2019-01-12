@@ -121,7 +121,7 @@ class TrackingActivity : AppCompatActivity() {
                 //We have clicked PAUSE whilst running, therefore we need to pause
                 EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.PAUSE))
                 state = STATE.PAUSED
-                trackingBtnPause.text = "PLAY"
+                trackingBtnPause.text = "RESUME"
                 resetPreviousTime()
             } else if (state == STATE.PAUSED) {
                 Log.e(TAG, "STATE = PAISE - > START ")
@@ -205,10 +205,16 @@ class TrackingActivity : AppCompatActivity() {
                     Log.e("PAUSED", "KASDKAKSDKASDK")
                     resetPreviousTime()
                     state = STATE.PAUSED
+                    runOnUiThread{
+                        trackingBtnPause.text = "Resume"
+                    }
 
                 }
                 COMMAND.RESUME_TRACKING -> {
                     state = STATE.STARTED
+                    runOnUiThread{
+                        trackingBtnPause.text = "Pause"
+                    }
                 }
             }
 
@@ -234,8 +240,8 @@ class TrackingActivity : AppCompatActivity() {
         val speedFormatted = "Speed:" + "%.2f".format(speed) + "M/S"
 
         trackingSpeed.text = speedFormatted
-        val ele = "Altitude:" +  "%.2f".format(ele) + "M"
-        trackingEle.text = ele
+        val eleFormatted = "Altitude:" +  "%.2f".format(ele) + "M"
+        trackingEle.text = eleFormatted
 
         val totalD = totalDistance/1000
         val distFormatted = "%.2f".format(totalD) + "KM"

@@ -71,21 +71,18 @@ class RunUtils(val metrics: RunMetrics, val gpsList: List<GPS>) {
             return Math.round(d * 1000.0) / 1000.0
         }
 
-        fun getAverageSpeed(totalDistance: Long, timeTaken: Long){
 
-
-        }
         fun getAverageSpeed(list: List<GPS>): Float {
             var totalSpeed: Float = 0F
             list.map { totalSpeed += it.speed }
             return totalSpeed / list.size
         }
 
-        fun getAverageEle(list: List<GPS>): Double {
-            var totalEle: Double = 0.0
-            list.map { totalEle += it.elevation }
-            return totalEle / list.size
-        }
+//        fun getAverageEle(list: List<GPS>): Double {
+//            var totalEle: Double = 0.0
+//            list.map { totalEle += it.elevation }
+//            return totalEle / list.size
+//        }
 
         fun totalDistanceToKm(totalDistance: Float): Double {
             val d = totalDistance / 1000

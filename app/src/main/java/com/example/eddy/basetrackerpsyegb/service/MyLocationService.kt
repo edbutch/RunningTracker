@@ -205,9 +205,8 @@ class MyLocationService : Service() {
 
         fun stopMetrics() {
             doAsync {
-                var rm = RunMetrics()
                 isListenerInitialized = false
-                rm = contentResolver.endMetrics(lastLocation.time, currentTrackingPKey)
+                contentResolver.endMetrics(lastLocation.time, currentTrackingPKey)
 
             }
 
@@ -218,6 +217,7 @@ class MyLocationService : Service() {
 
 
     override fun onBind(arg0: Intent): IBinder? {
+        //Service Control is being done via event bus
         return null
     }
 
@@ -344,7 +344,7 @@ class MyLocationService : Service() {
                 locationManager!!.removeUpdates(locationListener)
             } catch (ex: Exception) {
                 Log.i(TAG, "fail to remove location listener, ignore", ex)
-                true
+                caught = true
             }
 
             if (!caught) {
@@ -401,7 +401,7 @@ class MyLocationService : Service() {
                 locationManager!!.removeUpdates(locationListener)
             } catch (ex: Exception) {
                 Log.i(TAG, "fail to remove location listener, ignore", ex)
-                true
+                caught = true
             }
 
             if (!caught) {
@@ -413,7 +413,7 @@ class MyLocationService : Service() {
 
     private fun resumeTracking(id: Int) {
         initializeLocationManager()
-        locationListener?.resumeTracking(id)
+        locationListener.resumeTracking(id)
         startTracking()
     }
 

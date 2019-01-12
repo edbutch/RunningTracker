@@ -20,10 +20,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class AllRunsAdapter(
+class BoringRunListAdapter(
     var runList: MutableList<RunMetrics>,
     val context: Context
-) : RecyclerView.Adapter<AllRunsAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<BoringRunListAdapter.ViewHolder>() {
 
     init {
         initList()
@@ -38,13 +38,11 @@ class AllRunsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, pos: Int) {
 
-        holder?.listId.text = runList.get(pos).id.toString()
-        holder?.runDistance.text = runList.get(pos).totalDistance.toString()
-        holder?.startDate.text = getDate(runList.get(pos).startTime)
-        var startTime = runList.get(pos).startTime
-        var endTime = runList.get(pos).endTime
-        holder?.runDuration.text = RunUtils.Companion.getDuration(runList[pos].totalTime)
-//            holder?.rootView.setOnClickListener { delete(runList[pos].id) }
+        holder.listId.text = runList.get(pos).id.toString()
+        holder.runDistance.text = runList.get(pos).totalDistance.toString()
+        holder.startDate.text = getDate(runList.get(pos).startTime)
+        holder.runDuration.text = RunUtils.Companion.getDuration(runList[pos].totalTime)
+        holder.rootView.setOnClickListener { startMapViewActivity(runList[pos].id) }
 
 
         Log.v("onBindView", "date width :: ${holder.startDate.width}")
@@ -72,8 +70,6 @@ class AllRunsAdapter(
     }
 
 
-
-
     private fun getDate(time: Long): String? {
         val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val date = Date(time)
@@ -85,7 +81,7 @@ class AllRunsAdapter(
     }
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolder {
-        val v = LayoutInflater.from(p0?.context).inflate(R.layout.runs_list_element, p0, false)
+        val v = LayoutInflater.from(p0.context).inflate(R.layout.boring_run_element, p0, false)
         return ViewHolder(v)
     }
 

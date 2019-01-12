@@ -170,13 +170,13 @@ class LocationProvider : ContentProvider() {
         when(sURIMatcher.match(uri)){
             GPSCODE -> {
 
-                var parentId = values?.get(PARENTID) as Int
-                var pKey = values[PKEY] as Int
-                var time = values[TIME] as Long
-                var lat = values[LATITUDE] as Double
-                var long = values[LONGITUDE] as Double
-                var ele = values[GPS.ELE] as Double
-                var speed = values[GPS.SPEED] as Float
+                val parentId = values?.get(PARENTID) as Int
+                val pKey = values[PKEY] as Int
+                val time = values[TIME] as Long
+                val lat = values[LATITUDE] as Double
+                val long = values[LONGITUDE] as Double
+                val ele = values[GPS.ELE] as Double
+                val speed = values[GPS.SPEED] as Float
                 val gps = GPS(pKey, parentId, time, lat, long, ele, speed)
                 Log.e("INSERT", gps.toString())
                 val retVal = database.gpsDao().insertGPS(gps)

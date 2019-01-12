@@ -22,16 +22,20 @@ import kotlinx.android.synthetic.main.activity_run_stats.all_runs_map
 
 class AllRunOverviewActivity : AppCompatActivity(), RunOverview.OverviewListener {
 
+    lateinit var map: GoogleMap
 
     override fun DBReady(overview: RunOverview.OverviewData) {
 
 
         //Uses View Model to format DB data and sets it to the Text Views. Also binds to the GPS points
+
         val speedFormat = "%.2f".format(overview.avgSpeed) + "M/S"
         val avgSpeed = "Average Speed : $speedFormat"
         overview_avgSpeed.text = avgSpeed
-        val distance = RunUtils.getDistance(overview.totalDistance.toDouble())
-        val totalDistance = "Total Distance: ${formatDecimal(distance)}KM"
+        var dist = RunUtils.getDistance(overview.totalDistance.toDouble())
+        dist /= 1000
+        val distanceFormat = "%.2f".format(dist)+"KM"
+        val totalDistance = "Total Distance: $distanceFormat"
         overview_totalDistance.text = totalDistance
         val maxEle = "Highest Point: ${formatDecimal(overview.maxEle.elevation)}M"
         overview_maxEle.text = maxEle
@@ -111,23 +115,25 @@ class AllRunOverviewActivity : AppCompatActivity(), RunOverview.OverviewListener
     private fun moveMap(gps: GPS, title: String) {
         Log.v(title, gps.toString())
 
-        map?.clear()
-        val latLng = LatLng(gps.latitude, gps.longitude)
-        map?.addMarker(
-            MarkerOptions()
-                .position(latLng)
-                .icon(MapUtils.bitmapDescriptorFromVector(this, R.drawable.ic_run))
-        )
-            .title = title
+        if(::map.isInitialized){
+            map.clear()
+            val latLng = LatLng(gps.latitude, gps.longitude)
+            map.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .icon(MapUtils.bitmapDescriptorFromVector(this, R.drawable.ic_run))
+            )
+                .title = title
 
-        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14f))
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14f))
+
+        }
 
 
     }
 
 
 
-    lateinit var map: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
