@@ -1,11 +1,9 @@
-package com.example.eddy.basetrackerpsyegb.DB
+package com.example.eddy.basetrackerpsyegb.db
 
 import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.*
 import android.arch.persistence.room.migration.Migration
 import android.content.Context
-import com.example.eddy.basetrackerpsyegb.DB.RunMetrics
-import com.example.eddy.basetrackerpsyegb.DB.RunMetricsDAO
 
 @Database(entities = [GPS::class, RunMetrics::class], version = 2, exportSchema = false)
 
