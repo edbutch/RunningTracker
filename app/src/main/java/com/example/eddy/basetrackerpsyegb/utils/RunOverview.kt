@@ -34,7 +34,6 @@ class RunOverview(context: Context, callBack: OverviewListener) {
             var avgSpeed: Float = 0F
             for (overview in runsOverview) {
                 Log.e("Overview: ", "Runlist ID ${overview.runList[0].parentId} + Metric ID ${overview.runMetric.id}")
-//                voverview.runList.sortedByDescending { it.speed }.get(0).speed
                 avgSpeed += RunUtils.getAverageSpeed(overview.runList)
 
 
