@@ -2,7 +2,6 @@ package com.example.eddy.basetrackerpsyegb.activities
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.annotation.UiThread
 import com.example.eddy.basetrackerpsyegb.database.*
 import com.example.eddy.basetrackerpsyegb.utils.ChartUtils
@@ -38,7 +37,6 @@ class RunOverviewActivity : AppCompatActivity() {
 
 
         (overview_map as SupportMapFragment).getMapAsync {
-            Log.e(TAG, "mapasync???")
             map = it
             map?.uiSettings?.isMyLocationButtonEnabled = true
 
@@ -119,7 +117,6 @@ class RunOverviewActivity : AppCompatActivity() {
 
 
                 val time = runMetrics.totalTime
-                Log.v(TAG, "TIME : $time")
                 var speedMetresSecond = runMetrics.totalDistance/ (runMetrics.totalTime/1000)
 
                 if(speedMetresSecond.isInfinite()){speedMetresSecond = 0F}

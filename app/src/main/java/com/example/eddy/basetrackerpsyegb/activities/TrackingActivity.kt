@@ -7,7 +7,6 @@ import android.content.IntentFilter
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.annotation.UiThread
-import android.util.Log
 import com.example.eddy.basetrackerpsyegb.database.GPS
 import com.example.eddy.basetrackerpsyegb.database.RunMetrics
 import com.example.eddy.basetrackerpsyegb.R
@@ -183,7 +182,6 @@ class TrackingActivity : AppCompatActivity() {
 
 
                 COMMAND.PAUSE_TRACKING -> {
-                    Log.e("PAUSED", "KASDKAKSDKASDK")
                     resetPreviousTime()
                     state = STATE.PAUSED
                     runOnUiThread{

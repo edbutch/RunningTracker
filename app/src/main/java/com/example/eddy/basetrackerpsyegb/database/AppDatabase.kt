@@ -22,8 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
                 synchronized(AppDatabase::class){
                     INSTANCE = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java,
                         DB_NAME
-                    ).addMigrations(MIGRATION_1_2)
-                        .build()
+                    ).build()
                 }
             }
             return INSTANCE
@@ -35,24 +34,7 @@ abstract class AppDatabase : RoomDatabase() {
 
 
 
-        val MIGRATION_1_2: Migration = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                // https://developer.android.com/reference/android/arch/persistence/room/ColumnInfo
-                /*
-                database.execSQL("ALTER TABLE pin "
-                        + " ADD COLUMN is_location_accurate INTEGER NOT NULL DEFAULT 0")
-                database.execSQL("UPDATE pin "
-                        + " SET is_location_accurate = 0 WHERE latitude IS NULL")
-                database.execSQL("UPDATE pin "
-                        + " SET is_location_accurate = 1 WHERE latitude IS NOT NULL")
-                        */
 
-                database.execSQL("ALTER TABLE GPS"
-                        + " ADD COLUMN longitude FLOAT(53)")
-
-
-            }
-        }
     }
 }
 

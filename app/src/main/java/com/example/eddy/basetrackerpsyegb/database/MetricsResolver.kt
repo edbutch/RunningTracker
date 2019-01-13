@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.net.Uri
-import android.util.Log
 
 const val METRICS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.database.contentprovider/metricstable"
 const val UPDATE_METRICS_AUTHORITY = "content://com.example.eddy.basetrackerpsyegb.database.contentprovider/updatetable"
@@ -27,7 +26,6 @@ fun ContentResolver.getRuns(): List<RunMetrics> {
         runList.add(run)
         cursor.moveToNext()
 
-        Log.v("Resolver: getRuns()", run.toString())
     }
     cursor.close()
     return runList
@@ -54,7 +52,6 @@ fun ContentResolver.getRun(id: Int): RunMetrics {
     run.totalTime = cursor.getLong(cursor.getColumnIndex(RunMetrics.TOTAL_TIME))
     cursor.moveToNext()
 
-    Log.v("Resolver: getRuns()", run.toString())
 
     cursor.close()
 
@@ -70,7 +67,6 @@ fun ContentResolver.startMetrics(metrics: RunMetrics): Int {
     val uriRet = insert(Uri.parse(METRICS_AUTHORITY), cv)
     val rmID = ContentUris.parseId(uriRet)
     metrics.id = rmID.toInt()
-    Log.v("Resolver: StartMetrics", metrics.toString())
     return metrics.id
 
 
@@ -83,7 +79,6 @@ fun ContentResolver.endMetrics(time: Long, id: Int): RunMetrics {
     cv.put(RunMetrics.END_TIME, time)
 
     val uriRet = update(Uri.parse(METRICS_AUTHORITY), cv, null, null)
-    Log.e("ENDMETRICS", "URIRET $uriRet ID $id")
 
     if (uriRet == 1) {
         return getRun(id)

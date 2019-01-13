@@ -3,7 +3,6 @@ package com.example.eddy.basetrackerpsyegb.activities
 import android.app.DatePickerDialog
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.CalendarView
 import com.example.eddy.basetrackerpsyegb.database.GPS
 import com.example.eddy.basetrackerpsyegb.R
@@ -62,14 +61,8 @@ class AllRunOverviewActivity : AppCompatActivity(), RunOverview.OverviewListener
         val data = ChartUtils.getSpeedLineData(overview.speedList)
 
 
-        Log.e("TEST", "tESTOMG")
 
-        for (speed in overview.speedList) {
-            if (speed.isInfinite()) {
-                Log.e("TEST", "overview speed $speed")
 
-            }
-        }
 
 
         ChartUtils.initializeLineChart(
@@ -95,15 +88,6 @@ class AllRunOverviewActivity : AppCompatActivity(), RunOverview.OverviewListener
 
 
         this.xAxis.position = XAxis.XAxisPosition.BOTTOM
-//        this.xAxis.enableGridDashedLine(5f, 5f, 0f)
-//        this.axisRight.enableGridDashedLine(5f, 5f, 0f)
-//        this.axisLeft.enableGridDashedLine(5f, 5f, 0f)
-//        this.description.position =
-
-//        this.axisLeft.disableAxisLineDashedLine()
-//        this.axisLeft.disableGridDashedLine()
-//        this.axisRight.disableGridDashedLine()
-//        this.axisRight.disableAxisLineDashedLine()
         this.setDrawGridBackground(false)
 
         this.description.isEnabled = true
@@ -119,7 +103,6 @@ class AllRunOverviewActivity : AppCompatActivity(), RunOverview.OverviewListener
 
 
     private fun moveMap(gps: GPS, title: String) {
-        Log.v(title, gps.toString())
 
         if (::map.isInitialized) {
             map.clear()
@@ -177,18 +160,11 @@ class AllRunOverviewActivity : AppCompatActivity(), RunOverview.OverviewListener
 
 
 
-        Log.e("initdate", "${monthMax.time.time}")
 
 
 
 
 
-        Log.v(
-            "Initdaterange",
-            "Now ${sdf.format(now.time)} , 3 days ago ${sdf.format(weekMin.time)}, 15 days from now ${sdf.format(
-                monthMax.time
-            )}"
-        )
 
         btnDateNow.setOnClickListener { RunOverview(this, this, min = yesterday.time.time, max = now.time.time) }
 

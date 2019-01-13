@@ -30,7 +30,6 @@ class RunOverview(
             val speedList = arrayListOf<Float>()
 
             for (metric in metrics) {
-                Log.e("METRIC FILTERED", "time ${metric.startTime} id ${metric.id}")
                 val gps = context.contentResolver.getGPSList(metric.id)
                 runsOverview.add(Overview(runMetric = metric, runList = gps))
             }
@@ -43,7 +42,6 @@ class RunOverview(
             var maxSpeed = GPS()
             var avgSpeed: Float = 0F
             for (overview in runsOverview) {
-                Log.e("Overview: ", "Runlist ID ${overview.runList[0].parentId} + Metric ID ${overview.runMetric.id}")
                 avgSpeed += RunUtils.getAverageSpeed(overview.runList)
 
 

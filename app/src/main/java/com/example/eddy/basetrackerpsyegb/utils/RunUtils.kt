@@ -26,11 +26,9 @@ class RunUtils(val metrics: RunMetrics, val gpsList: List<GPS>) {
 
             var dur = ""
             if (hours > 0) {
-                Log.v(TAG, "hour > 0 ")
                 dur += "${hours}H:${mins}M:${seconds}S"
 
             } else {
-                Log.v(TAG, " 0 > hours ")
 
                 dur += "${mins}M:${seconds}S"
             }

@@ -44,8 +44,6 @@ class MapUtils{
             val patternList = arrayListOf(gap, dot)
             polyLine.pattern = patternList
 
-//        polyLine.startCap = CustomCap(BitmapDescriptorFactory.fromResource(android.R.drawable.arrow_down_float))
-//        polyLine.endCap = CustomCap(BitmapDescriptorFactory.fromResource(android.R.drawable.arrow_down_float))
 
 
 

@@ -22,7 +22,6 @@ class ChartUtils {
 
 
         fun initializeSpeedChart(context: Context, speedchart: LineChart, lineData: LineData, holeColor: Int, backgroundColor: Int): LineChart{
-            Log.e(TAG, "Init chart")
             (lineData.getDataSetByIndex(0) as LineDataSet).circleHoleColor = holeColor
 
 
@@ -43,14 +42,12 @@ class ChartUtils {
             l.isEnabled = false
 
             speedchart.axisLeft.isEnabled = true
-//            speedchart.axisLeft.spaceTop = 40f
             speedchart.axisLeft.spaceBottom = 40f
             speedchart.axisRight.isEnabled = false
 
             speedchart.xAxis.isEnabled = false
 
 
-            // no description text
             speedchart.description.isEnabled = true
             speedchart.description.text = "Speed Time Graph"
 
@@ -74,7 +71,6 @@ class ChartUtils {
 
 
         fun initializeLineChart(context: Context,title: String, description: String, elechart: LineChart, lineData: LineData, holeColor: Int, backgroundColor: Int): LineChart {
-            Log.e(TAG, "Init chart")
             (lineData.getDataSetByIndex(0) as LineDataSet).circleHoleColor = holeColor
 
 
@@ -167,7 +163,6 @@ class ChartUtils {
 
             val entries = arrayListOf<Entry>()
             for ((index, gps) in gpsList.withIndex()) {
-                Log.v("SortedBy","REVERSETIME ${gps.toString()}")
 
                 entries.add(Entry(index.toFloat(), gps.speed.toFloat()))
             }
@@ -215,7 +210,6 @@ class ChartUtils {
             val entries = arrayListOf<BarEntry>()
 
             for((index, dist) in distanceList.withIndex()){
-                Log.e("Testttt", "inted ${index.toFloat()}, dist $dist")
                 entries.add(BarEntry(index.toFloat(), dist, "Run $index"))
             }
             val dataSet = BarDataSet(entries, "A Run")

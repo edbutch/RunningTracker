@@ -41,6 +41,9 @@ class MyLocationService : Service() {
     var currentTrackingPKey: Int = 0
     var isListenerInitialized: Boolean = false
 
+
+    //https://github.com/codepath/android_guides/issues/220
+    //Referred to this discussion when creating my listener service.
     private inner class LocationListener(provider: String) : android.location.LocationListener {
 
 
@@ -225,10 +228,6 @@ class MyLocationService : Service() {
             when (intent.action) {
                 ACTION.PAUSE_TRACKING -> {
                     if (state == TrackingActivity.STATE.STARTED) {
-                        /*These states have been included inside the service as well as the actitiy to REFLECT the state of the activity.
-                        The course spec specified the user should select when they want the run to start, which is why it's here, because the run
-                        otherwise could be stopped and then the user could press 'resume', as it hasn't flushed the current ID of the run in the service.
-                         */
                         pauseTracking()
                         sendBroadcast(
                             Intent(RECEIVER.RECEIVER_FILTER).putExtra(
@@ -332,9 +331,8 @@ class MyLocationService : Service() {
                 locationManager = null
 
             }
-        } else if (id != 0 && time != 0L && totalTime != 0L) {
+        } else if (id != 0 && totalTime != 0L) {
             //to 'stop' a service that has been 'paused
-            //This was an issue as I wanted to close down the listener when paused as it's heavy on resources
             //The event bus sends this data from the activity to the service to stop.
             doAsync {
                 contentResolver.endMetrics(time = time, id = id)
@@ -480,8 +478,7 @@ class MyLocationService : Service() {
                 startForeground()
                 initializeLocationManager()
                 startTracking()
-                //As you can see here, the state is initialized to stop like Tracking activity, then started
-                ///And all states are reflected within EVENT.CONTROL, or within the pause / resume intents
+                ///all states are reflected within EVENT.CONTROL, or within the pause / resume intents
                 //I.e, the only place the user CAN control the app.
                 state = TrackingActivity.STATE.STARTED
             }

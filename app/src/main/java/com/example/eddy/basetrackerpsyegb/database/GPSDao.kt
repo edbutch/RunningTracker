@@ -7,8 +7,6 @@ import android.database.Cursor
 
 @Dao
 interface   GPSDao {
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    fun insertGPS(GPS: GPS) : Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertGPS(gps: GPS) : Long
@@ -19,7 +17,6 @@ interface   GPSDao {
     @Update
     fun updateGPS(gps: GPS): Int
 
-//    @Query("SELECT * FROM GPS ORDER BY timestamp DESC")
     @Query("Select * FROM GPS ORDER BY timestamp DESC")
     fun getGPSCursor(): Cursor
 
@@ -29,10 +26,7 @@ interface   GPSDao {
     @Query("DELETE From GPS WHERE parentId == :id")
     fun deleteRuns(id: Int)
 
-    /* @Query("SELECT * FROM RunMetrics WHERE id = :id")
-    fun getMetricsByID(id: Int): Cursor
 
-*/
 
 
 

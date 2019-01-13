@@ -7,7 +7,7 @@ import android.content.Intent
 /*
  * Copyright (C) 2014 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed utnder the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -36,7 +36,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -186,7 +185,6 @@ class RunListActivity : AppCompatActivity(), AllJourneys.DBReadyCallback {
 
 
             private fun startMapViewActivity(id: Int) {
-                Log.e("startMapViewActivity", "hello ID $id")
                 val intent = Intent(context, RunOverviewActivity::class.java)
                 intent.putExtra(RunMetrics.ID, id)
                 context.startActivity(intent)

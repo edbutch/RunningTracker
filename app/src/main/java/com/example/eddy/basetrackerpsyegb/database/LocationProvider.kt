@@ -7,7 +7,6 @@ import android.content.ContentValues
 import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
-import android.util.Log
 import com.example.eddy.basetrackerpsyegb.database.GPS.Companion.PKEY
 import com.example.eddy.basetrackerpsyegb.database.GPS.Companion.LONGITUDE
 import com.example.eddy.basetrackerpsyegb.database.GPS.Companion.LATITUDE
@@ -110,7 +109,6 @@ class LocationProvider : ContentProvider() {
                 return updateDistance(values)
             }
             UPDATE_TOTAL_TIME -> {
-                Log.v("UPDATETOTALTIEM", "IASDJKAKSDK")
                 return updateTotalTIme(values)
             }
 
@@ -126,7 +124,6 @@ class LocationProvider : ContentProvider() {
     private fun updateTotalTIme(values: ContentValues?): Int {
         val time = values?.get(RunMetrics.TOTAL_TIME) as Long
         var id = values[RunMetrics.ID] as Int
-        Log.v("updateTotalTIme", "time : $time")
         return database.metricsDao().setTotalTIme(time, id)
 
     }
@@ -135,8 +132,6 @@ class LocationProvider : ContentProvider() {
 
         var distance = values?.get(RunMetrics.TOTAL_DISTANCE) as Float
         var id = values[RunMetrics.ID] as Int
-        Log.v("UpdateDistance, ", "distance = $distance")
-        Log.v("UpdateDistance, ", "values = $values")
         return database.metricsDao().updateDistance(distance, id)
 
     }
@@ -178,7 +173,6 @@ class LocationProvider : ContentProvider() {
                 val ele = values[GPS.ELE] as Double
                 val speed = values[GPS.SPEED] as Float
                 val gps = GPS(pKey, parentId, time, lat, long, ele, speed)
-                Log.e("INSERT", gps.toString())
                 val retVal = database.gpsDao().insertGPS(gps)
                 return ContentUris.withAppendedId(uri, retVal)
             }
