@@ -73,7 +73,7 @@
             <Button
                     android:text="Exit Application"
                     android:textColor="@color/white"
-                    android:textColorHighlight="@color/color_red"
+                    android:textColorHighlight="@color/stopRed"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_baseline_stop_24px"

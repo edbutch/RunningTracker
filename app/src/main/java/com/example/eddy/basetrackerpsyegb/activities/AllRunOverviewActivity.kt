@@ -15,7 +15,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.savvi.rangedatepicker.CalendarPickerView
 import kotlinx.android.synthetic.main.activity_run_stats.*
 import kotlinx.android.synthetic.main.activity_run_stats.all_runs_map
 import java.text.DateFormat
