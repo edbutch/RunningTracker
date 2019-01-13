@@ -21,8 +21,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        btnStopService.setOnClickListener { stopService(Intent(this, MyLocationService::class.java))
-        finish()}
+        btnExit.setOnClickListener { finish()}
 
         btnStartTracker.setOnClickListener { startTracker() }
         btnViewAllRuns.setOnClickListener { viewAllRuns() }

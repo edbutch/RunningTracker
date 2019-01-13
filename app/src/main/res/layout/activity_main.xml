@@ -80,13 +80,13 @@
                     android:backgroundTint="@color/colorButtonGradient4"
                     android:textColor="@color/colorIcon"/>
             <Button
-                    android:text="Stop Service and Exit"
+                    android:text="Exit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_baseline_stop_24px"
-                    android:id="@+id/btnStopService"
+                    android:id="@+id/btnExit"
                     tools:layout_editor_absoluteY="503dp" tools:layout_editor_absoluteX="112dp"
-                    android:backgroundTint="@color/stopRed"
+                    android:backgroundTint="@color/color_red"
                     android:textColor="@color/colorIcon"/>
         </LinearLayout>
 

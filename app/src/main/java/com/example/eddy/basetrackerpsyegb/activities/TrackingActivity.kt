@@ -80,6 +80,7 @@ class TrackingActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         stopTracking()
+        stopService(Intent(this, MyLocationService::class.java))
         super.onBackPressed()
     }
     private fun startTracking() {
