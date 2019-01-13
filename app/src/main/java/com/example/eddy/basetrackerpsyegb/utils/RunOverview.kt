@@ -7,7 +7,12 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.text.SimpleDateFormat
 
-class RunOverview(context: Context, callBack: OverviewListener) {
+class RunOverview(
+    context: Context,
+    callBack: OverviewListener,
+    min: Long,
+    max: Long
+) {
 
     var runsOverview: MutableList<Overview> = arrayListOf()
     val sdf = SimpleDateFormat("yyyyMMdd")
@@ -15,21 +20,26 @@ class RunOverview(context: Context, callBack: OverviewListener) {
     init {
         doAsync {
 
-            val metrics = context.contentResolver.getRuns()
+            var metrics = context.contentResolver.getRuns()
+
+            if (min != 0L && max != 0L) {
+                metrics = metrics.filter { min <= it.startTime && max >= it.startTime }
+            }
 
             val distanceList = arrayListOf<Float>()
             val speedList = arrayListOf<Float>()
 
             for (metric in metrics) {
+                Log.e("METRIC FILTERED", "time ${metric.startTime} id ${metric.id}")
                 val gps = context.contentResolver.getGPSList(metric.id)
                 runsOverview.add(Overview(runMetric = metric, runList = gps))
             }
 
-            var maxEle  = GPS()
+            var maxEle = GPS()
             var totalTime: Long = 0L
             var totalDistance: Float = 0F
             //Mount Everest is the highestp oint in the world, so this is initialized to mount everest
-            var minEle = GPS(99,99,99L,27.9881,86.9250,8850.9,99F)
+            var minEle = GPS(99, 99, 99L, 27.9881, 86.9250, 8850.9, 99F)
             var maxSpeed = GPS()
             var avgSpeed: Float = 0F
             for (overview in runsOverview) {
@@ -48,29 +58,25 @@ class RunOverview(context: Context, callBack: OverviewListener) {
                     maxSpeed = mSpeed
 
                 }
-                val mEle =  overview.runList.sortedByDescending { it.elevation }[0]
-                if(mEle.elevation > maxEle.elevation){
+                val mEle = overview.runList.sortedByDescending { it.elevation }[0]
+                if (mEle.elevation > maxEle.elevation) {
                     maxEle = mEle
                 }
 
                 val mnEle = overview.runList.sortedBy { it.elevation }[0]
 
-                if(mnEle.elevation < minEle.elevation){
+                if (mnEle.elevation < minEle.elevation) {
                     minEle = mnEle
                 }
 
                 distanceList.add(overview.runMetric.totalDistance)
 
 
-
-                val runSpeed = overview.runMetric.totalDistance/ (overview.runMetric.totalTime/1000)
+                val runSpeed = overview.runMetric.totalDistance / (overview.runMetric.totalTime / 1000)
                 speedList.add(runSpeed)
 
 
-
-
             }
-
 
 
             //maxele, maxspeed
@@ -78,18 +84,27 @@ class RunOverview(context: Context, callBack: OverviewListener) {
             val averageDistance = totalDistance / runsOverview.size
 
             uiThread {
-                callBack.DBReady(OverviewData(speedList = speedList,distanceList = distanceList,
-                    topAlt = maxEle,totalDistance = totalDistance,totalTime = totalTime, maxEle = maxEle, maxSpeed = maxSpeed,
-                    minEle = minEle,avgSpeed = avgSpeed, avgDistance = averageDistance ))
+                callBack.DBReady(
+                    OverviewData(
+                        speedList = speedList,
+                        distanceList = distanceList,
+                        topAlt = maxEle,
+                        totalDistance = totalDistance,
+                        totalTime = totalTime,
+                        maxEle = maxEle,
+                        maxSpeed = maxSpeed,
+                        minEle = minEle,
+                        avgSpeed = avgSpeed,
+                        avgDistance = averageDistance
+                    )
+                )
 
 
             }
 
 
-
         }
     }
-
 
 
     data class OverviewData(
@@ -104,7 +119,6 @@ class RunOverview(context: Context, callBack: OverviewListener) {
         val avgDistance: Float,
         val totalTime: Long
     )
-
 
 
     class Overview(var runMetric: RunMetrics, var runList: List<GPS>) {

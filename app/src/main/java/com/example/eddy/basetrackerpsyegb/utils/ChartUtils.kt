@@ -29,24 +29,21 @@ class ChartUtils {
             speedchart.setDrawGridBackground(false)
             speedchart.setTouchEnabled(true)
 
-            speedchart.isDragEnabled = true
+            speedchart.isDragEnabled = false
             speedchart.setScaleEnabled(false)
 
             speedchart.setPinchZoom(false)
             speedchart.setBackgroundColor(backgroundColor)
 
 
-            speedchart.setViewPortOffsets(10f, 0f, 10f, 0f)
 
-            // add data
             speedchart.data = lineData
 
-            // get the legend (only possible after setting data)
             val l = speedchart.legend
             l.isEnabled = false
 
-            speedchart.axisLeft.isEnabled = false
-            speedchart.axisLeft.spaceTop = 40f
+            speedchart.axisLeft.isEnabled = true
+//            speedchart.axisLeft.spaceTop = 40f
             speedchart.axisLeft.spaceBottom = 40f
             speedchart.axisRight.isEnabled = false
 
@@ -58,7 +55,7 @@ class ChartUtils {
             speedchart.description.text = "Speed Time Graph"
 
             val yAxisName = VerticalTextView(context, null)
-            yAxisName.setText("Speed")
+            yAxisName.text = "Speed(m/s)"
             val params2 =
                 FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
             params2.gravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
@@ -84,22 +81,23 @@ class ChartUtils {
             // chart.setDrawHorizontalGrid(false);
             // enable / disable grid background
             elechart.setDrawGridBackground(false)
-//        chart.getRenderer().getGridPaint().setGridColor(Color.WHITE & 0x70FFFFFF);
 
-            // enable touch gestures
-            elechart.setTouchEnabled(true)
+            // set to false.
+            //Will be interesting to work with after the exam season
+            //Clicking points could take you there on the map
+            // I have shown this functionality in the buttons, however integrating with the graphing would be very fun
+            //CLicking bar graphs could draw the journeys on the overview map too
+            elechart.setTouchEnabled(false)
 
             // enable scaling and dragging
-            elechart.isDragEnabled = true
-            elechart.setScaleEnabled(true)
+            elechart.isDragEnabled = false
+            elechart.setScaleEnabled(false)
 
             // if disabled, scaling can be done on x- and y-axis separately
             elechart.setPinchZoom(false)
             elechart.setBackgroundColor(backgroundColor)
 
 
-            // set custom chart offsets (automatic offset calculation is hereby disabled)
-            elechart.setViewPortOffsets(10f, 0f, 10f, 0f)
 
             // add data
             elechart.data = lineData
@@ -108,12 +106,15 @@ class ChartUtils {
             val l = elechart.legend
             l.isEnabled = false
 
-            elechart.axisLeft.isEnabled = false
-            elechart.axisLeft.spaceTop = 40f
+            elechart.axisLeft.isEnabled = true
+//            elechart.axisLeft.spaceTop = 40f
             elechart.axisLeft.spaceBottom = 40f
             elechart.axisRight.isEnabled = false
 
+
             elechart.xAxis.isEnabled = false
+
+
 
 
 

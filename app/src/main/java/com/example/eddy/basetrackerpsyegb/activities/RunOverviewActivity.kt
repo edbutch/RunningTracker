@@ -86,7 +86,7 @@ class RunOverviewActivity : AppCompatActivity() {
             uiThread {
 
                 ChartUtils.initializeLineChart(this@RunOverviewActivity,
-                    "Elevation",
+                    "Elevation(M)",
                     "Time Elevation Graph",
                     elechart,
                     eleLineData,

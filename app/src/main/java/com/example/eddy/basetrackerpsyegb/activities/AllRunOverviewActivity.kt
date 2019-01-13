@@ -1,14 +1,13 @@
 package com.example.eddy.basetrackerpsyegb.activities
 
+import android.app.DatePickerDialog
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.CalendarView
 import com.example.eddy.basetrackerpsyegb.database.GPS
 import com.example.eddy.basetrackerpsyegb.R
-import com.example.eddy.basetrackerpsyegb.utils.ChartUtils
-import com.example.eddy.basetrackerpsyegb.utils.MapUtils
-import com.example.eddy.basetrackerpsyegb.utils.RunOverview
-import com.example.eddy.basetrackerpsyegb.utils.RunUtils
+import com.example.eddy.basetrackerpsyegb.utils.*
 import com.example.eddy.basetrackerpsyegb.utils.RunUtils.Companion.formatDecimal
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
@@ -17,10 +16,17 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.savvi.rangedatepicker.CalendarPickerView
 import kotlinx.android.synthetic.main.activity_run_stats.*
 import kotlinx.android.synthetic.main.activity_run_stats.all_runs_map
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.*
 
 class AllRunOverviewActivity : AppCompatActivity(), RunOverview.OverviewListener {
+
 
     lateinit var map: GoogleMap
 
@@ -34,7 +40,7 @@ class AllRunOverviewActivity : AppCompatActivity(), RunOverview.OverviewListener
         overview_avgSpeed.text = avgSpeed
         var dist = RunUtils.getDistance(overview.totalDistance.toDouble())
         dist /= 1000
-        val distanceFormat = "%.2f".format(dist)+"KM"
+        val distanceFormat = "%.2f".format(dist) + "KM"
         val totalDistance = "Total Distance: $distanceFormat"
         overview_totalDistance.text = totalDistance
         val maxEle = "Highest Point: ${formatDecimal(overview.maxEle.elevation)}M"
@@ -59,7 +65,7 @@ class AllRunOverviewActivity : AppCompatActivity(), RunOverview.OverviewListener
         Log.e("TEST", "tESTOMG")
 
         for (speed in overview.speedList) {
-            if(speed.isInfinite()){
+            if (speed.isInfinite()) {
                 Log.e("TEST", "overview speed $speed")
 
             }
@@ -115,7 +121,7 @@ class AllRunOverviewActivity : AppCompatActivity(), RunOverview.OverviewListener
     private fun moveMap(gps: GPS, title: String) {
         Log.v(title, gps.toString())
 
-        if(::map.isInitialized){
+        if (::map.isInitialized) {
             map.clear()
             val latLng = LatLng(gps.latitude, gps.longitude)
             map.addMarker(
@@ -133,13 +139,13 @@ class AllRunOverviewActivity : AppCompatActivity(), RunOverview.OverviewListener
     }
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_run_stats)
-        RunOverview(this, this)
 
+
+
+        initDateRange()
 
 
         (all_runs_map as SupportMapFragment).getMapAsync {
@@ -148,6 +154,51 @@ class AllRunOverviewActivity : AppCompatActivity(), RunOverview.OverviewListener
         }
 
     }
+
+
+    fun initDateRange() {
+        //Gets a rough min/max for the last
+        //7 days = week
+        //30 days = month
+        //last 24 hours as Day
+        val sdf = SimpleDateFormat("yyyy-MM-dd")
+        val now = Calendar.getInstance()
+        val weekMin = Calendar.getInstance()
+        weekMin.add(Calendar.DATE, -3)
+        val weekMax = Calendar.getInstance()
+        weekMax.add(Calendar.DATE, 4)
+        val monthMax = Calendar.getInstance()
+        monthMax.add(Calendar.DATE, 15)
+        val monthMin = Calendar.getInstance()
+        monthMin.add(Calendar.DATE, -15)
+        val yesterday = Calendar.getInstance()
+        yesterday.add(Calendar.DATE, -1)
+
+
+
+
+        Log.e("initdate", "${monthMax.time.time}")
+
+
+
+
+
+        Log.v(
+            "Initdaterange",
+            "Now ${sdf.format(now.time)} , 3 days ago ${sdf.format(weekMin.time)}, 15 days from now ${sdf.format(
+                monthMax.time
+            )}"
+        )
+
+        btnDateNow.setOnClickListener { RunOverview(this, this, min = yesterday.time.time, max = now.time.time) }
+
+        btnDateWeek.setOnClickListener { RunOverview(this, this, min = weekMin.time.time, max = weekMax.time.time) }
+        btnDateMonth.setOnClickListener { RunOverview(this, this, min = monthMin.time.time, max = monthMax.time.time) }
+
+        btnDateAll.setOnClickListener { RunOverview(this, this, 0L, 0L) }
+
+    }
+
 }
 
 
