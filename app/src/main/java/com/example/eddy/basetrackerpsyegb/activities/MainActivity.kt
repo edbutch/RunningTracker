@@ -22,11 +22,9 @@ class MainActivity : AppCompatActivity() {
 
 
         btnExit.setOnClickListener { finish()}
-
         btnStartTracker.setOnClickListener { startTracker() }
         btnViewAllRuns.setOnClickListener { viewAllRuns() }
         btnOverview.setOnClickListener { viewRunOverview() }
-        btnBoringList.setOnClickListener { startBoringList() }
     }
 
     private fun viewRunOverview() {
@@ -37,10 +35,7 @@ class MainActivity : AppCompatActivity() {
     private fun viewAllRuns() {
         startActivity(Intent(this, RunListActivity::class.java))
     }
-    private fun startBoringList(){
-                startActivity(Intent(this, BoringRunListActivity::class.java))
 
-    }
 
     private fun startTracker() {
         Log.e("huh", "???")

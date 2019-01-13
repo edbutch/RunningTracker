@@ -6,6 +6,8 @@ class ServiceEvent(
     var totalTime: Long = 0L
 ) {
     enum class Control {
-        START, STOP, PAUSE, RESUME, STOP_FROM_INTENT
+        START, STOP, PAUSE, RESUME,
+
+        GET_STATE
     }
 }

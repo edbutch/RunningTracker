@@ -69,6 +69,8 @@ class TrackingActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         registerReceiver(broadCastReceiver, IntentFilter(RECEIVER_FILTER))
+        EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.GET_STATE))
+
     }
 
     override fun onPause() {
@@ -86,7 +88,6 @@ class TrackingActivity : AppCompatActivity() {
     private fun startTracking() {
         if (state == STATE.STOPPED) {
             state = STATE.STARTED
-            Log.e("ey", "kasdkaskdasd")
             trackingBtnPause.text = "PAUSE"
             EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.START))
         }
@@ -96,10 +97,8 @@ class TrackingActivity : AppCompatActivity() {
 
     private fun stopTracking() {
         if (state != STATE.STOPPED) {
-            Log.e("STOPPED", "CUrrent time $currentTime start time $startTime previous time $previousTime")
             state = STATE.STOPPED
             val totalTime =  RunUtils.getDuration(timeCounter)
-            Log.v("TRACKINGACTIVITY", "Stop Tracking : Time Elasped = $totalTime currentime = $currentTime")
             EventBus.getDefault().post(
                 ServiceEvent(
                     control = ServiceEvent.Control.STOP,
@@ -107,7 +106,7 @@ class TrackingActivity : AppCompatActivity() {
                     id = id
                 )
             )
-            resetPreviousTime()
+            endUpdates()
 
         }
 
@@ -122,14 +121,12 @@ class TrackingActivity : AppCompatActivity() {
 
         if (state != STATE.STOPPED) {
             if (state == STATE.STARTED) {
-                Log.e(TAG, "STATE = START - > pause ")
                 //We have clicked PAUSE whilst running, therefore we need to pause
                 EventBus.getDefault().post(ServiceEvent(ServiceEvent.Control.PAUSE))
                 state = STATE.PAUSED
                 trackingBtnPause.text = "RESUME"
                 resetPreviousTime()
             } else if (state == STATE.PAUSED) {
-                Log.e(TAG, "STATE = PAISE - > START ")
 
                 trackingBtnPause.text = "PAUSE"
                 EventBus.getDefault()
@@ -145,14 +142,12 @@ class TrackingActivity : AppCompatActivity() {
 
 
         override fun onReceive(contxt: Context?, intent: Intent?) {
-            Log.e("broadcastreciever", "did we make it")
 
 
             when (intent?.getIntExtra(COMMAND.COMMAND, 9)) {
 
                 COMMAND.START_TRACKING -> {
                     id = intent.getIntExtra(RunMetrics.ID, 0)
-                    Log.e("START_TRACKING", "__")
                     val startTime = intent.getLongExtra(RunMetrics.START_TIME, 0L)
                     val startLat = intent.getDoubleExtra(GPS.LATITUDE, 0.0)
                     val startLong = intent.getDoubleExtra(GPS.LONGITUDE, 0.0)
@@ -177,34 +172,15 @@ class TrackingActivity : AppCompatActivity() {
                     val speed = intent.getFloatExtra(GPS.SPEED,0F)
 
 
-//                    if(previousTime == 0L){
-//                        previousTime = receivedTime
-//                    }else{
-//                        previousTime = currentTime
-//                    }
-//                    previousTime = currentTime
+
                     currentTime = receivedTime
 
-                    Log.e("TRACKING", "__ CURRENTTIME $currentTime")
 
                     update(curLat, curLong, speed, ele)
                     updateTime()
 
                 }
 
-                COMMAND.STOP_TRACKING -> {
-                    Log.e("STOP_TRACKING", "__")
-
-                    val endTime = intent.getLongExtra(RunMetrics.END_TIME, 0L)
-                    val totalDist = intent.getFloatExtra(RunMetrics.TOTAL_DISTANCE, 0F)
-                    endUpdates(endTime, totalDist = totalDist)
-                    state = STATE.STOPPED
-
-                    if(intent.hasExtra("fromPendingIntent")){
-                        EventBus.getDefault().post(ServiceEvent(control = ServiceEvent.Control.STOP_FROM_INTENT, id = id, totalTime = timeCounter))
-
-                    }
-                }
 
                 COMMAND.PAUSE_TRACKING -> {
                     Log.e("PAUSED", "KASDKAKSDKASDK")
@@ -299,11 +275,11 @@ class TrackingActivity : AppCompatActivity() {
 
 
     @UiThread
-    private fun endUpdates(endTime: Long, totalDist: Float) {
-        val end = RunUtils.getDate(endTime)
-        val title = "Run ended at $end OR $endTime"
+    private fun endUpdates() {
+        val eDate = startTime + timeCounter
+        val end = RunUtils.getDate(eDate)
+        val title = "Run ended at $end"
         trackingTxtTitle.text = title
-        trackingTxtTotalDistance.text = totalDist.toString()
         resetPreviousTime()
 
     }

@@ -71,23 +71,16 @@
                     android:backgroundTint="@color/colorButtonGradient3"
                     android:textColor="@color/colorButtonCardStyle"/>
             <Button
-                    android:text="View Runs as a boring old list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_thumb_down"
-                    android:id="@+id/btnBoringList"
-                    tools:layout_editor_absoluteY="503dp" tools:layout_editor_absoluteX="112dp"
-                    android:backgroundTint="@color/colorButtonGradient4"
-                    android:textColor="@color/colorIcon"/>
-            <Button
-                    android:text="Exit"
+                    android:text="Exit Application"
+                    android:textColor="@color/white"
+                    android:textColorHighlight="@color/color_red"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_baseline_stop_24px"
                     android:id="@+id/btnExit"
                     tools:layout_editor_absoluteY="503dp" tools:layout_editor_absoluteX="112dp"
-                    android:backgroundTint="@color/color_red"
-                    android:textColor="@color/colorIcon"/>
+                    android:backgroundTint="@color/colorButtonGradient4"
+                    />
         </LinearLayout>
 
 

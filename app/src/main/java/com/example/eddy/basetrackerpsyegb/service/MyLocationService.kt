@@ -45,7 +45,6 @@ class MyLocationService : Service() {
 
 
         override fun onLocationChanged(location: Location) {
-            Log.e(TAG, "onLocationChanged: $location.")
 
 
             var time = 0L
@@ -58,7 +57,6 @@ class MyLocationService : Service() {
                 if (time != 0L) {
                     speed = distance / (time / 1000)
                     if (speed.isInfinite()) {
-                        Log.e("SPeed is ", "speed is infinite..")
                         //As we have updated in under the 1S interval
                         //Speed will be 1000, we cannot use speed from location object#
                         //so we must do speed = d / interval, to give highest accuracy
@@ -70,7 +68,6 @@ class MyLocationService : Service() {
             }
 
 
-            Log.e(TAG, "time $time distance $distance speed $speed speed $speed = distance $distance /  $time time    =     ${distance / time}")
 
             var parentId = currentTrackingPKey
             var latitude = location.latitude
@@ -141,7 +138,7 @@ class MyLocationService : Service() {
 
         private fun addGPS(gps: GPS, distance: Float) {
             contentResolver.addGPS(gps)
-            broadcastData(COMMAND.UPDATE_TRACKING, gps, distance =distance)
+            broadcastData(COMMAND.UPDATE_TRACKING, gps, distance = distance)
 
         }
 
@@ -226,17 +223,6 @@ class MyLocationService : Service() {
 
         if (intent.action != null) {
             when (intent.action) {
-                ACTION.STOP_TRACKING -> {
-                    //Stop called from outside the activity, so we need to get some final data from the UI before it's sent back
-                    sendBroadcast(
-                        Intent(RECEIVER.RECEIVER_FILTER).putExtra(
-                            COMMAND.COMMAND,
-                            COMMAND.STOP_TRACKING
-                        ).putExtra("fromPendingIntent", true)
-                    )
-                    state = TrackingActivity.STATE.STOPPED
-
-                }
                 ACTION.PAUSE_TRACKING -> {
                     if (state == TrackingActivity.STATE.STARTED) {
                         /*These states have been included inside the service as well as the actitiy to REFLECT the state of the activity.
@@ -267,17 +253,12 @@ class MyLocationService : Service() {
                     }
 
                 }
-                ACTION.STOP_SERVICE -> {
-//                    stopTracking(fromPendingIntent = true)
-//                    stopSelf()
-                    //Doesn't seem necessary to stop the service.
-                }
+
             }
         }
 
         return Service.START_STICKY
     }
-
 
 
     override fun onCreate() {
@@ -314,7 +295,7 @@ class MyLocationService : Service() {
 
     }
 
-    private fun stopTracking(totalTime: Long = 0L, id: Int = 0, time: Long = 0L, fromPendingIntent: Boolean = false) {
+    private fun stopTracking(totalTime: Long = 0L, id: Int = 0, time: Long = 0L) {
         if (locationManager != null) {
             var caught = false
 
@@ -351,13 +332,10 @@ class MyLocationService : Service() {
                 locationManager = null
 
             }
-        } else if (id != 0 && time != 0L && totalTime != 0L && !fromPendingIntent) {
-            // If we call stop metrics from our activity we want to be able to update the total duration using
-            //The duration in the activity. This is to illustrate communication from Event Busses.
-            //This is also a way to 'stop' a service that has been 'paused
-            //THis was an issue as I wanted to close down the listener when paused as it's heavy on resources, however I wanted to
-            //If i had more time, i'd refactor the timer inside Tracking acvitvity, and use my start time as a metric with the current time to calculate the time elasped
-            //And take pause times for refrence as well.
+        } else if (id != 0 && time != 0L && totalTime != 0L) {
+            //to 'stop' a service that has been 'paused
+            //This was an issue as I wanted to close down the listener when paused as it's heavy on resources
+            //The event bus sends this data from the activity to the service to stop.
             doAsync {
                 contentResolver.endMetrics(time = time, id = id)
                 contentResolver.updateTotalDuration(totalTime = totalTime, id = id)
@@ -365,17 +343,6 @@ class MyLocationService : Service() {
 
             }
 
-        }
-
-        if (fromPendingIntent) {
-            //If stop has been selected from the pending intent (notificaton), it will close down everything
-            doAsync {
-                contentResolver.endMetrics(time = lastLocation.time, id = id)
-                contentResolver.updateTotalDuration(totalTime = totalTime, id = id)
-                isListenerInitialized = false
-                Log.e("STOP TRACKING", "FROM PENDING INTENT")
-
-            }
         }
 
 
@@ -439,7 +406,6 @@ class MyLocationService : Service() {
             .setCategory(Notification.CATEGORY_SERVICE)
             .addAction(getPauseAction())
             .addAction(getResumeAction())
-            .addAction(getStopAction())
             .build()
         startForeground(101, notification)
     }
@@ -458,19 +424,6 @@ class MyLocationService : Service() {
         return channelId
     }
 
-
-    private fun getStopAction(): NotificationCompat.Action {
-        val stopIntent = Intent(this, MyLocationService::class.java)
-        stopIntent.action = ACTION.STOP_TRACKING
-        val pStopIntent = PendingIntent.getService(
-            this, 0,
-            stopIntent, 0
-        )
-        val stopAction =
-            NotificationCompat.Action.Builder(android.R.drawable.ic_menu_delete, "Stop", pStopIntent).build()
-
-        return stopAction
-    }
 
     private fun getPauseAction(): NotificationCompat.Action {
 
@@ -546,12 +499,29 @@ class MyLocationService : Service() {
                     resumeTracking(event.id)
                 }
             }
-
-            STOP_FROM_INTENT -> {
-
-                Log.e("STOP FROM INTENT", "${event.id} + ${event.totalTime}")
-
-                stopTracking(totalTime = event.totalTime, id = event.id, fromPendingIntent = true)
+            GET_STATE -> {
+                when(this.state){
+                    //Broadcasts back the state , as the Activity would have missed it if it was destroyed.
+                    TrackingActivity.STATE.STARTED -> {
+                        sendBroadcast(
+                            Intent(RECEIVER.RECEIVER_FILTER).putExtra(
+                                COMMAND.COMMAND,
+                                COMMAND.RESUME_TRACKING
+                            ))
+                    }
+                    TrackingActivity.STATE.PAUSED ->
+                    {
+                        sendBroadcast(
+                            Intent(RECEIVER.RECEIVER_FILTER).putExtra(
+                                COMMAND.COMMAND,
+                                COMMAND.PAUSE_TRACKING
+                            )
+                        )
+                    }
+                    else -> {
+                        //Nothing needed
+                    }
+                }
             }
 
 

@@ -35,11 +35,8 @@
                 android:enabled="true"
                 android:exported="true">
         </provider>
-
         <activity android:name=".activities.TrackingActivity"
                   android:configChanges="orientation">
-        </activity>
-        <activity android:name=".activities.BoringRunListActivity">
         </activity>
         <activity android:name=".activities.RunListActivity">
         </activity>
